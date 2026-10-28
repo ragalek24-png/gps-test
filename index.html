@@ -55,12 +55,17 @@ function render(){
     subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
     const t=subs.length;
     
-    // --- ОБЗОР (с текстами ответов) ---
+    // --- ОБЗОР (Группировка по вопросам) ---
     let overviewHTML = '';
     if (view === 'overview' && t > 0) {
-        overviewHTML = `<div class="bg-white rounded-xl p-6 mb-4">
-            <h3 class="font-semibold mb-4 text-lg">Статистика профилей</h3>` + 
-            Object.entries(P).map(([k,v])=>{
+        // Собираем все непустые ответы на Q4 и Q5
+        const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
+        const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
+
+        overviewHTML = `
+        <div class="bg-white rounded-xl p-6 mb-4">
+            <h3 class="font-semibold mb-4 text-lg">Статистика профилей</h3>
+            ${Object.entries(P).map(([k,v])=>{
                 const c = pc[k] || 0;
                 const p = t > 0 ? (c/t)*100 : 0;
                 return `<div class="flex items-center gap-3 mb-3">
@@ -70,41 +75,49 @@ function render(){
                     </div>
                     <span class="text-sm w-12 text-right">${p.toFixed(0)}%</span>
                 </div>`;
-            }).join('') + `</div>
-            
+            }).join('')}
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <!-- Блок Q4 -->
             <div class="bg-white rounded-xl p-6">
-                <h3 class="font-semibold mb-4 text-lg">Ответы на открытые вопросы</h3>
-                <div class="space-y-4">` +
-                subs.map((s, i) => `
-                    <div class="border-l-4 border-violet-400 pl-4 py-1">
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="font-medium text-sm text-gray-700">Ответ #${t-i}</span>
-                            <span class="text-xs text-gray-400">${new Date(s.created_at).toLocaleString('ru-RU')}</span>
-                        </div>
-                        <p class="text-sm mb-1"><span class="font-semibold text-violet-600">Q4:</span> ${s.q4 || '<i>нет ответа</i>'}</p>
-                        <p class="text-sm"><span class="font-semibold text-violet-600">Q5:</span> ${s.q5 || '<i>нет ответа</i>'}</p>
-                    </div>
-                `).join('') + `
-                </div>
-            </div>`;
+                <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3>
+                <p class="text-xs text-gray-500 mb-4">«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»</p>
+                <ul class="space-y-2">
+                    ${q4Answers.length > 0 
+                        ? q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')
+                        : '<li class="text-gray-400 text-sm italic">Пока нет ответов</li>'}
+                </ul>
+            </div>
+
+            <!-- Блок Q5 -->
+            <div class="bg-white rounded-xl p-6">
+                <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3>
+                <p class="text-xs text-gray-500 mb-4">«Моя суперсила — это [...], но она же меня и изматывает, потому что...»</p>
+                <ul class="space-y-2">
+                    ${q5Answers.length > 0 
+                        ? q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')
+                        : '<li class="text-gray-400 text-sm italic">Пока нет ответов</li>'}
+                </ul>
+            </div>
+        </div>
+        `;
     }
 
-    // --- СПИСОК (таблица) ---
+    // --- СПИСОК (таблица по людям) ---
     let listHTML = '';
     if (view === 'list') {
         listHTML = `<div class="bg-white rounded-xl p-6 mb-4"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
         if (t === 0) {
             listHTML += '<p>Пока нет ответов</p>';
         } else {
-            listHTML += `<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b"><th class="p-2">#</th><th class="p-2">Дата</th><th class="p-2">Профиль</th><th class="p-2">Q1-Q3</th><th class="p-2">Q4 (текст)</th><th class="p-2">Q5 (текст)</th><th class="p-2">Q6</th></tr></thead><tbody>`;
+            listHTML += `<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b"><th class="p-2">#</th><th class="p-2">Дата</th><th class="p-2">Профиль</th><th class="p-2">Q4</th><th class="p-2">Q5</th></tr></thead><tbody>`;
             listHTML += subs.map((s,i)=>`<tr class="border-b">
                 <td class="p-2">${t-i}</td>
                 <td class="p-2 text-sm whitespace-nowrap">${new Date(s.created_at).toLocaleString('ru-RU')}</td>
                 <td class="p-2"><span class="px-2 py-1 rounded text-xs text-white" style="background-color:${P[s.profile]?.c}">${P[s.profile]?.l}</span></td>
-                <td class="p-2 text-sm">${s.q1+1}, ${s.q2+1}, ${s.q3+1}</td>
                 <td class="p-2 text-sm">${s.q4 || '-'}</td>
                 <td class="p-2 text-sm">${s.q5 || '-'}</td>
-                <td class="p-2 text-sm">${s.q6+1}</td>
             </tr>`).join('');
             listHTML += `</tbody></table></div>`;
         }
