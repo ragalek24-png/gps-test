@@ -13,7 +13,6 @@
 <script>
 // --- НАСТРОЙКА SUPABASE ---
 const { createClient } = window.supabase;
-// Вставляем ваш публичный ключ (Publishable key)
 const supabase = createClient('https://vurnrdqxbzqijwkcywsf.supabase.co', 'sb_publishable_nsz3vSuJz1JumMT3IVoRMg_vMLEe4n2');
 
 // --- ДАННЫЕ ТЕСТА ---
@@ -37,12 +36,11 @@ function render(){
   
   // --- АДМИНКА ---
   if(location.hash==='#admin'){
-    // Простая проверка пароля
     if(!window.isAdmin){
         const pass = prompt("Введите пароль администратора:");
         if(pass === 'admin2024'){
             window.isAdmin = true;
-            load(); // Загружаем данные
+            load();
         } else {
             alert("Неверный пароль");
             location.hash = '';
@@ -63,9 +61,26 @@ function render(){
   if(step==='results'){const info=P[prof];app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="bg-white rounded-xl shadow-xl p-8 max-w-lg">${saved?'<div class="text-green-600 mb-4">✓ Ответы сохранены</div>':''}<div class="text-center mb-6"><h2 class="text-3xl font-bold mb-4">${info.e} ${info.l}</h2><p>${info.d}</p></div><div class="bg-violet-50 rounded-xl p-4 mb-4"><h3 class="font-semibold mb-2">💡 ${info.tip}</h3></div><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600">Заново ↺</button></div></div>`;return;}
   
   const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
-  const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
+  const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
+  
   const can=q.o?a[step]!==null:a[step].trim().length>0;
-  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500">← Назад</button>`:'<div></div>'}<button onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold ${can?'bg-violet-600 text-white':'bg-gray-200 text-gray-400'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
+  
+  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold ${can?'bg-violet-600 text-white':'bg-gray-200 text-gray-400'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
+}
+
+// --- ПРОВЕРКА КНОПКИ ДЛЯ ТЕКСТОВЫХ ПОЛЕЙ ---
+function checkNextBtn() {
+    const txtArea = document.querySelector('textarea');
+    const nextBtn = document.getElementById('next-btn');
+    if (txtArea && nextBtn) {
+        const hasText = txtArea.value.trim().length > 0;
+        nextBtn.disabled = !hasText;
+        if (hasText) {
+            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-violet-600 text-white';
+        } else {
+            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-gray-200 text-gray-400';
+        }
+    }
 }
 
 // --- ОТПРАВКА В БАЗУ ---
