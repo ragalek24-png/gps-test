@@ -24,7 +24,14 @@ const Q = {
   q5: {s:'Секция 3',t:'Закончите фразу:',p:'«Моя суперсила — это [...], но она же меня и изматывает, потому что...»'},
   q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
 };
-const P={balanced:{e:'🧭',l:'Устойчивый',d:'GPS на здоровой волне',tip:'Гибкость — суперсила',c:'#10b981'},mild:{e:'🔍',l:'Наблюдатель',d:'GPS делает крюки',tip:'Адвокат дьявола: доказательства ПРОТИВ мысли?',c:'#6366f1'},moderate:{e:'⚡',l:'Радар',d:'Мозг усиливает сигналы',tip:'Дневник мыслей',c:'#f59e0b'},intense:{e:'🌊',l:'Исследователь',d:'Мир насыщен',tip:'Психолог (КПТ) даст инструменты',c:'#a855f7'}};
+
+const P={
+  balanced:{e:'🧭',l:'Устойчивый',d:'GPS на здоровой волне',tip:'Гибкость — суперсила',c:'#10b981'},
+  mild:{e:'🔍',l:'Наблюдатель',d:'GPS делает крюки',tip:'Адвокат дьявола: доказательства ПРОТИВ мысли?',c:'#6366f1'},
+  moderate:{e:'⚡',l:'Радар',d:'Мозг усиливает сигналы',tip:'Дневник мыслей',c:'#f59e0b'},
+  intense:{e:'🌊',l:'Исследователь',d:'Мир насыщен',tip:'Психолог (КПТ) даст инструменты',c:'#a855f7'}
+};
+
 let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
 const steps=['q1','q2','q3','q4','q5','q6'];
 
@@ -55,11 +62,35 @@ function render(){
     return;
   }
 
-  // --- ТЕСТ ---
-  if(step==='intro'){app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg">Начать тест →</button></div></div>`;return;}
+  // --- ИНТРО ---
+  if(step==='intro'){
+    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg">Начать тест →</button></div></div>`;
+    return;
+  }
   
-  if(step==='results'){const info=P[prof];app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="bg-white rounded-xl shadow-xl p-8 max-w-lg">${saved?'<div class="text-green-600 mb-4">✓ Ответы сохранены</div>':''}<div class="text-center mb-6"><h2 class="text-3xl font-bold mb-4">${info.e} ${info.l}</h2><p>${info.d}</p></div><div class="bg-violet-50 rounded-xl p-4 mb-4"><h3 class="font-semibold mb-2">💡 ${info.tip}</h3></div><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600">Заново ↺</button></div></div>`;return;}
+  // --- РЕЗУЛЬТАТЫ ---
+  if(step==='results'){
+    const info=P[prof];
+    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full">
+            ${saved?'<div class="text-green-600 mb-4 text-center">✓ Ответы сохранены</div>':''}
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold mb-2">${info.e} ${info.l}</h2>
+                <p class="text-gray-600">${info.d}</p>
+            </div>
+            <div class="bg-violet-50 rounded-xl p-5 mb-6 text-gray-700">
+                <h3 class="font-semibold mb-2 text-violet-700">💡 Рекомендация:</h3>
+                <p>${info.tip}</p>
+            </div>
+            <div class="text-center">
+                <button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:underline">Заново ↺</button>
+            </div>
+        </div>
+    </div>`;
+    return;
+  }
   
+  // --- ВОПРОСЫ ---
   const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
   const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
   
