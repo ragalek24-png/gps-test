@@ -22,11 +22,36 @@ const Q = {
   q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
 };
 
-const P={
-  balanced:{l:'Устойчивый',d:'GPS на здоровой волне',tip:'Гибкость — суперсила',c:'#10b981'},
-  mild:{l:'Наблюдатель',d:'GPS делает крюки',tip:'Адвокат дьявола: доказательства ПРОТИВ мысли?',c:'#6366f1'},
-  moderate:{l:'Радар',d:'Мозг усиливает сигналы',tip:'Дневник мыслей',c:'#f59e0b'},
-  intense:{l:'Исследователь',d:'Мир насыщен',tip:'Психолог (КПТ) даст инструменты',c:'#a855f7'}
+// Обновленные данные профилей
+const P = {
+  balanced: {
+    l: 'Устойчивый', 
+    d: 'GPS на здоровой волне', 
+    c: '#10b981',
+    desc: 'Вы обладаете психологической гибкостью. Вы умеете замечать свои эмоции, но не позволяете им управлять вашими решениями. Ошибки воспринимаются как опыт, а не как приговор.',
+    tip: 'Упражнение «Шкала реальности»: Когда чувствуете тревогу, оцените вероятность худшего исхода от 0 до 100%. Затем задайте себе вопрос: «Какие есть факты, подтверждающие и опровергающие это?» Это поможет сохранять тревогу в рамках реальности.'
+  },
+  mild: {
+    l: 'Наблюдатель', 
+    d: 'GPS делает крюки', 
+    c: '#6366f1',
+    desc: 'У вас есть склонность к рефлексии и самокопанию. Вы часто сомневаетесь в себе, но при этом хорошо анализируете свои поступки. Ваша главная уязвимость — «чтение мыслей» (уверенность, что вы знаете, что о вас думают другие).',
+    tip: 'Упражнение «Адвокат дьявола»: Поймав негативную мысль, выпишите её на бумагу. А теперь представьте, что вы адвокат, которому нужно доказать в суде, что эта мысль — ЛОЖЬ. Приведите 3 железных аргумента ПРОТИВ этой мысли.'
+  },
+  moderate: {
+    l: 'Радар', 
+    d: 'Мозг усиливает сигналы', 
+    c: '#f59e0b',
+    desc: 'Ваш мозг работает как чувствительный радар, улавливающий малейшие изменения в окружении. Вы склонны к гиперконтролю и катастрофизации («всё пропало»). Это часто сопровождается внутренним напряжением и бессонницей.',
+    tip: 'Практика «Дневник мыслей»: Заведите заметки в телефоне. Каждый раз, когда тревожно, фиксируйте: 1) Ситуация. 2) Мысль. 3) Эмоция. 4) Более реалистичный взгляд на ситуацию. Это снижает накал страстей на 30-40% за неделю.'
+  },
+  intense: {
+    l: 'Исследователь', 
+    d: 'Мир насыщен', 
+    c: '#a855f7',
+    desc: 'Вы очень остро реагируете на стресс. Ваша нервная система легко перегружается, что приводит к эмоциональному выгоранию. Мир для вас — это постоянный вызов, а внутренний критик — самый громкий голос в голове.',
+    tip: 'Практика «Заземление 5-4-3-2-1»: В момент паники или сильной тревоги, назовите 5 вещей, которые видите, 4 — которые слышите, 3 — которых можете коснуться, 2 — которые чувствуете на запах, и 1 — на вкус. Это вернет вас из мыслей в тело. И обязательно обратитесь к КПТ-терапевту.'
+  }
 };
 
 let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
@@ -55,10 +80,8 @@ function render(){
     subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
     const t=subs.length;
     
-    // --- ОБЗОР (Группировка по вопросам) ---
     let overviewHTML = '';
     if (view === 'overview' && t > 0) {
-        // Собираем все непустые ответы на Q4 и Q5
         const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
 
@@ -79,7 +102,6 @@ function render(){
         </div>
 
         <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <!-- Блок Q4 -->
             <div class="bg-white rounded-xl p-6">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3>
                 <p class="text-xs text-gray-500 mb-4">«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»</p>
@@ -90,7 +112,6 @@ function render(){
                 </ul>
             </div>
 
-            <!-- Блок Q5 -->
             <div class="bg-white rounded-xl p-6">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3>
                 <p class="text-xs text-gray-500 mb-4">«Моя суперсила — это [...], но она же меня и изматывает, потому что...»</p>
@@ -104,7 +125,6 @@ function render(){
         `;
     }
 
-    // --- СПИСОК (таблица по людям) ---
     let listHTML = '';
     if (view === 'list') {
         listHTML = `<div class="bg-white rounded-xl p-6 mb-4"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
@@ -150,21 +170,39 @@ function render(){
     return;
   }
   
+  // --- РЕЗУЛЬТАТЫ (ОБНОВЛЕННЫЙ ДИЗАЙН) ---
   if(step==='results'){
-    const info=P[prof];
-    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-xl p-8 max-w-lg w-full">
-            ${saved?'<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>':''}
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold mb-2">${info.l}</h2>
-                <p class="text-gray-600">${info.d}</p>
+    const info = P[prof];
+    app.innerHTML = `
+    <div class="min-h-screen flex items-center justify-center p-4 py-12">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">
+            ${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}
+            
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2>
+                <p class="text-lg text-violet-600 font-medium">${info.d}</p>
             </div>
-            <div class="bg-violet-50 rounded-xl p-5 mb-6 text-gray-700">
-                <h3 class="font-semibold mb-2 text-violet-700">Рекомендация:</h3>
-                <p>${info.tip}</p>
+
+            <!-- Блок расшифровки -->
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100">
+                <h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2">
+                    <span class="text-xl">🧠</span> Что это значит?
+                </h3>
+                <p>${info.desc}</p>
             </div>
-            <div class="text-center">
-                <button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:underline">Пройти заново</button>
+
+            <!-- Блок рекомендации -->
+            <div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100">
+                <h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2">
+                    <span class="text-xl">💡</span> Практический совет
+                </h3>
+                <p class="leading-relaxed">${info.tip}</p>
+            </div>
+
+            <div class="text-center border-t pt-6">
+                <button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">
+                    Пройти заново ↺
+                </button>
             </div>
         </div>
     </div>`;
@@ -176,7 +214,7 @@ function render(){
   
   const can=q.o?a[step]!==null:a[step].trim().length>0;
   
-  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold ${can?'bg-violet-600 text-white':'bg-gray-200 text-gray-400'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
+  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold transition-colors ${can?'bg-violet-600 text-white hover:bg-violet-700':'bg-gray-200 text-gray-400 cursor-not-allowed'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
 }
 
 function checkNextBtn() {
@@ -186,9 +224,9 @@ function checkNextBtn() {
         const hasText = txtArea.value.trim().length > 0;
         nextBtn.disabled = !hasText;
         if (hasText) {
-            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-violet-600 text-white';
+            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-violet-600 text-white hover:bg-violet-700 transition-colors';
         } else {
-            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-gray-200 text-gray-400';
+            nextBtn.className = 'px-6 py-2 rounded-xl font-semibold bg-gray-200 text-gray-400 cursor-not-allowed';
         }
     }
 }
