@@ -6,6 +6,8 @@
 <title>Тест: Ваш внутренний GPS</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<!-- Подключаем библиотеку для скриншотов -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-white to-violet-50 min-h-screen">
 <div id="app"></div>
@@ -22,33 +24,24 @@ const Q = {
   q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
 };
 
-// Обновленные данные профилей
 const P = {
   balanced: {
-    l: 'Устойчивый', 
-    d: 'GPS на здоровой волне', 
-    c: '#10b981',
+    l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981',
     desc: 'Вы обладаете психологической гибкостью. Вы умеете замечать свои эмоции, но не позволяете им управлять вашими решениями. Ошибки воспринимаются как опыт, а не как приговор.',
     tip: 'Упражнение «Шкала реальности»: Когда чувствуете тревогу, оцените вероятность худшего исхода от 0 до 100%. Затем задайте себе вопрос: «Какие есть факты, подтверждающие и опровергающие это?» Это поможет сохранять тревогу в рамках реальности.'
   },
   mild: {
-    l: 'Наблюдатель', 
-    d: 'GPS делает крюки', 
-    c: '#6366f1',
+    l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1',
     desc: 'У вас есть склонность к рефлексии и самокопанию. Вы часто сомневаетесь в себе, но при этом хорошо анализируете свои поступки. Ваша главная уязвимость — «чтение мыслей» (уверенность, что вы знаете, что о вас думают другие).',
     tip: 'Упражнение «Адвокат дьявола»: Поймав негативную мысль, выпишите её на бумагу. А теперь представьте, что вы адвокат, которому нужно доказать в суде, что эта мысль — ЛОЖЬ. Приведите 3 железных аргумента ПРОТИВ этой мысли.'
   },
   moderate: {
-    l: 'Радар', 
-    d: 'Мозг усиливает сигналы', 
-    c: '#f59e0b',
+    l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b',
     desc: 'Ваш мозг работает как чувствительный радар, улавливающий малейшие изменения в окружении. Вы склонны к гиперконтролю и катастрофизации («всё пропало»). Это часто сопровождается внутренним напряжением и бессонницей.',
     tip: 'Практика «Дневник мыслей»: Заведите заметки в телефоне. Каждый раз, когда тревожно, фиксируйте: 1) Ситуация. 2) Мысль. 3) Эмоция. 4) Более реалистичный взгляд на ситуацию. Это снижает накал страстей на 30-40% за неделю.'
   },
   intense: {
-    l: 'Исследователь', 
-    d: 'Мир насыщен', 
-    c: '#a855f7',
+    l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7',
     desc: 'Вы очень остро реагируете на стресс. Ваша нервная система легко перегружается, что приводит к эмоциональному выгоранию. Мир для вас — это постоянный вызов, а внутренний критик — самый громкий голос в голове.',
     tip: 'Практика «Заземление 5-4-3-2-1»: В момент паники или сильной тревоги, назовите 5 вещей, которые видите, 4 — которые слышите, 3 — которых можете коснуться, 2 — которые чувствуете на запах, и 1 — на вкус. Это вернет вас из мыслей в тело. И обязательно обратитесь к КПТ-терапевту.'
   }
@@ -58,6 +51,37 @@ let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=f
 const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
+
+// --- ФУНКЦИЯ ЭКСПОРТА В PNG ---
+async function exportToPNG() {
+    const btn = document.getElementById('export-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '⌛ Готовим...';
+    btn.disabled = true;
+
+    const element = document.getElementById('admin-dashboard');
+    
+    try {
+        // Делаем скриншот
+        const canvas = await html2canvas(element, {
+            scale: 2, // Увеличиваем качество (ретина)
+            useCORS: true,
+            backgroundColor: '#f9fafb' // Цвет фона (bg-gray-50)
+        });
+        
+        // Скачиваем файл
+        const link = document.createElement('a');
+        link.download = 'gps-test-stats-' + new Date().toISOString().slice(0,10) + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch (e) {
+        console.error('Ошибка экспорта:', e);
+        alert('Не удалось создать картинку. Попробуйте еще раз.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
 
 function render(){
   const app=document.getElementById('app');
@@ -144,65 +168,61 @@ function render(){
         listHTML += `</div>`;
     }
 
-    app.innerHTML = `<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
-        <div class="bg-white rounded-xl p-6 mb-6">
-            <h1 class="text-2xl font-bold mb-4">Админ-панель</h1>
+    // Добавляем id="admin-dashboard" для экспорта
+    app.innerHTML = `<div id="admin-dashboard" class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold">Админ-панель</h1>
+                <button id="export-btn" onclick="exportToPNG()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
+                    📸 Экспорт в PNG
+                </button>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold">${t}</div><div class="text-sm text-gray-500">Всего ответов</div></div>
                 ${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-sm">${v.l}</div></div>`).join('')}
             </div>
-            <button onclick="load()" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium">Обновить данные</button>
+            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2">
+                <span class="spinner hidden animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                🔄 Обновить данные
+            </button>
         </div>
         
         ${view === 'overview' ? overviewHTML : listHTML}
         
         <div class="flex gap-2">
-            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white':'bg-white border text-gray-700'}">Обзор</button>
-            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white':'bg-white border text-gray-700'}">Список ответов</button>
+            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
+            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
         </div>
     </div></div>`;
     return;
   }
 
-  // --- ТЕСТ ---
+  // --- ТЕСТ (ОСТАЛЬНОЙ КОД БЕЗ ИЗМЕНЕНИЙ) ---
   if(step==='intro'){
-    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg">Начать тест →</button></div></div>`;
+    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
     return;
   }
   
-  // --- РЕЗУЛЬТАТЫ (ОБНОВЛЕННЫЙ ДИЗАЙН) ---
   if(step==='results'){
     const info = P[prof];
     app.innerHTML = `
     <div class="min-h-screen flex items-center justify-center p-4 py-12">
         <div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">
             ${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}
-            
             <div class="text-center mb-8">
                 <h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2>
                 <p class="text-lg text-violet-600 font-medium">${info.d}</p>
             </div>
-
-            <!-- Блок расшифровки -->
             <div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100">
-                <h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2">
-                    <span class="text-xl">🧠</span> Что это значит?
-                </h3>
+                <h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3>
                 <p>${info.desc}</p>
             </div>
-
-            <!-- Блок рекомендации -->
             <div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100">
-                <h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2">
-                    <span class="text-xl">💡</span> Практический совет
-                </h3>
+                <h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3>
                 <p class="leading-relaxed">${info.tip}</p>
             </div>
-
             <div class="text-center border-t pt-6">
-                <button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">
-                    Пройти заново ↺
-                </button>
+                <button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">Пройти заново ↺</button>
             </div>
         </div>
     </div>`;
@@ -247,15 +267,26 @@ async function submit(){
     render();
 }
 
+// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ С АНИМАЦИЕЙ ---
 async function load(){
-    const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
-    if (error) {
-        console.error('Ошибка загрузки:', error);
-        alert('Ошибка доступа к базе. Проверьте политики (Policies) в Supabase.');
-    } else {
+    const btn = document.getElementById('refresh-btn');
+    const spinner = btn ? btn.querySelector('.spinner') : null;
+    
+    if (spinner) spinner.classList.remove('hidden');
+    if (btn) btn.disabled = true;
+
+    try {
+        const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
+        if (error) throw error;
         subs = data || [];
+    } catch(e) {
+        console.error('Ошибка загрузки:', e);
+        alert('Ошибка доступа к базе. Проверьте политики (Policies) в Supabase.');
+    } finally {
+        if (spinner) spinner.classList.add('hidden');
+        if (btn) btn.disabled = false;
+        render(); // Перерисовываем только после загрузки
     }
-    render();
 }
 
 window.addEventListener('hashchange',render);
