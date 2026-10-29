@@ -6,8 +6,6 @@
 <title>Тест: Ваш внутренний GPS</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<!-- Подключаем библиотеку для скриншотов -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-white to-violet-50 min-h-screen">
 <div id="app"></div>
@@ -25,26 +23,10 @@ const Q = {
 };
 
 const P = {
-  balanced: {
-    l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981',
-    desc: 'Вы обладаете психологической гибкостью. Вы умеете замечать свои эмоции, но не позволяете им управлять вашими решениями. Ошибки воспринимаются как опыт, а не как приговор.',
-    tip: 'Упражнение «Шкала реальности»: Когда чувствуете тревогу, оцените вероятность худшего исхода от 0 до 100%. Затем задайте себе вопрос: «Какие есть факты, подтверждающие и опровергающие это?» Это поможет сохранять тревогу в рамках реальности.'
-  },
-  mild: {
-    l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1',
-    desc: 'У вас есть склонность к рефлексии и самокопанию. Вы часто сомневаетесь в себе, но при этом хорошо анализируете свои поступки. Ваша главная уязвимость — «чтение мыслей» (уверенность, что вы знаете, что о вас думают другие).',
-    tip: 'Упражнение «Адвокат дьявола»: Поймав негативную мысль, выпишите её на бумагу. А теперь представьте, что вы адвокат, которому нужно доказать в суде, что эта мысль — ЛОЖЬ. Приведите 3 железных аргумента ПРОТИВ этой мысли.'
-  },
-  moderate: {
-    l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b',
-    desc: 'Ваш мозг работает как чувствительный радар, улавливающий малейшие изменения в окружении. Вы склонны к гиперконтролю и катастрофизации («всё пропало»). Это часто сопровождается внутренним напряжением и бессонницей.',
-    tip: 'Практика «Дневник мыслей»: Заведите заметки в телефоне. Каждый раз, когда тревожно, фиксируйте: 1) Ситуация. 2) Мысль. 3) Эмоция. 4) Более реалистичный взгляд на ситуацию. Это снижает накал страстей на 30-40% за неделю.'
-  },
-  intense: {
-    l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7',
-    desc: 'Вы очень остро реагируете на стресс. Ваша нервная система легко перегружается, что приводит к эмоциональному выгоранию. Мир для вас — это постоянный вызов, а внутренний критик — самый громкий голос в голове.',
-    tip: 'Практика «Заземление 5-4-3-2-1»: В момент паники или сильной тревоги, назовите 5 вещей, которые видите, 4 — которые слышите, 3 — которых можете коснуться, 2 — которые чувствуете на запах, и 1 — на вкус. Это вернет вас из мыслей в тело. И обязательно обратитесь к КПТ-терапевту.'
-  }
+  balanced: {l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981', desc: 'Вы обладаете психологической гибкостью...', tip: 'Упражнение «Шкала реальности»...'},
+  mild: {l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1', desc: 'У вас есть склонность к рефлексии...', tip: 'Упражнение «Адвокат дьявола»...'},
+  moderate: {l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b', desc: 'Ваш мозг работает как чувствительный радар...', tip: 'Практика «Дневник мыслей»...'},
+  intense: {l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7', desc: 'Вы очень остро реагируете на стресс...', tip: 'Практика «Заземление 5-4-3-2-1»...'}
 };
 
 let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
@@ -52,35 +34,101 @@ const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-// --- ФУНКЦИЯ ЭКСПОРТА В PNG ---
-async function exportToPNG() {
-    const btn = document.getElementById('export-btn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '⌛ Готовим...';
-    btn.disabled = true;
-
-    const element = document.getElementById('admin-dashboard');
-    
-    try {
-        // Делаем скриншот
-        const canvas = await html2canvas(element, {
-            scale: 2, // Увеличиваем качество (ретина)
-            useCORS: true,
-            backgroundColor: '#f9fafb' // Цвет фона (bg-gray-50)
-        });
-        
-        // Скачиваем файл
-        const link = document.createElement('a');
-        link.download = 'gps-test-stats-' + new Date().toISOString().slice(0,10) + '.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    } catch (e) {
-        console.error('Ошибка экспорта:', e);
-        alert('Не удалось создать картинку. Попробуйте еще раз.');
-    } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+// --- ЭКСПОРТ В WORD (.DOC) ---
+function exportToWord() {
+    if (subs.length === 0) {
+        alert("Нет данных для экспорта.");
+        return;
     }
+
+    // Считаем статистику
+    const pc = {balanced:0, mild:0, moderate:0, intense:0};
+    subs.forEach(s => { pc[s.profile] = (pc[s.profile] || 0) + 1; });
+    const total = subs.length;
+
+    // Формируем HTML для Word
+    let html = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+        <meta charset="utf-8">
+        <title>Статистика теста</title>
+        <style>
+            body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; }
+            h1 { font-size: 18pt; text-align: center; }
+            h2 { font-size: 14pt; color: #4b5563; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+            th { background-color: #f3f4f6; font-weight: bold; }
+            .stat-row { margin-bottom: 10px; }
+            .stat-label { display: inline-block; width: 150px; font-weight: bold; }
+            .stat-value { display: inline-block; }
+        </style>
+    </head>
+    <body>
+        <h1>Результаты теста «Ваш внутренний GPS»</h1>
+        <p><b>Дата выгрузки:</b> ${new Date().toLocaleString('ru-RU')}</p>
+        <p><b>Всего ответов:</b> ${total}</p>
+        
+        <h2>Статистика по профилям:</h2>
+        <ul>
+    `;
+    
+    Object.entries(P).forEach(([key, val]) => {
+        const count = pc[key];
+        const percent = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+        html += `<li><b>${val.l}:</b> ${count} чел. (${percent}%)</li>`;
+    });
+
+    html += `</ul>
+        <h2>Список всех ответов:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 5%;">#</th>
+                    <th style="width: 15%;">Дата</th>
+                    <th style="width: 15%;">Профиль</th>
+                    <th style="width: 30%;">Ответ на вопрос 4</th>
+                    <th style="width: 35%;">Ответ на вопрос 5</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    subs.forEach((s, i) => {
+        const profileName = P[s.profile] ? P[s.profile].l : s.profile;
+        const dateStr = new Date(s.created_at).toLocaleString('ru-RU');
+        // Очищаем текст от возможных HTML-тегов, чтобы не сломать Word
+        const q4Text = s.q4 ? s.q4.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '-';
+        const q5Text = s.q5 ? s.q5.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '-';
+        
+        html += `
+            <tr>
+                <td>${total - i}</td>
+                <td>${dateStr}</td>
+                <td>${profileName}</td>
+                <td>${q4Text}</td>
+                <td>${q5Text}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+            </tbody>
+        </table>
+    </body>
+    </html>
+    `;
+
+    // Скачиваем файл
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Результаты_теста_' + new Date().toISOString().slice(0,10) + '.doc';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 function render(){
@@ -110,7 +158,7 @@ function render(){
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
 
         overviewHTML = `
-        <div class="bg-white rounded-xl p-6 mb-4">
+        <div class="bg-white rounded-xl p-6 mb-4 shadow-sm">
             <h3 class="font-semibold mb-4 text-lg">Статистика профилей</h3>
             ${Object.entries(P).map(([k,v])=>{
                 const c = pc[k] || 0;
@@ -126,7 +174,7 @@ function render(){
         </div>
 
         <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-xl p-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3>
                 <p class="text-xs text-gray-500 mb-4">«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»</p>
                 <ul class="space-y-2">
@@ -136,7 +184,7 @@ function render(){
                 </ul>
             </div>
 
-            <div class="bg-white rounded-xl p-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3>
                 <p class="text-xs text-gray-500 mb-4">«Моя суперсила — это [...], но она же меня и изматывает, потому что...»</p>
                 <ul class="space-y-2">
@@ -151,7 +199,7 @@ function render(){
 
     let listHTML = '';
     if (view === 'list') {
-        listHTML = `<div class="bg-white rounded-xl p-6 mb-4"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
+        listHTML = `<div class="bg-white rounded-xl p-6 mb-4 shadow-sm"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
         if (t === 0) {
             listHTML += '<p>Пока нет ответов</p>';
         } else {
@@ -168,36 +216,37 @@ function render(){
         listHTML += `</div>`;
     }
 
-    // Добавляем id="admin-dashboard" для экспорта
-    app.innerHTML = `<div id="admin-dashboard" class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
+    app.innerHTML = `<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
         <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                 <h1 class="text-2xl font-bold">Админ-панель</h1>
-                <button id="export-btn" onclick="exportToPNG()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
-                    📸 Экспорт в PNG
+                <button onclick="exportToWord()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">
+                    📄 Скачать в Word (.doc)
                 </button>
             </div>
+            
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold">${t}</div><div class="text-sm text-gray-500">Всего ответов</div></div>
                 ${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-sm">${v.l}</div></div>`).join('')}
             </div>
-            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2">
-                <span class="spinner hidden animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                🔄 Обновить данные
+            
+            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait">
+                <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Обновить данные
             </button>
         </div>
         
         ${view === 'overview' ? overviewHTML : listHTML}
         
         <div class="flex gap-2">
-            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
-            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
+            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
+            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
         </div>
     </div></div>`;
     return;
   }
 
-  // --- ТЕСТ (ОСТАЛЬНОЙ КОД БЕЗ ИЗМЕНЕНИЙ) ---
+  // --- ТЕСТ ---
   if(step==='intro'){
     app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
     return;
@@ -267,13 +316,14 @@ async function submit(){
     render();
 }
 
-// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ С АНИМАЦИЕЙ ---
+// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ ---
 async function load(){
     const btn = document.getElementById('refresh-btn');
-    const spinner = btn ? btn.querySelector('.spinner') : null;
+    const icon = document.getElementById('refresh-icon');
     
-    if (spinner) spinner.classList.remove('hidden');
+    // Включаем визуальную загрузку
     if (btn) btn.disabled = true;
+    if (icon) icon.classList.add('animate-spin');
 
     try {
         const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
@@ -283,9 +333,10 @@ async function load(){
         console.error('Ошибка загрузки:', e);
         alert('Ошибка доступа к базе. Проверьте политики (Policies) в Supabase.');
     } finally {
-        if (spinner) spinner.classList.add('hidden');
+        // Выключаем загрузку и перерисовываем
         if (btn) btn.disabled = false;
-        render(); // Перерисовываем только после загрузки
+        if (icon) icon.classList.remove('animate-spin');
+        render(); 
     }
 }
 
