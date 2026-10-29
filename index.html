@@ -6,6 +6,8 @@
 <title>Тест: Ваш внутренний GPS</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<!-- Подключаем Chart.js для диаграммы -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-white to-violet-50 min-h-screen">
 <div id="app"></div>
@@ -30,96 +32,116 @@ const P = {
 };
 
 let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
+let chartInstance = null; // Храним экземпляр графика
 const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-// --- ЭКСПОРТ В WORD (.DOC) ---
+// --- ФУНКЦИЯ ОТРИСОВКИ ДИАГРАММЫ ---
+function drawChart(pc) {
+    const ctx = document.getElementById('profileChart');
+    if (!ctx) return;
+
+    // Если график уже был, уничтожаем старый перед созданием нового
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    const labels = Object.values(P).map(p => p.l);
+    const dataValues = Object.values(pc);
+    const colors = Object.values(P).map(p => p.c);
+
+    chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataValues,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 14, family: 'sans-serif' },
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                            label += `${value} чел. (${percentage}%)`;
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// --- ЭКСПОРТ В WORD ---
 function exportToWord() {
     if (subs.length === 0) {
         alert("Нет данных для экспорта.");
         return;
     }
-
-    // Считаем статистику
     const pc = {balanced:0, mild:0, moderate:0, intense:0};
     subs.forEach(s => { pc[s.profile] = (pc[s.profile] || 0) + 1; });
     const total = subs.length;
 
-    // Формируем HTML для Word
     let html = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head>
-        <meta charset="utf-8">
-        <title>Статистика теста</title>
-        <style>
-            body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; }
-            h1 { font-size: 18pt; text-align: center; }
-            h2 { font-size: 14pt; color: #4b5563; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; }
-            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
-            th { background-color: #f3f4f6; font-weight: bold; }
-            .stat-row { margin-bottom: 10px; }
-            .stat-label { display: inline-block; width: 150px; font-weight: bold; }
-            .stat-value { display: inline-block; }
-        </style>
+    <head><meta charset="utf-8"><title>Статистика</title>
+    <style>
+        body { font-family: 'Times New Roman', serif; font-size: 12pt; }
+        h1 { font-size: 18pt; text-align: center; }
+        h2 { font-size: 14pt; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11pt; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; vertical-align: top; }
+        th { background-color: #f3f4f6; font-weight: bold; }
+    </style>
     </head>
     <body>
         <h1>Результаты теста «Ваш внутренний GPS»</h1>
         <p><b>Дата выгрузки:</b> ${new Date().toLocaleString('ru-RU')}</p>
         <p><b>Всего ответов:</b> ${total}</p>
-        
         <h2>Статистика по профилям:</h2>
         <ul>
     `;
-    
     Object.entries(P).forEach(([key, val]) => {
         const count = pc[key];
         const percent = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
         html += `<li><b>${val.l}:</b> ${count} чел. (${percent}%)</li>`;
     });
-
     html += `</ul>
         <h2>Список всех ответов:</h2>
         <table>
-            <thead>
-                <tr>
-                    <th style="width: 5%;">#</th>
-                    <th style="width: 15%;">Дата</th>
-                    <th style="width: 15%;">Профиль</th>
-                    <th style="width: 30%;">Ответ на вопрос 4</th>
-                    <th style="width: 35%;">Ответ на вопрос 5</th>
-                </tr>
-            </thead>
+            <thead><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead>
             <tbody>
     `;
-
     subs.forEach((s, i) => {
         const profileName = P[s.profile] ? P[s.profile].l : s.profile;
         const dateStr = new Date(s.created_at).toLocaleString('ru-RU');
-        // Очищаем текст от возможных HTML-тегов, чтобы не сломать Word
         const q4Text = s.q4 ? s.q4.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '-';
         const q5Text = s.q5 ? s.q5.replace(/</g, "&lt;").replace(/>/g, "&gt;") : '-';
-        
-        html += `
-            <tr>
-                <td>${total - i}</td>
-                <td>${dateStr}</td>
-                <td>${profileName}</td>
-                <td>${q4Text}</td>
-                <td>${q5Text}</td>
-            </tr>
-        `;
+        html += `<tr><td>${total - i}</td><td>${dateStr}</td><td>${profileName}</td><td>${q4Text}</td><td>${q5Text}</td></tr>`;
     });
+    html += `</tbody></table></body></html>`;
 
-    html += `
-            </tbody>
-        </table>
-    </body>
-    </html>
-    `;
-
-    // Скачиваем файл
     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -158,35 +180,44 @@ function render(){
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
 
         overviewHTML = `
-        <div class="bg-white rounded-xl p-6 mb-4 shadow-sm">
-            <h3 class="font-semibold mb-4 text-lg">Статистика профилей</h3>
-            ${Object.entries(P).map(([k,v])=>{
-                const c = pc[k] || 0;
-                const p = t > 0 ? (c/t)*100 : 0;
-                return `<div class="flex items-center gap-3 mb-3">
-                    <span class="w-32 text-sm font-medium">${v.l}</span>
-                    <div class="flex-1 h-6 bg-gray-100 rounded">
-                        <div class="h-full rounded text-white text-xs flex items-center justify-end pr-2" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div>
-                    </div>
-                    <span class="text-sm w-12 text-right">${p.toFixed(0)}%</span>
-                </div>`;
-            }).join('')}
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <!-- Блок с диаграммой -->
+            <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center justify-center">
+                <h3 class="font-semibold mb-4 text-lg w-full text-left">Визуализация профилей</h3>
+                <div class="w-full h-64 relative">
+                    <canvas id="profileChart"></canvas>
+                </div>
+            </div>
+            <!-- Блок с полосками (оставил для наглядности цифр) -->
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+                <h3 class="font-semibold mb-4 text-lg">Детальная статистика</h3>
+                ${Object.entries(P).map(([k,v])=>{
+                    const c = pc[k] || 0;
+                    const p = t > 0 ? (c/t)*100 : 0;
+                    return `<div class="flex items-center gap-3 mb-3">
+                        <span class="w-32 text-sm font-medium">${v.l}</span>
+                        <div class="flex-1 h-6 bg-gray-100 rounded">
+                            <div class="h-full rounded text-white text-xs flex items-center justify-end pr-2" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div>
+                        </div>
+                        <span class="text-sm w-12 text-right">${p.toFixed(0)}%</span>
+                    </div>`;
+                }).join('')}
+            </div>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4 mb-4">
             <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3>
-                <p class="text-xs text-gray-500 mb-4">«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»</p>
+                <p class="text-xs text-gray-500 mb-4">«Я бы чувствовал(а) себя свободно...»</p>
                 <ul class="space-y-2">
                     ${q4Answers.length > 0 
                         ? q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')
                         : '<li class="text-gray-400 text-sm italic">Пока нет ответов</li>'}
                 </ul>
             </div>
-
             <div class="bg-white rounded-xl p-6 shadow-sm">
                 <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3>
-                <p class="text-xs text-gray-500 mb-4">«Моя суперсила — это [...], но она же меня и изматывает, потому что...»</p>
+                <p class="text-xs text-gray-500 mb-4">«Моя суперсила — это [...]...»</p>
                 <ul class="space-y-2">
                     ${q5Answers.length > 0 
                         ? q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')
@@ -195,6 +226,9 @@ function render(){
             </div>
         </div>
         `;
+        
+        // Отрисовываем график после того, как HTML вставлен в DOM
+        setTimeout(() => drawChart(pc), 50);
     }
 
     let listHTML = '';
@@ -230,9 +264,8 @@ function render(){
                 ${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-sm">${v.l}</div></div>`).join('')}
             </div>
             
-            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-wait">
-                <svg id="refresh-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                Обновить данные
+            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2">
+                <span id="refresh-text">🔄 Обновить данные</span>
             </button>
         </div>
         
@@ -316,14 +349,10 @@ async function submit(){
     render();
 }
 
-// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ ---
+// --- ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАГРУЗКИ (БЕЗ БЛОКИРОВКИ КНОПКИ) ---
 async function load(){
-    const btn = document.getElementById('refresh-btn');
-    const icon = document.getElementById('refresh-icon');
-    
-    // Включаем визуальную загрузку
-    if (btn) btn.disabled = true;
-    if (icon) icon.classList.add('animate-spin');
+    const textEl = document.getElementById('refresh-text');
+    if (textEl) textEl.innerText = '⌛ Загрузка...';
 
     try {
         const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
@@ -333,9 +362,8 @@ async function load(){
         console.error('Ошибка загрузки:', e);
         alert('Ошибка доступа к базе. Проверьте политики (Policies) в Supabase.');
     } finally {
-        // Выключаем загрузку и перерисовываем
-        if (btn) btn.disabled = false;
-        if (icon) icon.classList.remove('animate-spin');
+        // Возвращаем текст кнопки (он пересоздастся при рендере, но на всякий случай)
+        if (textEl) textEl.innerText = '🔄 Обновить данные';
         render(); 
     }
 }
