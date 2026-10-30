@@ -57,44 +57,31 @@ function analyzeText(answers) {
     return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({name: names[k], count: c, percent: Math.round((c / answers.length) * 100)}));
 }
 
-// --- БЛОК 1: ТОЛЬКО ЗАЩИТЫ (Q4, Q5) ---
 function analyzeDefenses(q4, q5) {
     const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
     if (all.length === 0) return [];
-    
     const defenses = [];
-    
     const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|боюсь показаться)/i.test(t));
     if (mindReading.length) defenses.push({ title: 'Чтение мыслей', count: mindReading.length, desc: 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.', examples: mindReading.slice(0, 2) });
-
     const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|неважно|недостаточно|плохо|неидеальн|обесцен|не умею|не справляюсь|зря)/i.test(t));
     if (deval.length) defenses.push({ title: 'Обесценивание', count: deval.length, desc: 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения.', examples: deval.slice(0, 2) });
-
     const hyper = all.filter(t => /(ответственн|отвечать|за все|должен|должна|обязан|обязана|надо)/i.test(t));
     if (hyper.length) defenses.push({ title: 'Гиперответственность', count: hyper.length, desc: 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.', examples: hyper.slice(0, 2) });
-
     const cat = all.filter(t => /(катастроф|ужас|кошмар|пропало|конец|все плохо)/i.test(t));
     if (cat.length) defenses.push({ title: 'Катастрофизация', count: cat.length, desc: 'Убеждение: «Если что-то пойдёт не так, случится непоправимое».', examples: cat.slice(0, 2) });
-
     return defenses;
 }
 
-// --- БЛОК 2: ТОЛЬКО УСТАНОВКИ (Q7, Q8, Q9) ---
 function analyzeBeliefs(q7, q8, q9) {
     const beliefs = [];
-    
     const cageDuty = q7.filter(t => /(долг|обязан|ответствен|надо|работа|семья)/i.test(t));
     if (cageDuty.length) beliefs.push({ title: 'Установка «Клетка долга»', count: cageDuty.length, desc: 'Человека держат внутри не стены, а чувство долга перед другими.', examples: cageDuty.slice(0, 2) });
-
     const cageFear = q7.filter(t => /(страх|боится|тревог|неуверен|сомнева)/i.test(t));
     if (cageFear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: cageFear.length, desc: 'Внутри держит страх неизвестности. Даже открытая дверь не воспринимается как выход.', examples: cageFear.slice(0, 2) });
-
     const idealPerfection = q8.filter(t => /(идеальн|безошиб|всегда|не ошиба|продуктивн|ответственн)/i.test(t));
     if (idealPerfection.length) beliefs.push({ title: 'Установка «Ценность = Достижения»', count: idealPerfection.length, desc: 'Уважение к себе зависит от продуктивности и безошибочности.', examples: idealPerfection.slice(0, 2) });
-
     const errorShame = q9.filter(t => /(стыд|позор|вина|унижен|провал|катастроф)/i.test(t));
     if (errorShame.length) beliefs.push({ title: 'Установка «Ошибка = Позор»', count: errorShame.length, desc: 'Публичная ошибка воспринимается как необратимая потеря лица.', examples: errorShame.slice(0, 2) });
-
     return beliefs;
 }
 
@@ -114,13 +101,11 @@ function exportToWord() {
     const pc = {balanced:0, mild:0, moderate:0, intense:0};
     subs.forEach(s => { pc[s.profile] = (pc[s.profile] || 0) + 1; });
     const total = subs.length;
-
     const q4List = subs.map(s => s.q4).filter(t => t && t.trim() !== '');
     const q5List = subs.map(s => s.q5).filter(t => t && t.trim() !== '');
     const q7List = subs.map(s => s.q7).filter(t => t && t.trim() !== '');
     const q8List = subs.map(s => s.q8).filter(t => t && t.trim() !== '');
     const q9List = subs.map(s => s.q9).filter(t => t && t.trim() !== '');
-    
     const themes = analyzeText([...q4List, ...q5List]);
     const defenses = analyzeDefenses(q4List, q5List);
     const beliefs = analyzeBeliefs(q7List, q8List, q9List);
@@ -133,29 +118,19 @@ function exportToWord() {
     <body>
         <h1>Психологический анализ теста</h1>
         <p><b>Дата:</b> ${new Date().toLocaleString('ru-RU')} | <b>Всего ответов:</b> ${total}</p>
-        
         <h2>1. Статистика профилей</h2>
         <ul>${Object.entries(P).map(([k,v]) => `<li><b>${v.l}:</b> ${pc[k]} чел. (${Math.round((pc[k]/total)*100)}%)</li>`).join('')}</ul>
-
         <h2>2. Тематический анализ</h2>
         <ul>${themes.map(t => `<li>${t.name} — <b>${t.count}</b> упоминаний (${t.percent}%)</li>`).join('')}</ul>
-
         <h2>3. Психологические защиты (по Q4, Q5)</h2>
-        ${defenses.length > 0 ? defenses.map(d => `
-            <div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>
-        `).join('') : '<p>Не выявлено.</p>'}
-
+        ${defenses.length > 0 ? defenses.map(d => `<div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>`).join('') : '<p>Не выявлено.</p>'}
         <h2>4. Глубинные установки (по Q7, Q8, Q9)</h2>
-        ${beliefs.length > 0 ? beliefs.map(d => `
-            <div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>
-        `).join('') : '<p>Нет данных для анализа (вопросы Q7-Q9 отсутствуют).</p>'}
-
+        ${beliefs.length > 0 ? beliefs.map(d => `<div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>`).join('') : '<p>Нет данных для анализа (вопросы Q7-Q9 отсутствуют).</p>'}
         <h2>5. Список ответов</h2>
         <table><thead><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead><tbody>
         ${subs.map((s,i) => `<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}
         </tbody></table>
     </body></html>`;
-
     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -169,18 +144,15 @@ function exportToWord() {
 
 function render(){
   const app=document.getElementById('app');
-  
   if(location.hash==='#admin'){
     if(!window.isAdmin){
         const pass = prompt("Введите пароль администратора:");
         if(pass === 'admin2024'){ window.isAdmin = true; load(); } 
         else { alert("Неверный пароль"); location.hash = ''; return; }
     }
-
     const pc={balanced:0,mild:0,moderate:0,intense:0};
     subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
     const t=subs.length;
-    
     let overviewHTML = '';
     if (view === 'overview' && t > 0) {
         const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
@@ -188,12 +160,9 @@ function render(){
         const q7Answers = subs.map(s => s.q7).filter(text => text && text.trim() !== '');
         const q8Answers = subs.map(s => s.q8).filter(text => text && text.trim() !== '');
         const q9Answers = subs.map(s => s.q9).filter(text => text && text.trim() !== '');
-        
         const themes = analyzeText([...q4Answers, ...q5Answers]);
-        
         const defenses = analyzeDefenses(q4Answers, q5Answers);
         const beliefs = analyzeBeliefs(q7Answers, q8Answers, q9Answers);
-
         overviewHTML = `
         <div class="grid md:grid-cols-2 gap-4 mb-4">
             <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center justify-center">
@@ -209,42 +178,16 @@ function render(){
                 }).join('')}
             </div>
         </div>
-
-        <!-- БЛОК 1: ЗАЩИТЫ -->
         <div class="bg-rose-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-rose-500">
             <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты</h3>
-            <p class="text-sm text-rose-700 mb-4">Алгоритм проанализировал ответы на открытые вопросы (Q4, Q5) и выявил механизмы, которые психика использует для снижения тревоги.</p>
-            ${defenses.length > 0 ? `
-                <div class="grid md:grid-cols-2 gap-4">
-                    ${defenses.map(d => `
-                        <div class="bg-white p-4 rounded-lg border border-rose-100 shadow-sm">
-                            <div class="flex justify-between items-start mb-2"><h4 class="font-bold text-rose-800">${d.title}</h4><span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div>
-                            <p class="text-sm text-gray-600 mb-3">${d.desc}</p>
-                            <div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
+            <p class="text-sm text-rose-700 mb-4">Анализ ответов на Q4, Q5.</p>
+            ${defenses.length > 0 ? `<div class="grid md:grid-cols-2 gap-4">${defenses.map(d => `<div class="bg-white p-4 rounded-lg border border-rose-100 shadow-sm"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-rose-800">${d.title}</h4><span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm text-gray-600 mb-3">${d.desc}</p><div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div></div>`).join('')}</div>` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
         </div>
-
-        <!-- БЛОК 2: УСТАНОВКИ -->
         <div class="bg-indigo-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-indigo-500">
             <h3 class="font-semibold mb-2 text-lg text-indigo-900">🧠 Глубинные установки</h3>
-            <p class="text-sm text-indigo-700 mb-4">Алгоритм проанализировал проективные ответы (Q7, Q8, Q9) и выявил бессознательные правила.</p>
-            ${beliefs.length > 0 ? `
-                <div class="grid md:grid-cols-2 gap-4">
-                    ${beliefs.map(d => `
-                        <div class="bg-white p-4 rounded-lg border border-indigo-100 shadow-sm">
-                            <div class="flex justify-between items-start mb-2"><h4 class="font-bold text-indigo-800">${d.title}</h4><span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div>
-                            <p class="text-sm text-gray-600 mb-3">${d.desc}</p>
-                            <div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : '<p class="text-sm text-gray-500 italic">Нет данных для анализа. (Вопросы Q7, Q8, Q9 пока отсутствуют в базе).</p>'}
+            <p class="text-sm text-indigo-700 mb-4">Анализ проективных ответов (Q7, Q8, Q9).</p>
+            ${beliefs.length > 0 ? `<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d => `<div class="bg-white p-4 rounded-lg border border-indigo-100 shadow-sm"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-indigo-800">${d.title}</h4><span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm text-gray-600 mb-3">${d.desc}</p><div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div></div>`).join('')}</div>` : '<p class="text-sm text-gray-500 italic">Нет данных для анализа (вопросы Q7-Q9 пока отсутствуют в базе).</p>'}
         </div>
-
-        <!-- ТЕМЫ -->
         <div class="bg-white rounded-xl p-6 shadow-sm mb-4 border-l-4 border-violet-500">
             <h3 class="font-semibold mb-4 text-lg text-violet-800">Исследование тем</h3>
             <div class="grid md:grid-cols-2 gap-6">
@@ -252,8 +195,6 @@ function render(){
                 <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что изматывает (Q5)</h4>${analyzeText(q5Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q5Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-fuchsia-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
             </div>
         </div>
-
-        <!-- СПИСКИ ОТВЕТОВ -->
         <div class="grid md:grid-cols-2 gap-4 mb-4">
             <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
             <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
@@ -261,7 +202,6 @@ function render(){
         `;
         setTimeout(() => drawChart(pc), 50);
     }
-
     let listHTML = '';
     if (view === 'list') {
         listHTML = `<div class="bg-white rounded-xl p-6 mb-4 shadow-sm"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
@@ -273,7 +213,6 @@ function render(){
         }
         listHTML += `</div>`;
     }
-
     app.innerHTML = `<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
         <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
@@ -286,9 +225,7 @@ function render(){
             </div>
             <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2"><span id="refresh-text">🔄 Обновить данные</span></button>
         </div>
-        
         ${view === 'overview' ? overviewHTML : listHTML}
-        
         <div class="flex gap-2">
             <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
             <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
@@ -296,20 +233,16 @@ function render(){
     </div></div>`;
     return;
   }
-
   if(step==='intro'){
     app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
     return;
   }
-  
   if(step==='results'){
     const info = P[prof];
     app.innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}<div class="text-center mb-8"><h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2><p class="text-lg text-violet-600 font-medium">${info.d}</p></div><div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100"><h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3><p>${info.desc}</p></div><div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100"><h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3><p class="leading-relaxed">${info.tip}</p></div><div class="text-center border-t pt-6"><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">Пройти заново ↺</button></div></div></div>`;
     return;
   }
-  
   const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
   const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
   const can=q.o?a[step]!==null:a[step].trim().length>0;
-  
-  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?
+  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6
