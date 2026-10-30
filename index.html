@@ -32,25 +32,7 @@ const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-function analyzeText(answers) {
-  const cats = {work:['работ','деньг','заработ','карьер'],anx:['тревог','пережив','страх','боюсь'],ctrl:['контрол','порядок','план','должн'],ppl:['люд','общ','друз','семь'],tired:['устал','сил','выгор','измат'],crit:['самокрит','вина','стыд','ошибк']};
-  const counts={}; Object.keys(cats).forEach(k=>counts[k]=0);
-  answers.forEach(t=>{const l=t.toLowerCase();Object.entries(cats).forEach(([k,w])=>{if(w.some(x=>l.includes(x)))counts[k]++;});});
-  const names={work:'💼 Работа',anx:'🌪 Тревога',ctrl:'⚙️ Контроль',ppl:'🤝 Люди',tired:'🔋 Усталость',crit:'🪞 Самокритика'};
-  return Object.entries(counts).filter(([_,c])=>c>0).sort((a,b)=>b[1]-a[1]).map(([k,c])=>({name:names[k],count:c,percent:Math.round(c/answers.length*100)}));
-}
-
-function analyzeDefenses(q4,q5) {
-  const all=[...q4,...q5].filter(t=>t&&t.trim()!=='');
-  const defs=[];
-  const mr=all.filter(t=>/(подумают|мнение|считают|осужд)/i.test(t)); if(mr.length)defs.push({title:'Чтение мыслей',count:mr.length,desc:'Чувствительность к чужому мнению.',examples:mr.slice(0,2)});
-  const dv=all.filter(t=>/(ничего не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if(dv.length)defs.push({title:'Обесценивание',count:dv.length,desc:'Недостаточно хорош.',examples:dv.slice(0,2)});
-  const hr=all.filter(t=>/(ответственн|отвечать|за все|должен|надо)/i.test(t)); if(hr.length)defs.push({title:'Гиперответственность',count:hr.length,desc:'Отвечаю за всё.',examples:hr.slice(0,2)});
-  const ct=all.filter(t=>/(катастроф|ужас|кошмар|пропало|конец)/i.test(t)); if(ct.length)defs.push({title:'Катастрофизация',count:ct.length,desc:'Всё пропало.',examples:ct.slice(0,2)});
-  return defs;
-}
-
-// --- НОВАЯ ЛОГИКА: УСТАНОВКИ ИЗ Q4/Q5 ---
+// --- РАСШИРЕННЫЙ АНАЛИЗ УСТАНОВОК (8 штук) ---
 function analyzeBeliefs(q4, q5) {
   const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
   const beliefs = [];
@@ -70,7 +52,35 @@ function analyzeBeliefs(q4, q5) {
   const control = all.filter(t => /(контрол|порядок|план|распоряд)/i.test(t));
   if (control.length) beliefs.push({ title: 'Установка «Всё под контролем»', count: control.length, desc: 'Потребность контролировать всё, чтобы чувствовать себя в безопасности.', examples: control.slice(0, 2) });
 
+  const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|недостаточно|плохо|зря)/i.test(t));
+  if (deval.length) beliefs.push({ title: 'Установка «Я недостаточно хорош»', count: deval.length, desc: 'Обесценивание своих достижений, ощущение неполноценности.', examples: deval.slice(0, 2) });
+
+  const approval = all.filter(t => /(подумают|мнение|считают|осужд|понрав|оцен)/i.test(t));
+  if (approval.length) beliefs.push({ title: 'Установка «Нужно одобрение»', count: approval.length, desc: 'Зависимость от чужого мнения. Страх не понравиться.', examples: approval.slice(0, 2) });
+
+  const hyper = all.filter(t => /(ответственн|отвечать|за все|за других)/i.test(t));
+  if (hyper.length) beliefs.push({ title: 'Установка «Гиперответственность»', count: hyper.length, desc: 'Чувство, что вы отвечаете за всё и всех вокруг.', examples: hyper.slice(0, 2) });
+
   return beliefs;
+}
+
+// --- АНАЛИЗ ЗАЩИТ (Q4, Q5) ---
+function analyzeDefenses(q4, q5) {
+  const all=[...q4,...q5].filter(t=>t&&t.trim()!=='');
+  const defs=[];
+  const mr=all.filter(t=>/(подумают|мнение|считают|осужд)/i.test(t)); if(mr.length)defs.push({title:'Чтение мыслей',count:mr.length,desc:'Чувствительность к чужому мнению.',examples:mr.slice(0,2)});
+  const dv=all.filter(t=>/(ничего не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if(dv.length)defs.push({title:'Обесценивание',count:dv.length,desc:'Недостаточно хорош.',examples:dv.slice(0,2)});
+  const hr=all.filter(t=>/(ответственн|отвечать|за все|должен|надо)/i.test(t)); if(hr.length)defs.push({title:'Гиперответственность',count:hr.length,desc:'Отвечаю за всё.',examples:hr.slice(0,2)});
+  const ct=all.filter(t=>/(катастроф|ужас|кошмар|пропало|конец)/i.test(t)); if(ct.length)defs.push({title:'Катастрофизация',count:ct.length,desc:'Всё пропало.',examples:ct.slice(0,2)});
+  return defs;
+}
+
+function analyzeText(answers) {
+  const cats = {work:['работ','деньг','заработ','карьер'],anx:['тревог','пережив','страх','боюсь'],ctrl:['контрол','порядок','план','должн'],ppl:['люд','общ','друз','семь'],tired:['устал','сил','выгор','измат'],crit:['самокрит','вина','стыд','ошибк']};
+  const counts={}; Object.keys(cats).forEach(k=>counts[k]=0);
+  answers.forEach(t=>{const l=t.toLowerCase();Object.entries(cats).forEach(([k,w])=>{if(w.some(x=>l.includes(x)))counts[k]++;});});
+  const names={work:'💼 Работа',anx:'🌪 Тревога',ctrl:'⚙️ Контроль',ppl:'🤝 Люди',tired:'🔋 Усталость',crit:'🪞 Самокритика'};
+  return Object.entries(counts).filter(([_,c])=>c>0).sort((a,b)=>b[1]-a[1]).map(([k,c])=>({name:names[k],count:c,percent:Math.round(c/answers.length*100)}));
 }
 
 function drawChart(pc) {
@@ -86,9 +96,9 @@ function exportToWord() {
   const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5), beliefs=analyzeBeliefs(q4,q5);
   let html=`<html><head><meta charset="utf-8"><style>body{font-family:serif;font-size:12pt}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px}</style></head><body><h1>Анализ</h1><p>Дата: ${new Date().toLocaleString('ru-RU')} | Ответов: ${total}</p>`;
   html+=`<h2>Профили</h2><ul>${Object.entries(P).map(([k,v])=>`<li>${v.l}: ${pc[k]} (${Math.round(pc[k]/total*100)}%)</li>`).join('')}</ul>`;
-  html+=`<h2>Темы</h2><ul>${themes.map(t=>`<li>${t.name}: ${t.count} (${t.percent}%)</li>`).join('')}</ul>`;
-  html+=`<h2>Защиты</h2>${defs.length?defs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
   html+=`<h2>Установки</h2>${beliefs.length?beliefs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
+  html+=`<h2>Защиты</h2>${defs.length?defs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
+  html+=`<h2>Темы</h2><ul>${themes.map(t=>`<li>${t.name}: ${t.count} (${t.percent}%)</li>`).join('')}</ul>`;
   html+=`<h2>Ответы</h2><table><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr>${subs.map((s,i)=>`<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}</table></body></html>`;
   const blob=new Blob(['\ufeff',html],{type:'application/msword'}), url=URL.createObjectURL(blob), link=document.createElement('a');
   link.href=url; link.download='Анализ_'+new Date().toISOString().slice(0,10)+'.doc'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
@@ -109,8 +119,13 @@ function render() {
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Профили</h3><div class="h-64 relative"><canvas id="profileChart"></canvas></div></div>
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Статистика</h3>${Object.entries(P).map(([k,v])=>{const c=pc[k]||0,p=t>0?c/t*100:0;return`<div class="flex items-center gap-3 mb-2"><span class="w-28 text-sm">${v.l}</span><div class="flex-1 h-5 bg-gray-100 rounded"><div class="h-full rounded text-white text-xs flex items-center justify-end pr-1" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div></div><span class="text-xs w-10 text-right">${p.toFixed(0)}%</span></div>`}).join('')}</div>
       </div>
-      <div class="bg-rose-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500"><h3 class="font-semibold mb-3 text-rose-900">🛡 Защиты</h3>${defs.length?`<div class="grid md:grid-cols-2 gap-4">${defs.map(d=>`<div class="bg-white p-4 rounded-lg border border-rose-100"><div class="flex justify-between mb-2"><b class="text-rose-800">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
-      <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Установки</h3>${beliefs.length?`<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
+      
+      <!-- УСТАНОВКИ СВЕРХУ -->
+      <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Установки</h3>${beliefs.length?`<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800 text-sm">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count}</span></div><p class="text-xs mb-2 text-gray-600">${d.desc}</p><ul class="text-xs list-disc pl-4 text-gray-500">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
+
+      <!-- ЗАЩИТЫ НИЖЕ -->
+      <div class="bg-rose-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500"><h3 class="font-semibold mb-3 text-rose-900">🛡 Защиты</h3>${defs.length?`<div class="grid md:grid-cols-2 gap-4">${defs.map(d=>`<div class="bg-white p-4 rounded-lg border border-rose-100"><div class="flex justify-between mb-2"><b class="text-rose-800 text-sm">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count}</span></div><p class="text-xs mb-2 text-gray-600">${d.desc}</p><ul class="text-xs list-disc pl-4 text-gray-500">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
+
       <div class="grid md:grid-cols-2 gap-4 mb-4">
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
