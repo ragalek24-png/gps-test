@@ -13,8 +13,6 @@
 <script>
 const { createClient } = window.supabase;
 const supabase = createClient('https://vurnrdqxbzqijwkcywsf.supabase.co', 'sb_publishable_nsz3vSuJz1JumMT3IVoRMg_vMLEe4n2');
-
-// --- ПОЛНЫЕ ВОПРОСЫ (ВОССТАНОВЛЕНЫ) ---
 const Q = {
   q1: {s:'Секция 1',t:'Вы написали важное сообщение другу. Он прочитал, но не отвечает полдня. Первая мысль:',o:['Наверное, закрутился','Я написал что-то не то','Людям плевать на меня','Это катастрофа']},
   q2: {s:'Секция 1',t:'Вы случайно отправили не тот файл в чат. Исправили, но внутри:',o:['Бывает, поехали дальше','Какой я нелепый','Все думают что я непрофессионал','Нужно проверять всё десять раз']},
@@ -23,14 +21,12 @@ const Q = {
   q5: {s:'Секция 3',t:'Закончите фразу:',p:'«Моя суперсила — это [...], но она же меня и изматывает, потому что...»'},
   q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
 };
-
 const P = {
   balanced: {l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981', desc: 'Вы обладаете психологической гибкостью. Вы умеете замечать свои эмоции, но не позволяете им управлять вашими решениями. Ошибки воспринимаются как опыт, а не как приговор.', tip: 'Упражнение «Шкала реальности»: Когда чувствуете тревогу, оцените вероятность худшего исхода от 0 до 100%. Затем задайте себе вопрос: «Какие есть факты, подтверждающие и опровергающие это?» Это поможет сохранять тревогу в рамках реальности.'},
   mild: {l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1', desc: 'У вас есть склонность к рефлексии и самокопанию. Вы часто сомневаетесь в себе, но при этом хорошо анализируете свои поступки. Ваша главная уязвимость — «чтение мыслей» (уверенность, что вы знаете, что о вас думают другие).', tip: 'Упражнение «Адвокат дьявола»: Поймав негативную мысль, выпишите её на бумагу. А теперь представьте, что вы адвокат, которому нужно доказать в суде, что эта мысль — ЛОЖЬ. Приведите 3 железных аргумента ПРОТИВ этой мысли.'},
   moderate: {l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b', desc: 'Ваш мозг работает как чувствительный радар, улавливающий малейшие изменения в окружении. Вы склонны к гиперконтролю и катастрофизации («всё пропало»). Это часто сопровождается внутренним напряжением и бессонницей.', tip: 'Практика «Дневник мыслей»: Заведите заметки в телефоне. Каждый раз, когда тревожно, фиксируйте: 1) Ситуация. 2) Мысль. 3) Эмоция. 4) Более реалистичный взгляд на ситуацию. Это снижает накал страстей на 30-40% за неделю.'},
   intense: {l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7', desc: 'Вы очень остро реагируете на стресс. Ваша нервная система легко перегружается, что приводит к эмоциональному выгоранию. Мир для вас — это постоянный вызов, а внутренний критик — самый громкий голос в голове.', tip: 'Практика «Заземление 5-4-3-2-1»: В момент паники или сильной тревоги, назовите 5 вещей, которые видите, 4 — которые слышите, 3 — которых можете коснуться, 2 — которые чувствуете на запах, и 1 — на вкус. Это вернет вас из мыслей в тело. И обязательно обратитесь к КПТ-терапевту.'}
 };
-
 let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview',chartInstance=null;
 const steps=['q1','q2','q3','q4','q5','q6'];
 
@@ -39,7 +35,6 @@ function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==
 function analyzeBeliefs(q4, q5) {
   const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
   const beliefs = [];
-  
   const duty = all.filter(t => /(должен|должна|надо|обязан|обязана)/i.test(t)); if (duty.length) beliefs.push({ title: 'Установка «Я должен»', count: duty.length, desc: 'Жизнь по правилам. Свобода = эгоизм.', examples: duty.slice(0, 2), tip: 'Замените «я должен» на «я выбираю». Спросите себя: «Чья это вообще правило? Оно мне подходит?»' });
   const fear = all.filter(t => /(страх|боюсь|тревог|опасн|неуверен)/i.test(t)); if (fear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: fear.length, desc: 'Ожидание угрозы.', examples: fear.slice(0, 2), tip: 'Техника «Что худшее случится?» Оцените вероятность от 0 до 100. Чаще всего страх сильно преувеличен.' });
   const perfection = all.filter(t => /(идеальн|безошиб|всегда|продуктивн|лучше всех)/i.test(t)); if (perfection.length) beliefs.push({ title: 'Установка «Быть идеальным»', count: perfection.length, desc: 'Ценность = безошибочность.', examples: perfection.slice(0, 2), tip: 'Практика «Достаточно хороший результат». Разрешите себе сделать на 80% и сдать работу.' });
@@ -48,7 +43,6 @@ function analyzeBeliefs(q4, q5) {
   const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if (deval.length) beliefs.push({ title: 'Установка «Я недостаточно хорош»', count: deval.length, desc: 'Обесценивание достижений.', examples: deval.slice(0, 2), tip: 'Ведите «Дневник побед». Каждый вечер записывайте 3 вещи, которые у вас получились сегодня, даже маленькие.' });
   const approval = all.filter(t => /(подумают|мнение|считают|осужд|понрав|оцен)/i.test(t)); if (approval.length) beliefs.push({ title: 'Установка «Нужно одобрение»', count: approval.length, desc: 'Зависимость от чужого мнения.', examples: approval.slice(0, 2), tip: 'Спросите себя: «Что я потеряю, если этот человек будет думать обо мне плохо?» Часто ответ — ничего.' });
   const hyper = all.filter(t => /(ответственн|отвечать|за все|за других)/i.test(t)); if (hyper.length) beliefs.push({ title: 'Установка «Гиперответственность»', count: hyper.length, desc: 'Чувство, что вы отвечаете за всё.', examples: hyper.slice(0, 2), tip: 'Практика «Не моя зона ответственности». Когда чувствуете вину, спросите: «Это действительно моя задача или я взвалил(а) на себя чужую?»' });
-
   return beliefs;
 }
 
@@ -140,7 +134,7 @@ function render() {
     </div></div>`;
     return;
   }
-  if(step==='intro'){app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg">Начать тест →</button></div></div>`;return;}
+  if(step==='intro'){app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700">Начать тест →</button></div></div>`;return;}
   if(step==='results'){const info=P[prof];app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4 py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">${saved?'<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>':''}<div class="text-center mb-8"><h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2><p class="text-lg text-violet-600 font-medium">${info.d}</p></div><div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100"><h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3><p>${info.desc}</p></div><div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100"><h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3><p class="leading-relaxed">${info.tip}</p></div><div class="text-center border-t pt-6"><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800">Пройти заново ↺</button></div></div></div>`;return;}
   const q=Q[step], ci=steps.indexOf(step), prog=(ci+1)/6*100;
   const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
@@ -150,4 +144,4 @@ function render() {
 
 function checkNextBtn(){const t=document.querySelector('textarea'),b=document.getElementById('next-btn');if(t&&b){const has=t.value.trim().length>0;b.disabled=!has;b.className=has?'px-6 py-2 rounded-xl font-semibold bg-violet-600 text-white hover:bg-violet-700 transition-colors':'px-6 py-2 rounded-xl font-semibold bg-gray-200 text-gray-400 cursor-not-allowed';}}
 
-async function submit(){const b=document.getElementById('next-btn');if(b){b.disabled=true;b.innerText='⌛
+async function submit(){const b=document.getElementById('next-btn');if(b){b.disabled=true;b.innerText='⌛...';b.className='px-6 py-2 rounded-xl font-semibold bg-gray-
