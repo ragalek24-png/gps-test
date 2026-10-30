@@ -36,7 +36,6 @@ const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-// --- АНАЛИЗ ТЕКСТА ---
 function analyzeText(answers) {
     const categories = {
         work_money: ['работ', 'деньг', 'заработ', 'карьер', 'офис'],
@@ -58,32 +57,35 @@ function analyzeText(answers) {
     return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({name: names[k], count: c, percent: Math.round((c / answers.length) * 100)}));
 }
 
-// --- РАСШИРЕННЫЙ АНАЛИЗ КОГНИТИВНЫХ ИСКАЖЕНИЙ ---
-function analyzeDefenses(q4Answers, q5Answers) {
-    const all = [...q4Answers, ...q5Answers];
+// --- ОБЪЕДИНЕННЫЙ АНАЛИЗ ЗАЩИТ И УСТАНОВОК ---
+function analyzeDefenses(q4, q5, q7 = [], q8 = [], q9 = []) {
+    const all = [...q4, ...q5, ...q7, ...q8, ...q9].filter(t => t && t.trim() !== '');
     if (all.length === 0) return [];
+    
     const defenses = [];
     
-    // Чтение мыслей (расширенный список)
-    const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|оцен|переживаю о том, что|боюсь показаться)/i.test(t));
+    const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|боюсь показаться)/i.test(t));
     if (mindReading.length) defenses.push({ title: 'Чтение мыслей', count: mindReading.length, desc: 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.', examples: mindReading.slice(0, 2) });
 
-    // Обесценивание (расширенный список)
     const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|неважно|недостаточно|плохо|неидеальн|обесцен|не умею|не справляюсь|зря)/i.test(t));
     if (deval.length) defenses.push({ title: 'Обесценивание', count: deval.length, desc: 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения.', examples: deval.slice(0, 2) });
 
-    // Гиперответственность (расширенный список)
     const hyper = all.filter(t => /(ответственн|отвечать|за все|должен|должна|обязан|обязана|надо)/i.test(t));
     if (hyper.length) defenses.push({ title: 'Гиперответственность', count: hyper.length, desc: 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.', examples: hyper.slice(0, 2) });
 
-    // Катастрофизация
     const cat = all.filter(t => /(катастроф|ужас|кошмар|пропало|конец|все плохо)/i.test(t));
     if (cat.length) defenses.push({ title: 'Катастрофизация', count: cat.length, desc: 'Убеждение: «Если что-то пойдёт не так, случится непоправимое».', examples: cat.slice(0, 2) });
+
+    // Установки из проективных вопросов (если есть)
+    const cageDuty = q7.filter(t => /(долг|обязан|ответствен|надо|работа|семья)/i.test(t));
+    if (cageDuty.length) defenses.push({ title: 'Установка «Клетка долга»', count: cageDuty.length, desc: 'Человека держат внутри не стены, а чувство долга перед другими.', examples: cageDuty.slice(0, 2) });
+
+    const idealPerfection = q8.filter(t => /(идеальн|безошиб|всегда|не ошиба|продуктивн|ответственн)/i.test(t));
+    if (idealPerfection.length) defenses.push({ title: 'Установка «Ценность = Достижения»', count: idealPerfection.length, desc: 'Уважение к себе зависит от продуктивности и безошибочности.', examples: idealPerfection.slice(0, 2) });
 
     return defenses;
 }
 
-// --- ОТРИСОВКА ДИАГРАММЫ ---
 function drawChart(pc) {
     const ctx = document.getElementById('profileChart');
     if (!ctx) return;
@@ -95,7 +97,6 @@ function drawChart(pc) {
     });
 }
 
-// --- ЭКСПОРТ В WORD ---
 function exportToWord() {
     if (subs.length === 0) return alert("Нет данных.");
     const pc = {balanced:0, mild:0, moderate:0, intense:0};
@@ -162,8 +163,12 @@ function render(){
     if (view === 'overview' && t > 0) {
         const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
+        const q7Answers = subs.map(s => s.q7).filter(text => text && text.trim() !== ''); // На будущее
+        const q8Answers = subs.map(s => s.q8).filter(text => text && text.trim() !== ''); // На будущее
+        const q9Answers = subs.map(s => s.q9).filter(text => text && text.trim() !== ''); // На будущее
+        
         const themes = analyzeText([...q4Answers, ...q5Answers]);
-        const defenses = analyzeDefenses(q4Answers, q5Answers);
+        const defenses = analyzeDefenses(q4Answers, q5Answers, q7Answers, q8Answers, q9Answers);
 
         overviewHTML = `
         <div class="grid md:grid-cols-2 gap-4 mb-4">
@@ -181,10 +186,10 @@ function render(){
             </div>
         </div>
 
-        <!-- ЗАЩИТЫ -->
+        <!-- ОБЪЕДИНЕННЫЙ БЛОК ЗАЩИТ И УСТАНОВОК -->
         <div class="bg-rose-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-rose-500">
-            <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты</h3>
-            <p class="text-sm text-rose-700 mb-4">Алгоритм проанализировал тексты и выявил механизмы, которые психика использует для снижения тревоги.</p>
+            <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты и установки</h3>
+            <p class="text-sm text-rose-700 mb-4">Алгоритм проанализировал тексты (Q4, Q5 и проективные) и выявил механизмы, которые психика использует для снижения тревоги.</p>
             ${defenses.length > 0 ? `
                 <div class="grid md:grid-cols-2 gap-4">
                     ${defenses.map(d => `
@@ -195,7 +200,7 @@ function render(){
                         </div>
                     `).join('')}
                 </div>
-            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
+            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит и установок не найдено.</p>'}
         </div>
 
         <!-- ТЕМЫ -->
@@ -251,7 +256,6 @@ function render(){
     return;
   }
 
-  // --- ТЕСТ ---
   if(step==='intro'){
     app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
     return;
@@ -322,15 +326,4 @@ async function load(){
         subs = uniqueSubs;
     } catch(e) {
         console.error('Ошибка загрузки:', e);
-        alert('Ошибка доступа к базе.');
-    } finally {
-        if (textEl) textEl.innerText = '🔄 Обновить данные';
-        render(); 
-    }
-}
-
-window.addEventListener('hashchange',render);
-render();
-</script>
-</body>
-</html>
+       
