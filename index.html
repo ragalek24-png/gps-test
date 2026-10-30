@@ -3,246 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Тест: Ваш внутренний GPS</title>
+<title>Тест GPS</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-white to-violet-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
 <div id="app"></div>
 <script>
 const { createClient } = window.supabase;
 const supabase = createClient('https://vurnrdqxbzqijwkcywsf.supabase.co', 'sb_publishable_nsz3vSuJz1JumMT3IVoRMg_vMLEe4n2');
-
 const Q = {
-  q1: {s:'Секция 1',t:'Вы написали важное сообщение другу. Он прочитал, но не отвечает полдня. Первая мысль:',o:['Наверное, закрутился','Я написал что-то не то','Людям плевать на меня','Это катастрофа']},
-  q2: {s:'Секция 1',t:'Вы случайно отправили не тот файл в чат. Исправили, но внутри:',o:['Бывает, поехали дальше','Какой я нелепый','Все думают что я непрофессионал','Нужно проверять всё десять раз']},
-  q3: {s:'Секция 2',t:'Ваш внутренний голос после тяжёлого дня чаще всего говорит:',o:['Давай отдохнём, ты молодец','Мог бы и лучше, соберись','Почему ты всё усложняешь?','Завтра будет ещё хуже']},
-  q4: {s:'Секция 3',t:'Закончите фразу:',p:'«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»'},
-  q5: {s:'Секция 3',t:'Закончите фразу:',p:'«Моя суперсила — это [...], но она же меня и изматывает, потому что...»'},
-  q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
+  q1: {s:'1',t:'Друг прочитал, но не отвечает полдня. Мысль:',o:['Закрутился','Я написал не то','Людям плевать','Катастрофа']},
+  q2: {s:'1',t:'Отправили не тот файл. Внутри:',o:['Бывает','Какой я нелепый','Все думают что я непрофессионал','Проверять всё 10 раз']},
+  q3: {s:'2',t:'Внутренний голос после тяжёлого дня:',o:['Отдохнём, ты молодец','Мог бы лучше','Почему всё усложняешь?','Завтра будет хуже']},
+  q4: {s:'3',t:'Закончите:',p:'«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»'},
+  q5: {s:'3',t:'Закончите:',p:'«Моя суперсила — это [...], но она меня изматывает, потому что...»'},
+  q6: {s:'4',t:'Сложная задача с риском облажаться:',o:['Интересно','А вдруг я самозванец?','Нет смысла без идеала','Откажусь, нет сил']}
 };
-
 const P = {
-  balanced: {l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981', desc: 'Вы обладаете психологической гибкостью...', tip: 'Упражнение «Шкала реальности»...'},
-  mild: {l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1', desc: 'У вас есть склонность к рефлексии...', tip: 'Упражнение «Адвокат дьявола»...'},
-  moderate: {l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b', desc: 'Ваш мозг работает как чувствительный радар...', tip: 'Практика «Дневник мыслей»...'},
-  intense: {l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7', desc: 'Вы очень остро реагируете на стресс...', tip: 'Практика «Заземление 5-4-3-2-1»...'}
+  balanced: {l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981', desc: 'Гибкость.', tip: 'Шкала реальности.'},
+  mild: {l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1', desc: 'Рефлексия.', tip: 'Адвокат дьявола.'},
+  moderate: {l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b', desc: 'Гиперконтроль.', tip: 'Дневник мыслей.'},
+  intense: {l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7', desc: 'Острая реакция.', tip: 'Заземление 5-4-3-2-1.'}
 };
-
-let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
-let chartInstance = null;
+let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview',chartInstance=null;
 const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
 function analyzeText(answers) {
-    const categories = {
-        work_money: ['работ', 'деньг', 'заработ', 'карьер', 'офис'],
-        anxiety: ['тревог', 'пережив', 'страх', 'боюсь', 'паник'],
-        control: ['контрол', 'порядок', 'план', 'идеальн', 'должн', 'обязан'],
-        people: ['люд', 'общ', 'друз', 'семь', 'отношен', 'эмпат', 'мнен'],
-        tiredness: ['устал', 'сил', 'выгор', 'измат', 'энерг', 'отдых'],
-        self_criticism: ['самокрит', 'вина', 'стыд', 'ошибк', 'нелеп']
-    };
-    const counts = {};
-    Object.keys(categories).forEach(key => counts[key] = 0);
-    answers.forEach(text => {
-        const lower = text.toLowerCase();
-        Object.entries(categories).forEach(([cat, words]) => {
-            if (words.some(w => lower.includes(w))) counts[cat]++;
-        });
-    });
-    const names = {work_money: '💼 Работа и деньги', anxiety: '🌪 Тревога и страх', control: '⚙️ Контроль и долженствование', people: '🤝 Люди и отношения', tiredness: '🔋 Усталость и истощение', self_criticism: '🪞 Самокритика и вина'};
-    return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({name: names[k], count: c, percent: Math.round((c / answers.length) * 100)}));
+  const cats = {work:['работ','деньг','заработ','карьер'],anx:['тревог','пережив','страх','боюсь'],ctrl:['контрол','порядок','план','должн'],ppl:['люд','общ','друз','семь'],tired:['устал','сил','выгор','измат'],crit:['самокрит','вина','стыд','ошибк']};
+  const counts={}; Object.keys(cats).forEach(k=>counts[k]=0);
+  answers.forEach(t=>{const l=t.toLowerCase();Object.entries(cats).forEach(([k,w])=>{if(w.some(x=>l.includes(x)))counts[k]++;});});
+  const names={work:'💼 Работа',anx:'🌪 Тревога',ctrl:'⚙️ Контроль',ppl:'🤝 Люди',tired:'🔋 Усталость',crit:'🪞 Самокритика'};
+  return Object.entries(counts).filter(([_,c])=>c>0).sort((a,b)=>b[1]-a[1]).map(([k,c])=>({name:names[k],count:c,percent:Math.round(c/answers.length*100)}));
 }
 
-function analyzeDefenses(q4, q5) {
-    const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
-    if (all.length === 0) return [];
-    const defenses = [];
-    const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|боюсь показаться)/i.test(t));
-    if (mindReading.length) defenses.push({ title: 'Чтение мыслей', count: mindReading.length, desc: 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.', examples: mindReading.slice(0, 2) });
-    const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|неважно|недостаточно|плохо|неидеальн|обесцен|не умею|не справляюсь|зря)/i.test(t));
-    if (deval.length) defenses.push({ title: 'Обесценивание', count: deval.length, desc: 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения.', examples: deval.slice(0, 2) });
-    const hyper = all.filter(t => /(ответственн|отвечать|за все|должен|должна|обязан|обязана|надо)/i.test(t));
-    if (hyper.length) defenses.push({ title: 'Гиперответственность', count: hyper.length, desc: 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.', examples: hyper.slice(0, 2) });
-    const cat = all.filter(t => /(катастроф|ужас|кошмар|пропало|конец|все плохо)/i.test(t));
-    if (cat.length) defenses.push({ title: 'Катастрофизация', count: cat.length, desc: 'Убеждение: «Если что-то пойдёт не так, случится непоправимое».', examples: cat.slice(0, 2) });
-    return defenses;
+function analyzeDefenses(q4,q5) {
+  const all=[...q4,...q5].filter(t=>t&&t.trim()!=='');
+  const defs=[];
+  const mr=all.filter(t=>/(подумают|мнение|считают|осужд)/i.test(t)); if(mr.length)defs.push({title:'Чтение мыслей',count:mr.length,desc:'Чувствительность к чужому мнению.',examples:mr.slice(0,2)});
+  const dv=all.filter(t=>/(ничего не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if(dv.length)defs.push({title:'Обесценивание',count:dv.length,desc:'Недостаточно хорош.',examples:dv.slice(0,2)});
+  const hr=all.filter(t=>/(ответственн|отвечать|за все|должен|надо)/i.test(t)); if(hr.length)defs.push({title:'Гиперответственность',count:hr.length,desc:'Отвечаю за всё.',examples:hr.slice(0,2)});
+  const ct=all.filter(t=>/(катастроф|ужас|кошмар|пропало|конец)/i.test(t)); if(ct.length)defs.push({title:'Катастрофизация',count:ct.length,desc:'Всё пропало.',examples:ct.slice(0,2)});
+  return defs;
 }
 
-function analyzeBeliefs(q7, q8, q9) {
-    const beliefs = [];
-    const cageDuty = q7.filter(t => /(долг|обязан|ответствен|надо|работа|семья)/i.test(t));
-    if (cageDuty.length) beliefs.push({ title: 'Установка «Клетка долга»', count: cageDuty.length, desc: 'Человека держат внутри не стены, а чувство долга перед другими.', examples: cageDuty.slice(0, 2) });
-    const cageFear = q7.filter(t => /(страх|боится|тревог|неуверен|сомнева)/i.test(t));
-    if (cageFear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: cageFear.length, desc: 'Внутри держит страх неизвестности. Даже открытая дверь не воспринимается как выход.', examples: cageFear.slice(0, 2) });
-    const idealPerfection = q8.filter(t => /(идеальн|безошиб|всегда|не ошиба|продуктивн|ответственн)/i.test(t));
-    if (idealPerfection.length) beliefs.push({ title: 'Установка «Ценность = Достижения»', count: idealPerfection.length, desc: 'Уважение к себе зависит от продуктивности и безошибочности.', examples: idealPerfection.slice(0, 2) });
-    const errorShame = q9.filter(t => /(стыд|позор|вина|унижен|провал|катастроф)/i.test(t));
-    if (errorShame.length) beliefs.push({ title: 'Установка «Ошибка = Позор»', count: errorShame.length, desc: 'Публичная ошибка воспринимается как необратимая потеря лица.', examples: errorShame.slice(0, 2) });
-    return beliefs;
+function analyzeBeliefs(q7,q8,q9) {
+  const b=[];
+  const dq=q7.filter(t=>/(долг|обязан|ответствен|надо)/i.test(t)); if(dq.length)b.push({title:'Клетка долга',count:dq.length,desc:'Держит долг.',examples:dq.slice(0,2)});
+  const fq=q7.filter(t=>/(страх|боится|тревог|неуверен)/i.test(t)); if(fq.length)b.push({title:'Мир опасен',count:fq.length,desc:'Страх неизвестности.',examples:fq.slice(0,2)});
+  const ip=q8.filter(t=>/(идеальн|безошиб|всегда|продуктивн)/i.test(t)); if(ip.length)b.push({title:'Ценность = Достижения',count:ip.length,desc:'Уважение за продуктивность.',examples:ip.slice(0,2)});
+  const es=q9.filter(t=>/(стыд|позор|вина|провал)/i.test(t)); if(es.length)b.push({title:'Ошибка = Позор',count:es.length,desc:'Потеря лица.',examples:es.slice(0,2)});
+  return b;
 }
 
 function drawChart(pc) {
-    const ctx = document.getElementById('profileChart');
-    if (!ctx) return;
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-        type: 'doughnut',
-        data: { labels: Object.values(P).map(p => p.l), datasets: [{ data: Object.values(pc), backgroundColor: Object.values(P).map(p => p.c), borderWidth: 2, borderColor: '#ffffff' }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-    });
+  const ctx=document.getElementById('profileChart'); if(!ctx)return; if(chartInstance)chartInstance.destroy();
+  chartInstance=new Chart(ctx,{type:'doughnut',data:{labels:Object.values(P).map(p=>p.l),datasets:[{data:Object.values(pc),backgroundColor:Object.values(P).map(p=>p.c),borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
 }
 
 function exportToWord() {
-    if (subs.length === 0) return alert("Нет данных.");
-    const pc = {balanced:0, mild:0, moderate:0, intense:0};
-    subs.forEach(s => { pc[s.profile] = (pc[s.profile] || 0) + 1; });
-    const total = subs.length;
-    const q4List = subs.map(s => s.q4).filter(t => t && t.trim() !== '');
-    const q5List = subs.map(s => s.q5).filter(t => t && t.trim() !== '');
-    const q7List = subs.map(s => s.q7).filter(t => t && t.trim() !== '');
-    const q8List = subs.map(s => s.q8).filter(t => t && t.trim() !== '');
-    const q9List = subs.map(s => s.q9).filter(t => t && t.trim() !== '');
-    const themes = analyzeText([...q4List, ...q5List]);
-    const defenses = analyzeDefenses(q4List, q5List);
-    const beliefs = analyzeBeliefs(q7List, q8List, q9List);
-
-    let html = `
-    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head><meta charset="utf-8"><title>Диагностика</title>
-    <style>body { font-family: 'Times New Roman', serif; font-size: 12pt; } h1 { text-align: center; } h2 { color: #333; } table { width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px; } th, td { border: 1px solid #ccc; padding: 8px; } th { background: #eee; } .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: #fafafa; }</style>
-    </head>
-    <body>
-        <h1>Психологический анализ теста</h1>
-        <p><b>Дата:</b> ${new Date().toLocaleString('ru-RU')} | <b>Всего ответов:</b> ${total}</p>
-        <h2>1. Статистика профилей</h2>
-        <ul>${Object.entries(P).map(([k,v]) => `<li><b>${v.l}:</b> ${pc[k]} чел. (${Math.round((pc[k]/total)*100)}%)</li>`).join('')}</ul>
-        <h2>2. Тематический анализ</h2>
-        <ul>${themes.map(t => `<li>${t.name} — <b>${t.count}</b> упоминаний (${t.percent}%)</li>`).join('')}</ul>
-        <h2>3. Психологические защиты (по Q4, Q5)</h2>
-        ${defenses.length > 0 ? defenses.map(d => `<div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>`).join('') : '<p>Не выявлено.</p>'}
-        <h2>4. Глубинные установки (по Q7, Q8, Q9)</h2>
-        ${beliefs.length > 0 ? beliefs.map(d => `<div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>`).join('') : '<p>Нет данных для анализа (вопросы Q7-Q9 отсутствуют).</p>'}
-        <h2>5. Список ответов</h2>
-        <table><thead><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead><tbody>
-        ${subs.map((s,i) => `<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}
-        </tbody></table>
-    </body></html>`;
-    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'Психологический_анализ_' + new Date().toISOString().slice(0,10) + '.doc';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+  if(subs.length===0)return alert("Нет данных.");
+  const pc={balanced:0,mild:0,moderate:0,intense:0}; subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
+  const total=subs.length;
+  const q4=subs.map(s=>s.q4).filter(t=>t&&t.trim()!==''), q5=subs.map(s=>s.q5).filter(t=>t&&t.trim()!=='');
+  const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5);
+  let html=`<html><head><meta charset="utf-8"><style>body{font-family:serif;font-size:12pt}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px}</style></head><body><h1>Анализ</h1><p>Дата: ${new Date().toLocaleString('ru-RU')} | Ответов: ${total}</p>`;
+  html+=`<h2>Профили</h2><ul>${Object.entries(P).map(([k,v])=>`<li>${v.l}: ${pc[k]} (${Math.round(pc[k]/total*100)}%)</li>`).join('')}</ul>`;
+  html+=`<h2>Темы</h2><ul>${themes.map(t=>`<li>${t.name}: ${t.count} (${t.percent}%)</li>`).join('')}</ul>`;
+  html+=`<h2>Защиты</h2>${defs.length?defs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
+  html+=`<h2>Ответы</h2><table><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr>${subs.map((s,i)=>`<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}</table></body></html>`;
+  const blob=new Blob(['\ufeff',html],{type:'application/msword'}), url=URL.createObjectURL(blob), link=document.createElement('a');
+  link.href=url; link.download='Анализ_'+new Date().toISOString().slice(0,10)+'.doc'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
 }
 
-function render(){
+function render() {
   const app=document.getElementById('app');
-  if(location.hash==='#admin'){
-    if(!window.isAdmin){
-        const pass = prompt("Введите пароль администратора:");
-        if(pass === 'admin2024'){ window.isAdmin = true; load(); } 
-        else { alert("Неверный пароль"); location.hash = ''; return; }
-    }
-    const pc={balanced:0,mild:0,moderate:0,intense:0};
-    subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
+  if(location.hash==='#admin') {
+    if(!window.isAdmin){const pass=prompt("Пароль:"); if(pass==='admin2024'){window.isAdmin=true;load();}else{alert("Неверный пароль");location.hash='';return;}}
+    const pc={balanced:0,mild:0,moderate:0,intense:0}; subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
     const t=subs.length;
-    let overviewHTML = '';
-    if (view === 'overview' && t > 0) {
-        const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
-        const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
-        const q7Answers = subs.map(s => s.q7).filter(text => text && text.trim() !== '');
-        const q8Answers = subs.map(s => s.q8).filter(text => text && text.trim() !== '');
-        const q9Answers = subs.map(s => s.q9).filter(text => text && text.trim() !== '');
-        const themes = analyzeText([...q4Answers, ...q5Answers]);
-        const defenses = analyzeDefenses(q4Answers, q5Answers);
-        const beliefs = analyzeBeliefs(q7Answers, q8Answers, q9Answers);
-        overviewHTML = `
-        <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center justify-center">
-                <h3 class="font-semibold mb-4 text-lg w-full text-left">Визуализация профилей</h3>
-                <div class="w-full h-64 relative"><canvas id="profileChart"></canvas></div>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm">
-                <h3 class="font-semibold mb-4 text-lg">Детальная статистика</h3>
-                ${Object.entries(P).map(([k,v])=>{
-                    const c = pc[k] || 0;
-                    const p = t > 0 ? (c/t)*100 : 0;
-                    return `<div class="flex items-center gap-3 mb-3"><span class="w-32 text-sm font-medium">${v.l}</span><div class="flex-1 h-6 bg-gray-100 rounded"><div class="h-full rounded text-white text-xs flex items-center justify-end pr-2" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div></div><span class="text-sm w-12 text-right">${p.toFixed(0)}%</span></div>`;
-                }).join('')}
-            </div>
-        </div>
-        <div class="bg-rose-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-rose-500">
-            <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты</h3>
-            <p class="text-sm text-rose-700 mb-4">Анализ ответов на Q4, Q5.</p>
-            ${defenses.length > 0 ? `<div class="grid md:grid-cols-2 gap-4">${defenses.map(d => `<div class="bg-white p-4 rounded-lg border border-rose-100 shadow-sm"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-rose-800">${d.title}</h4><span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm text-gray-600 mb-3">${d.desc}</p><div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div></div>`).join('')}</div>` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
-        </div>
-        <div class="bg-indigo-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-indigo-500">
-            <h3 class="font-semibold mb-2 text-lg text-indigo-900">🧠 Глубинные установки</h3>
-            <p class="text-sm text-indigo-700 mb-4">Анализ проективных ответов (Q7, Q8, Q9).</p>
-            ${beliefs.length > 0 ? `<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d => `<div class="bg-white p-4 rounded-lg border border-indigo-100 shadow-sm"><div class="flex justify-between items-start mb-2"><h4 class="font-bold text-indigo-800">${d.title}</h4><span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm text-gray-600 mb-3">${d.desc}</p><div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div></div>`).join('')}</div>` : '<p class="text-sm text-gray-500 italic">Нет данных для анализа (вопросы Q7-Q9 пока отсутствуют в базе).</p>'}
-        </div>
-        <div class="bg-white rounded-xl p-6 shadow-sm mb-4 border-l-4 border-violet-500">
-            <h3 class="font-semibold mb-4 text-lg text-violet-800">Исследование тем</h3>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что мешает свободе (Q4)</h4>${analyzeText(q4Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q4Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-violet-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
-                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что изматывает (Q5)</h4>${analyzeText(q5Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q5Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-fuchsia-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
-            </div>
-        </div>
-        <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
-            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
-        </div>
-        `;
-        setTimeout(() => drawChart(pc), 50);
+    let overHTML='';
+    if(view==='overview'&&t>0){
+      const q4=subs.map(s=>s.q4).filter(x=>x&&x.trim()!==''), q5=subs.map(s=>s.q5).filter(x=>x&&x.trim()!=='');
+      const q7=subs.map(s=>s.q7).filter(x=>x&&x.trim()!==''), q8=subs.map(s=>s.q8).filter(x=>x&&x.trim()!==''), q9=subs.map(s=>s.q9).filter(x=>x&&x.trim()!=='');
+      const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5), beliefs=analyzeBeliefs(q7,q8,q9);
+      overHTML=`
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Профили</h3><div class="h-64 relative"><canvas id="profileChart"></canvas></div></div>
+        <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Статистика</h3>${Object.entries(P).map(([k,v])=>{const c=pc[k]||0,p=t>0?c/t*100:0;return`<div class="flex items-center gap-3 mb-2"><span class="w-28 text-sm">${v.l}</span><div class="flex-1 h-5 bg-gray-100 rounded"><div class="h-full rounded text-white text-xs flex items-center justify-end pr-1" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div></div><span class="text-xs w-10 text-right">${p.toFixed(0)}%</span></div>`}).join('')}</div>
+      </div>
+      <div class="bg-rose-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500"><h3 class="font-semibold mb-3 text-rose-900">🛡 Защиты (Q4, Q5)</h3>${defs.length?`<div class="grid md:grid-cols-2 gap-4">${defs.map(d=>`<div class="bg-white p-4 rounded-lg border border-rose-100"><div class="flex justify-between mb-2"><b class="text-rose-800">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
+      <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Установки (Q7, Q8, Q9)</h3>${beliefs.length?`<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных (вопросы Q7-Q9 пока не добавлены)</p>'}</div>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
+        <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
+      </div>`;
+      setTimeout(()=>drawChart(pc),50);
     }
-    let listHTML = '';
-    if (view === 'list') {
-        listHTML = `<div class="bg-white rounded-xl p-6 mb-4 shadow-sm"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
-        if (t === 0) listHTML += '<p>Пока нет ответов</p>';
-        else {
-            listHTML += `<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b"><th class="p-2">#</th><th class="p-2">Дата</th><th class="p-2">Профиль</th><th class="p-2">Q4</th><th class="p-2">Q5</th></tr></thead><tbody>`;
-            listHTML += subs.map((s,i)=>`<tr class="border-b"><td class="p-2">${t-i}</td><td class="p-2 text-sm whitespace-nowrap">${new Date(s.created_at).toLocaleString('ru-RU')}</td><td class="p-2"><span class="px-2 py-1 rounded text-xs text-white" style="background-color:${P[s.profile]?.c}">${P[s.profile]?.l}</span></td><td class="p-2 text-sm">${s.q4 || '-'}</td><td class="p-2 text-sm">${s.q5 || '-'}</td></tr>`).join('');
-            listHTML += `</tbody></table></div>`;
-        }
-        listHTML += `</div>`;
+    let listHTML='';
+    if(view==='list'){
+      listHTML=`<div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Все ответы (${t})</h3><div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead><tr class="border-b"><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead><tbody>${subs.map((s,i)=>`<tr class="border-b"><td class="p-2">${t-i}</td><td class="p-2 whitespace-nowrap">${new Date(s.created_at).toLocaleString('ru-RU')}</td><td class="p-2"><span class="px-2 py-1 rounded text-xs text-white" style="background:${P[s.profile]?.c}">${P[s.profile]?.l}</span></td><td class="p-2">${s.q4||'-'}</td><td class="p-2">${s.q5||'-'}</td></tr>`).join('')}</tbody></table></div></div>`;
     }
-    app.innerHTML = `<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
-        <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-                <h1 class="text-2xl font-bold">Админ-панель</h1>
-                <button onclick="exportToWord()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">📄 Скачать полный анализ в Word</button>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-                <div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold">${t}</div><div class="text-sm text-gray-500">Всего ответов</div></div>
-                ${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-sm">${v.l}</div></div>`).join('')}
-            </div>
-            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2"><span id="refresh-text">🔄 Обновить данные</span></button>
-        </div>
-        ${view === 'overview' ? overviewHTML : listHTML}
-        <div class="flex gap-2">
-            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
-            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
-        </div>
+    app.innerHTML=`<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
+      <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+        <div class="flex justify-between items-center mb-4"><h1 class="text-2xl font-bold">Админ</h1><button onclick="exportToWord()" class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">📄 Word</button></div>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6"><div class="bg-gray-50 p-4 rounded-xl border"><div class="text-2xl font-bold">${t}</div><div class="text-xs text-gray-500">Всего</div></div>${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 p-4 rounded-xl border"><div class="text-2xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-xs">${v.l}</div></div>`).join('')}</div>
+        <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm hover:bg-violet-700"><span id="refresh-text">🔄 Обновить</span></button>
+      </div>
+      ${view==='overview'?overHTML:listHTML}
+      <div class="flex gap-2"><button onclick="view='overview';render()" class="px-4 py-2 rounded-lg text-sm ${view==='overview'?'bg-violet-600 text-white':'bg-white border text-gray-700'}">Обзор</button><button onclick="view='list';render()" class="px-4 py-2 rounded-lg text-sm ${view==='list'?'bg-violet-600 text-white':'bg-white border text-gray-700'}">Список</button></div>
     </div></div>`;
     return;
   }
-  if(step==='intro'){
-    app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
-    return;
-  }
-  if(step==='results'){
-    const info = P[prof];
-    app.innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}<div class="text-center mb-8"><h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2><p class="text-lg text-violet-600 font-medium">${info.d}</p></div><div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100"><h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3><p>${info.desc}</p></div><div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100"><h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3><p class="leading-relaxed">${info.tip}</p></div><div class="text-center border-t pt-6"><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">Пройти заново ↺</button></div></div></div>`;
-    return;
-  }
-  const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
-  const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
+  if(step==='intro'){app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS</h1><p class="text-gray-600 mb-6">1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg">Начать</button></div></div>`;return;}
+  if(step==='results'){const info=P[prof];app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full text-center">${saved?'<div class="text-green-600 mb-4 font-medium">✓ Сохранено</div>':''}<h2 class="text-3xl font-bold mb-2">${info.l}</h2><p class="text-violet-600 mb-6">${info.d}</p><div class="bg-gray-50 p-4 rounded-xl mb-4 text-left text-sm"><b>Что это:</b> ${info.desc}</div><div class="bg-violet-50 p-4 rounded-xl mb-6 text-left text-sm"><b>💡 Совет:</b> ${info.tip}</div><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium">Заново ↺</button></div></div>`;return;}
+  const q=Q[step], ci=steps.indexOf(step), prog=(ci+1)/6*100;
+  const qHTML=q.o?`<div class="space-y-2">${q.o.map((opt,i)=>`<label class="block p-3 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span class="text-sm">${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="..." class="w-full p-3 border-2 rounded-xl h-28 text-sm">${a[step]}</textarea>`;
   const can=q.o?a[step]!==null:a[step].trim().length>0;
-  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6
+  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-4"><div class="flex justify-between text-xs mb-1"><span>Вопрос ${ci+1}/6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white p-6 rounded-xl shadow-xl"><div class="text-xs text-violet-500 uppercase mb-1">${q.s}</div><h2 class="text-lg font-semibold mb-4">${q.t}</h2>${q.p?`<p class="text-gray-500 text-xs mb-3">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-4">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="text-gray-500 text-sm">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-5 py-2 rounded-xl font-semibold text-sm ${can?'bg-violet-600 text-white':'bg-gray-200 text-gray-400'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
+}
+
+function checkNextBtn(){const t=document.querySelector('textarea'),b=document.getElementById('next-btn');if(t&&b){const has=t.value.trim().length>0;b.disabled=!has;b.className=has?'px-5 py-2 rounded-xl font-semibold text-sm bg-violet-600 text-white':'px-5 py-2 rounded-xl font-semibold text-sm bg-gray-200 text-gray-400';}}
+
+async function submit(){const b=document.getElementById('next-btn');if(b){b.disabled=true;b.innerText='⌛...';b.className='px-5 py-2 rounded-xl font-semibold text-sm bg-gray-400 text-white';}prof=calc();try{await supabase.from('submissions').insert({q1:a.q1,q2:a.q2,q3:a.q3,q4:a.q4,q5:a.q5,q6:a.q6,profile:prof});saved=true;}catch(e){alert('Ошибка сохранения');}step='results';render();}
+
+async function load(){const el=document.getElementById('refresh-text');if(el)el.innerText='⌛...';try{const{data,error}=await supabase.from('submissions').select('*').order('created_at',{ascending:false});if(error)throw error;const uniq=[],seen=new Set();(data||[]).forEach(s=>{const k=`${s.q1}_${s.q2}_${s.q3}_${s.q4}_${s.q5}_${s.q6}_${new Date(s.created_at).toISOString().slice(0,19)}`;if(!seen.has(k)){seen.add(k);uniq.push(s);}});subs=uniq;}catch(e){alert('Ошибка загрузки');}finally{if(el)el.innerText='🔄 Обновить';render();}}
+
+window.addEventListener('hashchange',render);
+render();
+</script>
+</body>
+</html>
