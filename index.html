@@ -163,9 +163,9 @@ function render(){
     if (view === 'overview' && t > 0) {
         const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
-        const q7Answers = subs.map(s => s.q7).filter(text => text && text.trim() !== ''); // На будущее
-        const q8Answers = subs.map(s => s.q8).filter(text => text && text.trim() !== ''); // На будущее
-        const q9Answers = subs.map(s => s.q9).filter(text => text && text.trim() !== ''); // На будущее
+        const q7Answers = subs.map(s => s.q7).filter(text => text && text.trim() !== '');
+        const q8Answers = subs.map(s => s.q8).filter(text => text && text.trim() !== '');
+        const q9Answers = subs.map(s => s.q9).filter(text => text && text.trim() !== '');
         
         const themes = analyzeText([...q4Answers, ...q5Answers]);
         const defenses = analyzeDefenses(q4Answers, q5Answers, q7Answers, q8Answers, q9Answers);
@@ -326,4 +326,15 @@ async function load(){
         subs = uniqueSubs;
     } catch(e) {
         console.error('Ошибка загрузки:', e);
-       
+        alert('Ошибка доступа к базе.');
+    } finally {
+        if (textEl) textEl.innerText = '🔄 Обновить данные';
+        render(); 
+    }
+}
+
+window.addEventListener('hashchange',render);
+render();
+</script>
+</body>
+</html>
