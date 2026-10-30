@@ -32,24 +32,35 @@ const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
+// --- РАСШИРЕННЫЙ СПИСОК УСТАНОВОК (14 штук) ---
 function analyzeBeliefs(q4, q5) {
   const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
   const beliefs = [];
-  const duty = all.filter(t => /(должен|должна|надо|обязан|обязана)/i.test(t)); if (duty.length) beliefs.push({ title: 'Установка «Я должен»', count: duty.length, desc: 'Жизнь по правилам, которые человек сам себе установил. Свобода = эгоизм.', examples: duty.slice(0, 2) });
-  const fear = all.filter(t => /(страх|боюсь|тревог|опасн|неуверен)/i.test(t)); if (fear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: fear.length, desc: 'Ожидание угрозы. Даже нейтральные ситуации воспринимаются как риск.', examples: fear.slice(0, 2) });
-  const perfection = all.filter(t => /(идеальн|безошиб|всегда|продуктивн|лучше всех)/i.test(t)); if (perfection.length) beliefs.push({ title: 'Установка «Быть идеальным»', count: perfection.length, desc: 'Ценность зависит от безошибочности и продуктивности.', examples: perfection.slice(0, 2) });
+  
+  const duty = all.filter(t => /(должен|должна|надо|обязан|обязана)/i.test(t)); if (duty.length) beliefs.push({ title: 'Установка «Я должен»', count: duty.length, desc: 'Жизнь по правилам. Свобода = эгоизм.', examples: duty.slice(0, 2) });
+  const fear = all.filter(t => /(страх|боюсь|тревог|опасн|неуверен)/i.test(t)); if (fear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: fear.length, desc: 'Ожидание угрозы.', examples: fear.slice(0, 2) });
+  const perfection = all.filter(t => /(идеальн|безошиб|всегда|продуктивн|лучше всех)/i.test(t)); if (perfection.length) beliefs.push({ title: 'Установка «Быть идеальным»', count: perfection.length, desc: 'Ценность = безошибочность.', examples: perfection.slice(0, 2) });
   const shame = all.filter(t => /(стыд|позор|вина|унижен|провал)/i.test(t)); if (shame.length) beliefs.push({ title: 'Установка «Ошибка = Позор»', count: shame.length, desc: 'Публичная ошибка = потеря лица.', examples: shame.slice(0, 2) });
-  const control = all.filter(t => /(контрол|порядок|план|распоряд)/i.test(t)); if (control.length) beliefs.push({ title: 'Установка «Всё под контролем»', count: control.length, desc: 'Потребность контролировать всё, чтобы чувствовать себя в безопасности.', examples: control.slice(0, 2) });
-  const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if (deval.length) beliefs.push({ title: 'Установка «Я недостаточно хорош»', count: deval.length, desc: 'Обесценивание своих достижений, ощущение неполноценности.', examples: deval.slice(0, 2) });
-  const approval = all.filter(t => /(подумают|мнение|считают|осужд|понрав|оцен)/i.test(t)); if (approval.length) beliefs.push({ title: 'Установка «Нужно одобрение»', count: approval.length, desc: 'Зависимость от чужого мнения. Страх не понравиться.', examples: approval.slice(0, 2) });
-  const hyper = all.filter(t => /(ответственн|отвечать|за все|за других)/i.test(t)); if (hyper.length) beliefs.push({ title: 'Установка «Гиперответственность»', count: hyper.length, desc: 'Чувство, что вы отвечаете за всё и всех вокруг.', examples: hyper.slice(0, 2) });
+  const control = all.filter(t => /(контрол|порядок|план|распоряд)/i.test(t)); if (control.length) beliefs.push({ title: 'Установка «Всё под контролем»', count: control.length, desc: 'Потребность контролировать всё.', examples: control.slice(0, 2) });
+  const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|недостаточно|плохо|зря)/i.test(t)); if (deval.length) beliefs.push({ title: 'Установка «Я недостаточно хорош»', count: deval.length, desc: 'Обесценивание достижений.', examples: deval.slice(0, 2) });
+  const approval = all.filter(t => /(подумают|мнение|считают|осужд|понрав|оцен)/i.test(t)); if (approval.length) beliefs.push({ title: 'Установка «Нужно одобрение»', count: approval.length, desc: 'Зависимость от чужого мнения.', examples: approval.slice(0, 2) });
+  const hyper = all.filter(t => /(ответственн|отвечать|за все|за других)/i.test(t)); if (hyper.length) beliefs.push({ title: 'Установка «Гиперответственность»', count: hyper.length, desc: 'Чувство, что вы отвечаете за всё.', examples: hyper.slice(0, 2) });
+  
+  // НОВЫЕ УСТАНОВКИ
+  const victim = all.filter(t => /(из-за них|они виноваты|все против|не повезло|обстоятельства)/i.test(t)); if (victim.length) beliefs.push({ title: 'Установка «Жертва»', count: victim.length, desc: 'Мир виноват в моих проблемах. Я бессилен изменить ситуацию.', examples: victim.slice(0, 2) });
+  const avoid = all.filter(t => /(лучше не начинать|не буду пробовать|откажусь|избега|боюсь начать)/i.test(t)); if (avoid.length) beliefs.push({ title: 'Установка «Избегание»', count: avoid.length, desc: 'Лучше не начинать, чтобы не облажаться. Страх неудачи парализует.', examples: avoid.slice(0, 2) });
+  const impostor = all.filter(t => /(случайно|повезло|не заслужил|самозванец|обман)/i.test(t)); if (impostor.length) beliefs.push({ title: 'Установка «Самозванец»', count: impostor.length, desc: 'Мои успехи — случайность. Скоро все поймут, что я ничего не стою.', examples: impostor.slice(0, 2) });
+  const strong = all.filter(t => /(нельзя показывать|должен справляться|сильный|слабость)/i.test(t)); if (strong.length) beliefs.push({ title: 'Установка «Должен быть сильным»', count: strong.length, desc: 'Просить помощь = слабость. Нельзя показывать эмоции.', examples: strong.slice(0, 2) });
+  const allornothing = all.filter(t => /(все или ничего|идеально или|либо все|только на 100)/i.test(t)); if (allornothing.length) beliefs.push({ title: 'Установка «Все или ничего»', count: allornothing.length, desc: 'Черно-белое мышление. Нет полутонов: или идеально, или провал.', examples: allornothing.slice(0, 2) });
+  const please = all.filter(t => /(всем нравиться|не хочу обидеть|соглашаюсь|не могу отказать)/i.test(t)); if (please.length) beliefs.push({ title: 'Установка «Нужно всем нравиться»', count: please.length, desc: 'Страх конфликта. Готовность жертвовать собой ради одобрения.', examples: please.slice(0, 2) });
+
   return beliefs;
 }
 
 function analyzeDefenses(q4, q5) {
   const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
   const defs = [];
-  const rat = all.filter(t => /(потому что|так как|ведь|устойчивость|добродетель)/i.test(t) && t.length > 20); if (rat.length) defs.push({ title: 'Рационализация', count: rat.length, desc: 'Попытка объяснить проблему «логичными» причинами, чтобы снизить тревогу. Переупаковка дефицита в добродетель.', examples: rat.slice(0, 2) });
+  const rat = all.filter(t => /(потому что|так как|ведь|устойчивость|добродетель)/i.test(t) && t.length > 20); if (rat.length) defs.push({ title: 'Рационализация', count: rat.length, desc: 'Попытка объяснить проблему «логичными» причинами. Переупаковка дефицита в добродетель.', examples: rat.slice(0, 2) });
   const proj = all.filter(t => /(люди считают|из-за них|они думают|обвиня|все вокруг)/i.test(t)); if (proj.length) defs.push({ title: 'Проекция', count: proj.length, desc: 'Перенос собственных чувств или ответственности на других.', examples: proj.slice(0, 2) });
   const deny = all.filter(t => /(все хорошо|ничего страшного|все нормально|а так ок)/i.test(t)); if (deny.length) defs.push({ title: 'Отрицание', count: deny.length, desc: 'Игнорирование реальности или противоречия в собственных словах.', examples: deny.slice(0, 2) });
   const intel = all.filter(t => t.split(' ').length > 15); if (intel.length) defs.push({ title: 'Интеллектуализация', count: intel.length, desc: 'Уход в абстракции и философствование вместо личного переживания.', examples: intel.slice(0, 2) });
@@ -108,7 +119,6 @@ function render() {
       
       <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Глубинные установки</h3>${beliefs.length?`<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800 text-sm">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count}</span></div><p class="text-xs mb-2 text-gray-600">${d.desc}</p><ul class="text-xs list-disc pl-4 text-gray-500">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
 
-      <!-- БЛОК ЗАЩИТ (С ПРИМЕРАМИ) -->
       <div class="bg-rose-50 p-4 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500">
         <h3 class="font-semibold mb-2 text-rose-900 text-sm">🛡 Психологические защиты (механизмы)</h3>
         ${defs.length?`<div class="grid md:grid-cols-2 gap-3">${defs.map(d=>`<div class="bg-white p-3 rounded-lg border border-rose-100"><div class="flex justify-between items-center mb-1"><b class="text-rose-800 text-sm">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-xs text-gray-600 mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4 text-gray-500">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Не выявлены</p>'}
