@@ -50,13 +50,27 @@ function analyzeDefenses(q4,q5) {
   return defs;
 }
 
-function analyzeBeliefs(q7,q8,q9) {
-  const b=[];
-  const dq=q7.filter(t=>/(долг|обязан|ответствен|надо)/i.test(t)); if(dq.length)b.push({title:'Клетка долга',count:dq.length,desc:'Держит долг.',examples:dq.slice(0,2)});
-  const fq=q7.filter(t=>/(страх|боится|тревог|неуверен)/i.test(t)); if(fq.length)b.push({title:'Мир опасен',count:fq.length,desc:'Страх неизвестности.',examples:fq.slice(0,2)});
-  const ip=q8.filter(t=>/(идеальн|безошиб|всегда|продуктивн)/i.test(t)); if(ip.length)b.push({title:'Ценность = Достижения',count:ip.length,desc:'Уважение за продуктивность.',examples:ip.slice(0,2)});
-  const es=q9.filter(t=>/(стыд|позор|вина|провал)/i.test(t)); if(es.length)b.push({title:'Ошибка = Позор',count:es.length,desc:'Потеря лица.',examples:es.slice(0,2)});
-  return b;
+// --- НОВАЯ ЛОГИКА: УСТАНОВКИ ИЗ Q4/Q5 ---
+function analyzeBeliefs(q4, q5) {
+  const all = [...q4, ...q5].filter(t => t && t.trim() !== '');
+  const beliefs = [];
+  
+  const duty = all.filter(t => /(должен|должна|надо|обязан|обязана)/i.test(t));
+  if (duty.length) beliefs.push({ title: 'Установка «Я должен»', count: duty.length, desc: 'Жизнь по правилам, которые человек сам себе установил. Свобода = эгоизм.', examples: duty.slice(0, 2) });
+
+  const fear = all.filter(t => /(страх|боюсь|тревог|опасн|неуверен)/i.test(t));
+  if (fear.length) beliefs.push({ title: 'Установка «Мир опасен»', count: fear.length, desc: 'Ожидание угрозы. Даже нейтральные ситуации воспринимаются как риск.', examples: fear.slice(0, 2) });
+
+  const perfection = all.filter(t => /(идеальн|безошиб|всегда|продуктивн|лучше всех)/i.test(t));
+  if (perfection.length) beliefs.push({ title: 'Установка «Быть идеальным»', count: perfection.length, desc: 'Ценность зависит от безошибочности и продуктивности.', examples: perfection.slice(0, 2) });
+
+  const shame = all.filter(t => /(стыд|позор|вина|унижен|провал)/i.test(t));
+  if (shame.length) beliefs.push({ title: 'Установка «Ошибка = Позор»', count: shame.length, desc: 'Публичная ошибка = потеря лица.', examples: shame.slice(0, 2) });
+
+  const control = all.filter(t => /(контрол|порядок|план|распоряд)/i.test(t));
+  if (control.length) beliefs.push({ title: 'Установка «Всё под контролем»', count: control.length, desc: 'Потребность контролировать всё, чтобы чувствовать себя в безопасности.', examples: control.slice(0, 2) });
+
+  return beliefs;
 }
 
 function drawChart(pc) {
@@ -69,11 +83,12 @@ function exportToWord() {
   const pc={balanced:0,mild:0,moderate:0,intense:0}; subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
   const total=subs.length;
   const q4=subs.map(s=>s.q4).filter(t=>t&&t.trim()!==''), q5=subs.map(s=>s.q5).filter(t=>t&&t.trim()!=='');
-  const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5);
+  const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5), beliefs=analyzeBeliefs(q4,q5);
   let html=`<html><head><meta charset="utf-8"><style>body{font-family:serif;font-size:12pt}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px}</style></head><body><h1>Анализ</h1><p>Дата: ${new Date().toLocaleString('ru-RU')} | Ответов: ${total}</p>`;
   html+=`<h2>Профили</h2><ul>${Object.entries(P).map(([k,v])=>`<li>${v.l}: ${pc[k]} (${Math.round(pc[k]/total*100)}%)</li>`).join('')}</ul>`;
   html+=`<h2>Темы</h2><ul>${themes.map(t=>`<li>${t.name}: ${t.count} (${t.percent}%)</li>`).join('')}</ul>`;
   html+=`<h2>Защиты</h2>${defs.length?defs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
+  html+=`<h2>Установки</h2>${beliefs.length?beliefs.map(d=>`<div><b>${d.title}</b> (${d.count}): ${d.desc}<br><i>${d.examples.map(e=>`«${e}»`).join(', ')}</i></div>`).join(''):'Нет'}`;
   html+=`<h2>Ответы</h2><table><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr>${subs.map((s,i)=>`<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}</table></body></html>`;
   const blob=new Blob(['\ufeff',html],{type:'application/msword'}), url=URL.createObjectURL(blob), link=document.createElement('a');
   link.href=url; link.download='Анализ_'+new Date().toISOString().slice(0,10)+'.doc'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
@@ -88,15 +103,14 @@ function render() {
     let overHTML='';
     if(view==='overview'&&t>0){
       const q4=subs.map(s=>s.q4).filter(x=>x&&x.trim()!==''), q5=subs.map(s=>s.q5).filter(x=>x&&x.trim()!=='');
-      const q7=subs.map(s=>s.q7).filter(x=>x&&x.trim()!==''), q8=subs.map(s=>s.q8).filter(x=>x&&x.trim()!==''), q9=subs.map(s=>s.q9).filter(x=>x&&x.trim()!=='');
-      const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5), beliefs=analyzeBeliefs(q7,q8,q9);
+      const themes=analyzeText([...q4,...q5]), defs=analyzeDefenses(q4,q5), beliefs=analyzeBeliefs(q4,q5);
       overHTML=`
       <div class="grid md:grid-cols-2 gap-4 mb-4">
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Профили</h3><div class="h-64 relative"><canvas id="profileChart"></canvas></div></div>
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-4">Статистика</h3>${Object.entries(P).map(([k,v])=>{const c=pc[k]||0,p=t>0?c/t*100:0;return`<div class="flex items-center gap-3 mb-2"><span class="w-28 text-sm">${v.l}</span><div class="flex-1 h-5 bg-gray-100 rounded"><div class="h-full rounded text-white text-xs flex items-center justify-end pr-1" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div></div><span class="text-xs w-10 text-right">${p.toFixed(0)}%</span></div>`}).join('')}</div>
       </div>
-      <div class="bg-rose-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500"><h3 class="font-semibold mb-3 text-rose-900">🛡 Защиты (Q4, Q5)</h3>${defs.length?`<div class="grid md:grid-cols-2 gap-4">${defs.map(d=>`<div class="bg-white p-4 rounded-lg border border-rose-100"><div class="flex justify-between mb-2"><b class="text-rose-800">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
-      <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Установки (Q7, Q8, Q9)</h3>${beliefs.length?`<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных (вопросы Q7-Q9 пока не добавлены)</p>'}</div>
+      <div class="bg-rose-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-rose-500"><h3 class="font-semibold mb-3 text-rose-900">🛡 Защиты</h3>${defs.length?`<div class="grid md:grid-cols-2 gap-4">${defs.map(d=>`<div class="bg-white p-4 rounded-lg border border-rose-100"><div class="flex justify-between mb-2"><b class="text-rose-800">${d.title}</b><span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
+      <div class="bg-indigo-50 p-6 rounded-xl shadow-sm mb-4 border-l-4 border-indigo-500"><h3 class="font-semibold mb-3 text-indigo-900">🧠 Установки</h3>${beliefs.length?`<div class="grid md:grid-cols-2 gap-4">${beliefs.map(d=>`<div class="bg-white p-4 rounded-lg border border-indigo-100"><div class="flex justify-between mb-2"><b class="text-indigo-800">${d.title}</b><span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded-full">${d.count} чел.</span></div><p class="text-sm mb-2">${d.desc}</p><ul class="text-xs list-disc pl-4">${d.examples.map(e=>`<li>«${e}»</li>`).join('')}</ul></div>`).join('')}</div>`:'<p class="text-sm text-gray-500">Нет данных</p>'}</div>
       <div class="grid md:grid-cols-2 gap-4 mb-4">
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
         <div class="bg-white p-6 rounded-xl shadow-sm"><h3 class="font-semibold mb-2">Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5.map(x=>`<li class="bg-violet-50 p-2 rounded text-sm border-l-4 border-violet-300">${x}</li>`).join('')}</ul></div>
