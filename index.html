@@ -36,87 +36,66 @@ const steps=['q1','q2','q3','q4','q5','q6'];
 
 function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-// --- 1. ТЕМАТИЧЕСКИЙ АНАЛИЗ ---
+// --- АНАЛИЗ ТЕКСТА ---
 function analyzeText(answers) {
     const categories = {
-        work_money: ['работ', 'деньг', 'заработ', 'карьер', 'начальник', 'коллег', 'офис', 'зарплат', 'финанс'],
-        anxiety: ['тревог', 'пережив', 'страх', 'боюсь', 'паник', 'волну', 'напряж', 'стресс', 'катастроф'],
-        control: ['контрол', 'порядок', 'план', 'идеальн', 'должн', 'обязан', 'правильн', 'распоряд'],
-        people: ['люд', 'общ', 'друз', 'семь', 'отношен', 'эмпат', 'чуж', 'мнен', 'контакт', 'помощ'],
-        tiredness: ['устал', 'сил', 'выгор', 'измат', 'энерг', 'сон', 'отдых', 'тяжел', 'выносл'],
-        self_criticism: ['самокрит', 'вина', 'стыд', 'неидеальн', 'ошибк', 'нелеп', 'хуже', 'неудач']
+        work_money: ['работ', 'деньг', 'заработ', 'карьер', 'офис'],
+        anxiety: ['тревог', 'пережив', 'страх', 'боюсь', 'паник'],
+        control: ['контрол', 'порядок', 'план', 'идеальн', 'должн', 'обязан'],
+        people: ['люд', 'общ', 'друз', 'семь', 'отношен', 'эмпат', 'мнен'],
+        tiredness: ['устал', 'сил', 'выгор', 'измат', 'энерг', 'отдых'],
+        self_criticism: ['самокрит', 'вина', 'стыд', 'ошибк', 'нелеп']
     };
     const counts = {};
     Object.keys(categories).forEach(key => counts[key] = 0);
-    
     answers.forEach(text => {
         const lower = text.toLowerCase();
         Object.entries(categories).forEach(([cat, words]) => {
             if (words.some(w => lower.includes(w))) counts[cat]++;
         });
     });
-
-    const names = {
-        work_money: '💼 Работа и деньги', anxiety: '🌪 Тревога и страх',
-        control: '⚙️ Контроль и долженствование', people: '🤝 Люди и отношения',
-        tiredness: '🔋 Усталость и истощение', self_criticism: '🪞 Самокритика и вина'
-    };
-
-    return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({
-        name: names[k], count: c, percent: Math.round((c / answers.length) * 100)
-    }));
+    const names = {work_money: '💼 Работа и деньги', anxiety: '🌪 Тревога и страх', control: '⚙️ Контроль и долженствование', people: '🤝 Люди и отношения', tiredness: '🔋 Усталость и истощение', self_criticism: '🪞 Самокритика и вина'};
+    return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({name: names[k], count: c, percent: Math.round((c / answers.length) * 100)}));
 }
 
-// --- 2. ВЫЯВЛЕНИЕ ГЛУБИННЫХ УБЕЖДЕНИЙ ---
-function extractBeliefs(q4Answers, q5Answers) {
-    const beliefs = [];
+// --- РАСШИРЕННЫЙ АНАЛИЗ КОГНИТИВНЫХ ИСКАЖЕНИЙ ---
+function analyzeDefenses(q4Answers, q5Answers) {
+    const all = [...q4Answers, ...q5Answers];
+    if (all.length === 0) return [];
+    const defenses = [];
     
-    const check = (arr, regex, title, desc) => {
-        const matches = arr.filter(t => regex.test(t.toLowerCase()));
-        if (matches.length > 0) {
-            beliefs.push({
-                title, desc, count: matches.length, 
-                percent: Math.round((matches.length / arr.length) * 100),
-                examples: matches.slice(0, 3) // берем до 3 примеров для наглядности
-            });
-        }
-    };
+    // Чтение мыслей (расширенный список)
+    const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|оцен|переживаю о том, что|боюсь показаться)/i.test(t));
+    if (mindReading.length) defenses.push({ title: 'Чтение мыслей', count: mindReading.length, desc: 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.', examples: mindReading.slice(0, 2) });
+
+    // Обесценивание (расширенный список)
+    const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|неважно|недостаточно|плохо|неидеальн|обесцен|не умею|не справляюсь|зря)/i.test(t));
+    if (deval.length) defenses.push({ title: 'Обесценивание', count: deval.length, desc: 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения.', examples: deval.slice(0, 2) });
+
+    // Гиперответственность (расширенный список)
+    const hyper = all.filter(t => /(ответственн|отвечать|за все|должен|должна|обязан|обязана|надо)/i.test(t));
+    if (hyper.length) defenses.push({ title: 'Гиперответственность', count: hyper.length, desc: 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.', examples: hyper.slice(0, 2) });
 
     // Катастрофизация
-    check(q4Answers, /(катастроф|ужас|кошмар|пропало|конец)/, '🌪 Катастрофизация', 'Убеждение: «Если что-то пойдёт не так, случится непоправимое». Мир воспринимается как опасное место.');
-    check(q5Answers, /(катастроф|ужас|кошмар|пропало|конец)/, '🌪 Катастрофизация', 'Убеждение: «Если что-то пойдёт не так, случится непоправимое». Мир воспринимается как опасное место.');
+    const cat = all.filter(t => /(катастроф|ужас|кошмар|пропало|конец|все плохо)/i.test(t));
+    if (cat.length) defenses.push({ title: 'Катастрофизация', count: cat.length, desc: 'Убеждение: «Если что-то пойдёт не так, случится непоправимое».', examples: cat.slice(0, 2) });
 
-    // Долженствование
-    check(q4Answers, /(должен|должна|обязан|обязана|надо|нужно)/, '⚖️ Долженствование', 'Убеждение: «Я должен/должна всё делать правильно». Жизнь по правилам, которые вы сами себе установили.');
-    
-    // Чтение мыслей
-    check(q4Answers, /(думают|подумают|считают|мнение|кажется, что я)/, '👁 Чтение мыслей', 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.');
-
-    // Обесценивание / Самозванец
-    check(q5Answers, /(ничего|недостаточно|плохо|неидеально|не умею|самозван)/, '📉 Обесценивание', 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения и игнорировать успехи.');
-
-    // Гиперответственность
-    check(q4Answers, /(ответственн|отвечать|за все)/, '🏋️ Гиперответственность', 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.');
-
-    return beliefs;
+    return defenses;
 }
 
-// --- 3. ОТРИСОВКА ДИАГРАММЫ ---
+// --- ОТРИСОВКА ДИАГРАММЫ ---
 function drawChart(pc) {
     const ctx = document.getElementById('profileChart');
     if (!ctx) return;
     if (chartInstance) chartInstance.destroy();
     chartInstance = new Chart(ctx, {
         type: 'doughnut',
-        data: {
-            labels: Object.values(P).map(p => p.l),
-            datasets: [{ data: Object.values(pc), backgroundColor: Object.values(P).map(p => p.c), borderWidth: 2, borderColor: '#ffffff' }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 13 }, padding: 15 } } } }
+        data: { labels: Object.values(P).map(p => p.l), datasets: [{ data: Object.values(pc), backgroundColor: Object.values(P).map(p => p.c), borderWidth: 2, borderColor: '#ffffff' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 }
 
-// --- 4. ЭКСПОРТ В WORD ---
+// --- ЭКСПОРТ В WORD ---
 function exportToWord() {
     if (subs.length === 0) return alert("Нет данных.");
     const pc = {balanced:0, mild:0, moderate:0, intense:0};
@@ -126,11 +105,11 @@ function exportToWord() {
     const q4List = subs.map(s => s.q4).filter(t => t && t.trim() !== '');
     const q5List = subs.map(s => s.q5).filter(t => t && t.trim() !== '');
     const themes = analyzeText([...q4List, ...q5List]);
-    const beliefs = extractBeliefs(q4List, q5List);
+    const defenses = analyzeDefenses(q4List, q5List);
 
     let html = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head><meta charset="utf-8"><title>Анализ</title>
+    <head><meta charset="utf-8"><title>Диагностика</title>
     <style>body { font-family: 'Times New Roman', serif; font-size: 12pt; } h1 { text-align: center; } h2 { color: #333; } table { width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px; } th, td { border: 1px solid #ccc; padding: 8px; } th { background: #eee; } .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: #fafafa; }</style>
     </head>
     <body>
@@ -143,15 +122,10 @@ function exportToWord() {
         <h2>2. Тематический анализ</h2>
         <ul>${themes.map(t => `<li>${t.name} — <b>${t.count}</b> упоминаний (${t.percent}%)</li>`).join('')}</ul>
 
-        <h2>3. Выявленные глубинные убеждения (Когнитивные искажения)</h2>
-        ${beliefs.length > 0 ? beliefs.map(b => `
-            <div class="box">
-                <h3>${b.title} (встречается у ${b.count} чел., ${b.percent}%)</h3>
-                <p>${b.desc}</p>
-                <p><i>Примеры из ответов:</i></p>
-                <ul>${b.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul>
-            </div>
-        `).join('') : '<p>Ярко выраженных когнитивных искажений не выявлено.</p>'}
+        <h2>3. Активные психологические защиты</h2>
+        ${defenses.length > 0 ? defenses.map(d => `
+            <div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>
+        `).join('') : '<p>Не выявлено.</p>'}
 
         <h2>4. Список ответов</h2>
         <table><thead><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead><tbody>
@@ -188,14 +162,13 @@ function render(){
     if (view === 'overview' && t > 0) {
         const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
         const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
-        
         const themes = analyzeText([...q4Answers, ...q5Answers]);
-        const beliefs = extractBeliefs(q4Answers, q5Answers);
+        const defenses = analyzeDefenses(q4Answers, q5Answers);
 
         overviewHTML = `
         <div class="grid md:grid-cols-2 gap-4 mb-4">
             <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center justify-center">
-                <h3 class="font-semibold mb-4 text-lg w-full text-left">Профили</h3>
+                <h3 class="font-semibold mb-4 text-lg w-full text-left">Визуализация профилей</h3>
                 <div class="w-full h-64 relative"><canvas id="profileChart"></canvas></div>
             </div>
             <div class="bg-white rounded-xl p-6 shadow-sm">
@@ -208,60 +181,36 @@ function render(){
             </div>
         </div>
 
-        <!-- ГЛУБИННЫЕ УБЕЖДЕНИЯ -->
-        <div class="bg-indigo-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-indigo-500">
-            <h3 class="font-semibold mb-2 text-lg text-indigo-900">🧠 Глубинные убеждения (Когнитивные искажения)</h3>
-            <p class="text-sm text-indigo-700 mb-4">Алгоритм проанализировал тексты и выявил паттерны мышления, которые могут ограничивать вас.</p>
-            ${beliefs.length > 0 ? `
+        <!-- ЗАЩИТЫ -->
+        <div class="bg-rose-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-rose-500">
+            <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты</h3>
+            <p class="text-sm text-rose-700 mb-4">Алгоритм проанализировал тексты и выявил механизмы, которые психика использует для снижения тревоги.</p>
+            ${defenses.length > 0 ? `
                 <div class="grid md:grid-cols-2 gap-4">
-                    ${beliefs.map(b => `
-                        <div class="bg-white p-4 rounded-lg border border-indigo-100 shadow-sm">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="font-bold text-indigo-800">${b.title}</h4>
-                                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded-full">${b.count} чел.</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-3">${b.desc}</p>
-                            <div class="text-xs text-gray-500">
-                                <span class="font-semibold block mb-1">Примеры:</span>
-                                <ul class="list-disc pl-4 space-y-1">
-                                    ${b.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}
-                                </ul>
-                            </div>
+                    ${defenses.map(d => `
+                        <div class="bg-white p-4 rounded-lg border border-rose-100 shadow-sm">
+                            <div class="flex justify-between items-start mb-2"><h4 class="font-bold text-rose-800">${d.title}</h4><span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div>
+                            <p class="text-sm text-gray-600 mb-3">${d.desc}</p>
+                            <div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div>
                         </div>
                     `).join('')}
                 </div>
-            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных искажений не найдено. Тексты выглядят достаточно рационально.</p>'}
+            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
         </div>
 
         <!-- ТЕМЫ -->
         <div class="bg-white rounded-xl p-6 shadow-sm mb-4 border-l-4 border-violet-500">
             <h3 class="font-semibold mb-4 text-lg text-violet-800">Исследование тем</h3>
             <div class="grid md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что мешает свободе (Q4)</h4>
-                    ${analyzeText(q4Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q4Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-violet-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что изматывает (Q5)</h4>
-                    ${analyzeText(q5Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q5Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-fuchsia-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}
-                </div>
+                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что мешает свободе (Q4)</h4>${analyzeText(q4Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q4Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-violet-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
+                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что изматывает (Q5)</h4>${analyzeText(q5Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q5Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-fuchsia-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
             </div>
         </div>
 
-        <!-- СПИСКИ ОТВЕТОВ (Скролл) -->
+        <!-- СПИСКИ ОТВЕТОВ -->
         <div class="grid md:grid-cols-2 gap-4 mb-4">
-            <div class="bg-white rounded-xl p-6 shadow-sm">
-                <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3>
-                <ul class="space-y-2 max-h-60 overflow-y-auto pr-2">
-                    ${q4Answers.length > 0 ? q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('') : '<li class="text-gray-400 text-sm italic">Нет ответов</li>'}
-                </ul>
-            </div>
-            <div class="bg-white rounded-xl p-6 shadow-sm">
-                <h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3>
-                <ul class="space-y-2 max-h-60 overflow-y-auto pr-2">
-                    ${q5Answers.length > 0 ? q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('') : '<li class="text-gray-400 text-sm italic">Нет ответов</li>'}
-                </ul>
-            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
+            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
         </div>
         `;
         setTimeout(() => drawChart(pc), 50);
@@ -302,19 +251,22 @@ function render(){
     return;
   }
 
-  // ... (ОСТАЛЬНОЙ КОД ТЕСТА БЕЗ ИЗМЕНЕНИЙ) ...
+  // --- ТЕСТ ---
   if(step==='intro'){
     app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;
     return;
   }
+  
   if(step==='results'){
     const info = P[prof];
     app.innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}<div class="text-center mb-8"><h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2><p class="text-lg text-violet-600 font-medium">${info.d}</p></div><div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100"><h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3><p>${info.desc}</p></div><div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100"><h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3><p class="leading-relaxed">${info.tip}</p></div><div class="text-center border-t pt-6"><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800 transition-colors">Пройти заново ↺</button></div></div></div>`;
     return;
   }
+  
   const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
   const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
   const can=q.o?a[step]!==null:a[step].trim().length>0;
+  
   app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold transition-colors ${can?'bg-violet-600 text-white hover:bg-violet-700':'bg-gray-200 text-gray-400 cursor-not-allowed'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
 }
 
@@ -329,12 +281,24 @@ function checkNextBtn() {
 }
 
 async function submit(){
+    const btn = document.getElementById('next-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⌛ Сохранение...';
+        btn.className = 'px-6 py-2 rounded-xl font-semibold bg-gray-400 text-white cursor-wait';
+    }
+
     prof=calc();
     try {
-        const { error } = await supabase.from('submissions').insert({ q1: a.q1, q2: a.q2, q3: a.q3, q4: a.q4, q5: a.q5, q6: a.q6, profile: prof });
+        const { error } = await supabase.from('submissions').insert({
+            q1: a.q1, q2: a.q2, q3: a.q3, q4: a.q4, q5: a.q5, q6: a.q6, profile: prof
+        });
         if (error) throw error;
         saved = true;
-    } catch(e) { console.error(e); alert('Ошибка сохранения.'); }
+    } catch(e) {
+        console.error('Ошибка сохранения:', e);
+        alert('Не удалось сохранить ответ. Проверьте настройки доступа в Supabase.');
+    }
     step='results';
     render();
 }
@@ -345,9 +309,21 @@ async function load(){
     try {
         const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
         if (error) throw error;
-        subs = data || [];
-    } catch(e) { console.error(e); alert('Ошибка загрузки.'); } 
-    finally {
+        const uniqueSubs = [];
+        const seen = new Set();
+        (data || []).forEach(sub => {
+            const timeKey = new Date(sub.created_at).toISOString().slice(0, 19);
+            const key = `${sub.q1}_${sub.q2}_${sub.q3}_${sub.q4}_${sub.q5}_${sub.q6}_${timeKey}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueSubs.push(sub);
+            }
+        });
+        subs = uniqueSubs;
+    } catch(e) {
+        console.error('Ошибка загрузки:', e);
+        alert('Ошибка доступа к базе.');
+    } finally {
         if (textEl) textEl.innerText = '🔄 Обновить данные';
         render(); 
     }
