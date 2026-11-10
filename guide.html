@@ -9,14 +9,12 @@
 <body class="bg-slate-50 min-h-screen">
 <div class="max-w-3xl mx-auto p-6">
 
-  <!-- Заголовок -->
   <div class="text-center mb-10">
     <div class="text-6xl mb-4">🧠</div>
     <h1 class="text-3xl font-bold mb-2">Перепрошивка убеждений</h1>
     <p class="text-gray-600">Интерактивная методичка: 4 шага к адаптивному мышлению</p>
   </div>
 
-  <!-- Введение -->
   <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border-l-4 border-violet-500">
     <h2 class="text-xl font-semibold mb-3">Как пользоваться</h2>
     <p class="text-gray-700 mb-2">Эта методичка поможет вам самостоятельно выявить и изменить деструктивную установку. Заполняйте поля по порядку — от ситуации к новой, более гибкой мысли.</p>
@@ -89,7 +87,22 @@
     <textarea id="s4-old" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я должен быть безупречным"></textarea>
 
     <label class="block text-sm font-medium text-gray-700 mb-1">Стало (новая, гибкая мысль)</label>
-    <textarea id="s4-new" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я хотел бы быть внимательным, но у меня есть право на ошибки"></textarea>
+    <textarea id="s4-new" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-2 focus:border-violet-500 outline-none" placeholder="Например: я хотел бы быть внимательным, но у меня есть право на ошибки"></textarea>
+
+    <!-- Подсказки -->
+    <div class="mb-4">
+      <button onclick="showHints()" class="text-sm text-violet-600 hover:text-violet-800 font-medium underline">
+        💡 Не получается переформулировать? Показать подсказки
+      </button>
+      <div id="hints" class="hidden mt-3 bg-violet-50 rounded-xl p-4 text-sm text-gray-700 space-y-2">
+        <p class="font-semibold mb-1">Попробуйте один из вариантов:</p>
+        <p>• «Я <b>могу попробовать</b> выразить раздражение, даже если это будет неидеально»</p>
+        <p>• «Я <b>имею право</b> злиться и говорить об этом, даже если мне страшно»</p>
+        <p>• «Мне <b>не обязательно</b> быть идеально вежливой, чтобы меня принимали»</p>
+        <p>• «Я <b>могу</b> сказать "мне это не нравится", даже если голос дрожит»</p>
+        <p class="mt-2 text-gray-500">Главное — чтобы новая мысль была <b>чуть более смелой</b>, чем сейчас, но реалистичной.</p>
+      </div>
+    </div>
 
     <label class="block text-sm font-medium text-gray-700 mb-1">Как изменилась ваша эмоция после этого? (0–10)</label>
     <input id="s4-emotion" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: тревога снизилась с 7 до 3">
@@ -162,6 +175,11 @@ function reset() {
   fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   localStorage.removeItem('guide_data');
   document.getElementById('result').classList.add('hidden');
+  document.getElementById('hints').classList.add('hidden');
+}
+
+function showHints() {
+  document.getElementById('hints').classList.toggle('hidden');
 }
 
 function showResult() {
@@ -176,10 +194,19 @@ function showResult() {
     return;
   }
 
+  // Проверка: если новая мысль слишком короткая или не содержит "разрешения"
+  let warning = '';
+  if (neu.length < 15) {
+    warning = '<p class="text-amber-700 text-sm mt-2">⚠️ Новая мысль слишком короткая. Попробуйте сформулировать её подробнее — что именно вы себе разрешаете?</p>';
+  } else if (!/(могу|имею право|разрешаю|попробую|не обязательно|хотелось бы)/i.test(neu)) {
+    warning = '<p class="text-amber-700 text-sm mt-2">⚠️ В новой мысли пока нет «разрешения» (могу, имею право, попробую). Попробуйте добавить это слово — оно помогает сдвинуть установку.</p>';
+  }
+
   content.innerHTML = `
     <p><strong>Было:</strong> ${old}</p>
     <p><strong>Стало:</strong> ${neu}</p>
     ${emo ? `<p><strong>Эмоция:</strong> ${emo}</p>` : ''}
+    ${warning}
     <p class="text-sm text-gray-500 mt-3">Сохраните результат или сделайте скриншот. Регулярно возвращайтесь к этой практике.</p>
   `;
   res.classList.remove('hidden');
