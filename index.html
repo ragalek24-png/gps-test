@@ -3,418 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Внутренний компас</title>
+<title>Тест: Ваш внутренний GPS</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>
-  body { 
-    background: #0a0a0f; 
-    color: #e2e8f0; 
-    font-family: 'Georgia', serif;
-    overflow-x: hidden;
-  }
-  .card {
-    background: #14141f;
-    border: 1px solid #2a2a3e;
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
-  }
-  textarea, input { 
-    background: #1a1a2e; 
-    border: 1.5px solid #2a2a3e; 
-    color: #e2e8f0;
-    transition: all 0.3s;
-    font-family: inherit;
-  }
-  textarea:focus, input:focus { 
-    border-color: #a78bfa; 
-    outline: none; 
-    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
-    background: #1e1e36;
-  }
-  textarea::placeholder, input::placeholder {
-    color: #4a4a6a;
-  }
-  .btn { 
-    background: #a78bfa;
-    transition: all 0.3s;
-  }
-  .btn:hover { 
-    background: #c4b5fd;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
-  }
-  .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
-  .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
-  .text-gradient {
-    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .phrase-option {
-    background: #1a1a2e;
-    border-left: 3px solid #a78bfa;
-    transition: all 0.2s;
-  }
-  .phrase-option:hover {
-    background: #252540;
-    border-left-color: #c4b5fd;
-  }
-</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="min-h-screen p-4 flex items-center justify-center">
-
-<div class="max-w-2xl mx-auto w-full">
-
-  <!-- Экран 0 -->
-  <div id="scene-0" class="scene">
-    <div class="text-center mb-8 pt-4">
-      <div class="text-6xl mb-4">🧭</div>
-      <h1 class="text-3xl font-bold text-gradient mb-3">Внутренний компас</h1>
-      <p class="text-lg text-slate-400 mb-8">Как понять, что мешает вам жить — и что с этим делать</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <h2 class="text-xl font-bold text-violet-300 mb-3">О чём это?</h2>
-      <p class="text-slate-300 mb-3 leading-relaxed">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего».</p>
-      <p class="text-slate-300 mb-3 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
-      <p class="text-slate-300 leading-relaxed">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <h2 class="text-xl font-bold text-violet-300 mb-3">Что вас ждёт?</h2>
-      <ul class="text-slate-300 space-y-2">
-        <li>• 5 простых шагов — без сложных терминов.</li>
-        <li>• Записи сохраняются в браузере. Никто их не увидит.</li>
-        <li>• Вы можете вернуться в любой момент.</li>
-      </ul>
-    </div>
-    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg text-white">Начать →</button>
-  </div>
-
-  <!-- Экран 1 -->
-  <div id="scene-1" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🎬</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 1. Что случилось?</h2>
-      <p class="text-slate-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что произошло?</label>
-      <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы сказали себе в тот момент?</label>
-      <textarea id="s1-voice" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Постарайтесь вспомнить дословно.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы почувствовали в теле?</label>
-      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Какие эмоции были сильнее всего?</label>
-      <textarea id="s1-emotions" rows="2" class="w-full p-3 rounded-lg" placeholder="Стыд, страх, злость, обида..."></textarea>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="goTo(0)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(2)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 2 -->
-  <div id="scene-2" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🔍</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 2. Какое правило за этим?</h2>
-      <p class="text-slate-400">То, что вы себе сказали — это верхушка айсберга</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Какое правило стоит за этой мыслью?</label>
-      <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это то, как вы думаете, «должно» быть.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">А какая мысль о себе под этим?</label>
-      <textarea id="s2-core" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это то, что вы думаете о себе, когда никто не видит.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите это?</label>
-      <textarea id="s2-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="Тяжесть, пустоту, злость..."></textarea>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="goTo(1)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(3)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 3 -->
-  <div id="scene-3" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🕰️</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 3. Откуда это взялось?</h2>
-      <p class="text-slate-400">У каждого правила есть история</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Правила не берутся из воздуха. Они формируются в детстве, в школе, в отношениях. Кто-то сказал слово, что-то произошло — и мозг запомнил: «так безопаснее». Давайте найдём истоки.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Когда вы впервые почувствовали что-то подобное?</label>
-      <textarea id="s3-origin" rows="4" class="w-full p-3 rounded-lg mb-2" placeholder="Детство, школа, чьи-то слова..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это может быть одно яркое воспоминание или просто ощущение, которое тянется с детства.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что в жизни это подтверждало?</label>
-      <textarea id="s3-support" rows="4" class="w-full p-3 rounded-lg" placeholder="2–3 примера..."></textarea>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="goTo(2)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(4)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 4 -->
-  <div id="scene-4" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">⚖️</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 4. Проверка</h2>
-      <p class="text-slate-400">Посмотрим, на чём держится это правило</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что, по-вашему, это подтверждает?</label>
-      <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">А что это опровергает?</label>
-      <textarea id="s4-against" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда смотрите на это?</label>
-      <textarea id="s4-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="goTo(3)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(5)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 5 -->
-  <div id="scene-5" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🌱</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 5. Новая мысль</h2>
-      <p class="text-slate-400">Не мечта, а вывод из фактов</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
-      <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
-      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="Начните печатать, или выберите вариант ниже..." onfocus="suggestPhrase()"></textarea>
-      <div id="phrase-hint" class="space-y-2 mb-4"></div>
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
-      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
-    </div>
-    <div class="flex gap-3">
-      <button onclick="goTo(4)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(6)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Завершить</button>
-    </div>
-  </div>
-
-  <!-- Экран 6 -->
-  <div id="scene-6" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-6xl mb-4">🌅</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Ваш разбор</h2>
-      <p class="text-slate-400 mb-6">Сохраните этот экран. Вернитесь к нему через месяц.</p>
-    </div>
-    <div class="card rounded-2xl p-6 mb-6">
-      <div id="summary-content" class="space-y-4 text-slate-300"></div>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <h3 class="text-lg font-bold text-violet-300 mb-3">Что важно помнить</h3>
-      <p class="text-slate-300 mb-3 leading-relaxed">Установки — это не приговор. Они когда-то были защитой. Но их можно менять, если замечать, проверять и пробовать по-новому.</p>
-      <p class="text-slate-300 mb-3 leading-relaxed">Возвращайтесь к этому разбору через неделю, месяц. Сравнивайте, что изменилось. Не требуйте от себя мгновенных перемен — они идут маленькими шагами.</p>
-      <p class="text-slate-300">Если чувствуете, что справиться сложно, — это не слабость. Это сигнал, что нужна поддержка. Можно обратиться к психологу или близкому человеку.</p>
-    </div>
-
-    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">Пройти заново</button>
-  </div>
-
-</div>
-
+<body class="bg-slate-50 min-h-screen">
+<div id="app"></div>
 <script>
-let currentScene = 0;
+const { createClient } = window.supabase;
+const supabase = createClient('https://vurnrdqxbzqijwkcywsf.supabase.co', 'sb_publishable_nsz3vSuJz1JumMT3IVoRMg_vMLEe4n2');
 
-function getHints(text) {
-  const lower = text.toLowerCase();
-  const hints = [];
+const Q = {
+  q1: {s:'Секция 1',t:'Вы написали важное сообщение другу. Он прочитал, но не отвечает полдня. Первая мысль:',o:['Наверное, закрутился','Я написал что-то не то','Людям плевать на меня','Это катастрофа']},
+  q2: {s:'Секция 1',t:'Вы случайно отправили не тот файл в чат. Исправили, но внутри:',o:['Бывает, поехали дальше','Какой я нелепый','Все думают что я непрофессионал','Нужно проверять всё десять раз']},
+  q3: {s:'Секция 2',t:'Ваш внутренний голос после тяжёлого дня чаще всего говорит:',o:['Давай отдохнём, ты молодец','Мог бы и лучше, соберись','Почему ты всё усложняешь?','Завтра будет ещё хуже']},
+  q4: {s:'Секция 3',t:'Закончите фразу:',p:'«Я бы чувствовал(а) себя свободно, если бы не нужно было постоянно...»'},
+  q5: {s:'Секция 3',t:'Закончите фразу:',p:'«Моя суперсила — это [...], но она же меня и изматывает, потому что...»'},
+  q6: {s:'Секция 4',t:'Вам предлагают сложную задачу с риском облажаться. Ваш отклик:',o:['Интересно, попробую','А вдруг я самозванец?','Если не идеально — нет смысла','Лучше откажусь, нет сил']}
+};
 
-  const aggressionKeys = ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж', 'хочу ударить', 'кричу', 'не умею злиться', 'не могу злиться'];
-  if (aggressionKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу выражать злость, не разрушая отношения',
-      'Я имею право злиться и говорить об этом',
-      'Моя агрессия — это сигнал, а не запрет',
-      'Я могу сказать «нет», даже если это кому-то не понравится',
-      'Я могу защищать себя, не чувствуя вины'
-    );
-  }
+const P = {
+  balanced: {l: 'Устойчивый', d: 'GPS на здоровой волне', c: '#10b981', desc: 'Вы обладаете психологической гибкостью. Вы умеете замечать свои эмоции, но не позволяете им управлять вашими решениями. Ошибки воспринимаются как опыт, а не как приговор.', tip: 'Упражнение «Шкала реальности»: Когда чувствуете тревогу, оцените вероятность худшего исхода от 0 до 100%. Затем задайте себе вопрос: «Какие есть факты, подтверждающие и опровергающие это?» Это поможет сохранять тревогу в рамках реальности.'},
+  mild: {l: 'Наблюдатель', d: 'GPS делает крюки', c: '#6366f1', desc: 'У вас есть склонность к рефлексии и самокопанию. Вы часто сомневаетесь в себе, но при этом хорошо анализируете свои поступки. Ваша главная уязвимость — «чтение мыслей» (уверенность, что вы знаете, что о вас думают другие).', tip: 'Упражнение «Адвокат дьявола»: Поймав негативную мысль, выпишите её на бумагу. А теперь представьте, что вы адвокат, которому нужно доказать в суде, что эта мысль — ЛОЖЬ. Приведите 3 железных аргумента ПРОТИВ этой мысли.'},
+  moderate: {l: 'Радар', d: 'Мозг усиливает сигналы', c: '#f59e0b', desc: 'Ваш мозг работает как чувствительный радар, улавливающий малейшие изменения в окружении. Вы склонны к гиперконтролю и катастрофизации («всё пропало»). Это часто сопровождается внутренним напряжением и бессонницей.', tip: 'Практика «Дневник мыслей»: Заведите заметки в телефоне. Каждый раз, когда тревожно, фиксируйте: 1) Ситуация. 2) Мысль. 3) Эмоция. 4) Более реалистичный взгляд на ситуацию. Это снижает накал страстей на 30-40% за неделю.'},
+  intense: {l: 'Исследователь', d: 'Мир насыщен', c: '#a855f7', desc: 'Вы очень остро реагируете на стресс. Ваша нервная система легко перегружается, что приводит к эмоциональному выгоранию. Мир для вас — это постоянный вызов, а внутренний критик — самый громкий голос в голове.', tip: 'Практика «Заземление 5-4-3-2-1»: В момент паники или сильной тревоги, назовите 5 вещей, которые видите, 4 — которые слышите, 3 — которых можете коснуться, 2 — которые чувствуете на запах, и 1 — на вкус. Это вернет вас из мыслей в тело. И обязательно обратитесь к КПТ-терапевту.'}
+};
 
-  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'не могу отказать', 'не могу сказать нет'];
-  if (projectionKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Моя мягкость — это не разрешение другим нарушать мои границы',
-      'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
-      'Я могу говорить «нет» и оставаться добрым(ой)',
-      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
-      'Я могу выбирать, кому открываться, а кому — нет'
-    );
-  }
+let step='intro',a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null},prof='',saved=false,subs=[],view='overview';
+let chartInstance = null;
+const steps=['q1','q2','q3','q4','q5','q6'];
 
-  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
-  if (selfCriticismKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу ошибаться и всё равно быть ценным человеком',
-      'Моя ценность не зависит от того, насколько я хорош(а)',
-      'Я могу быть мягче к себе в этой ситуации',
-      'Я имею право быть неидеальным и всё равно заслуживать уважения'
-    );
-  }
+function calc(){let s=0;if(a.q1!==null)s+=a.q1;if(a.q2!==null)s+=a.q2;if(a.q3!==null)s+=a.q3;if(a.q6!==null)s+=a.q6;return s<=3?'balanced':s<=6?'mild':s<=9?'moderate':'intense';}
 
-  const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'];
-  if (denialKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
-      'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
-      'Я могу сказать «мне плохо» и получить поддержку'
-    );
-  }
-
-  const rationalKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
-  if (rationalKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу не объяснять свои чувства логикой — они просто есть',
-      'Я могу признать, что мне больно, без «потому что»',
-      'Мои чувства не нуждаются в оправдании'
-    );
-  }
-
-  const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник'];
-  if (fearKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Страх — это сигнал, а не запрет на действие',
-      'Я могу действовать, даже если мне страшно',
-      'Я могу попробовать, и мир не рухнет, если не получится'
-    );
-  }
-
-  const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ'];
-  if (tiredKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я имею право на отдых, даже если не всё сделано',
-      'Моя усталость — это сигнал, а не слабость',
-      'Я могу заботиться о себе, не чувствуя вины'
-    );
-  }
-
-  const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня'];
-  if (guiltKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу чувствовать вину, но это не значит, что я виноват(а)',
-      'Моя вина — это не приговор, а сигнал разобраться',
-      'Я могу простить себя и идти дальше'
-    );
-  }
-
-  const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко'];
-  if (shameKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Мне не нужно стыдиться того, что я чувствую',
-      'Стыд — это эмоция, а не оценка меня как человека',
-      'Я могу быть собой, даже если это кому-то не нравится'
-    );
-  }
-
-  if (hints.length === 0) {
-    return [
-      'Я могу попробовать по-другому, даже если пока не уверен(а)',
-      'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации',
-      'Я могу начать с малого шага',
-      'Я не обязан(а) быть идеальным(ой), чтобы двигаться вперёд'
-    ];
-  }
-
-  return [...new Set(hints)];
-}
-
-function suggestPhrase() {
-  const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
-  const hints = getHints(oldText);
-  const container = document.getElementById('phrase-hint');
-  
-  container.innerHTML = hints.map(h => `
-    <div class="phrase-option p-3 rounded-lg text-sm text-slate-400 cursor-pointer" onclick="insertPhrase('${h.replace(/'/g, "\\'")}')">
-      «${h}»
-    </div>
-  `).join('');
-}
-
-function insertPhrase(phrase) {
-  document.getElementById('s5-new').value = phrase;
-  document.getElementById('phrase-hint').innerHTML = '';
-  saveAll();
-}
-
-function goTo(n) {
-  document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
-  document.getElementById('scene-' + n).classList.remove('hidden');
-  currentScene = n;
-  saveAll();
-  if (n === 5) suggestPhrase();
-  if (n === 6) showSummary();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function saveAll() {
-  const data = { currentScene };
-  document.querySelectorAll('textarea, input').forEach(el => {
-    if (el.id) data[el.id] = el.value;
-  });
-  localStorage.setItem('compass_data', JSON.stringify(data));
-}
-
-function loadAll() {
-  const saved = localStorage.getItem('compass_data');
-  if (!saved) return;
-  try {
-    const data = JSON.parse(saved);
-    Object.keys(data).forEach(id => {
-      if (id === 'currentScene') { currentScene = data[id]; }
-      else { const el = document.getElementById(id); if (el) el.value = data[id]; }
+function analyzeText(answers) {
+    const categories = {
+        work_money: ['работ', 'деньг', 'заработ', 'карьер', 'офис'],
+        anxiety: ['тревог', 'пережив', 'страх', 'боюсь', 'паник'],
+        control: ['контрол', 'порядок', 'план', 'идеальн', 'должн', 'обязан'],
+        people: ['люд', 'общ', 'друз', 'семь', 'отношен', 'эмпат', 'мнен'],
+        tiredness: ['устал', 'сил', 'выгор', 'измат', 'энерг', 'отдых'],
+        self_criticism: ['самокрит', 'вина', 'стыд', 'ошибк', 'нелеп']
+    };
+    const counts = {};
+    Object.keys(categories).forEach(key => counts[key] = 0);
+    answers.forEach(text => {
+        const lower = text.toLowerCase();
+        Object.entries(categories).forEach(([cat, words]) => {
+            if (words.some(w => lower.includes(w))) counts[cat]++;
+        });
     });
-    if (currentScene > 0) goTo(currentScene);
-  } catch(e) {}
+    const names = {work_money: '💼 Работа и деньги', anxiety: '🌪 Тревога и страх', control: '⚙️ Контроль и долженствование', people: '🤝 Люди и отношения', tiredness: '🔋 Усталость и истощение', self_criticism: '🪞 Самокритика и вина'};
+    return Object.entries(counts).filter(([_, c]) => c > 0).sort((a,b) => b[1]-a[1]).map(([k, c]) => ({name: names[k], count: c, percent: Math.round((c / answers.length) * 100)}));
 }
 
-function showSummary() {
-  const content = document.getElementById('summary-content');
-  const situation = document.getElementById('s1-situation').value;
-  const voice = document.getElementById('s1-voice').value;
-  const rule = document.getElementById('s2-rule').value;
-  const core = document.getElementById('s2-core').value;
-  const oldB = document.getElementById('s5-old').value;
-  const newB = document.getElementById('s5-new').value;
-  const feeling = document.getElementById('s5-feeling').value;
-
-  content.innerHTML = `
-    <div><p class="text-sm text-slate-500 mb-1">Ситуация</p><p>${situation || '—'}</p></div>
-    <div><p class="text-sm text-slate-500 mb-1">Что вы себе сказали</p><p>${voice || '—'}</p></div>
-    <div><p class="text-sm text-slate-500 mb-1">Правило</p><p>${rule || '—'}</p></div>
-    <div><p class="text-sm text-slate-500 mb-1">Мысль о себе</p><p>${core || '—'}</p></div>
-    <div class="border-t border-slate-700 pt-4"><p class="text-sm text-slate-500 mb-1">Старая мысль</p><p>${oldB || '—'}</p></div>
-    <div><p class="text-sm text-slate-500 mb-1">Новая мысль</p><p class="text-emerald-400 font-semibold">${newB || '—'}</p></div>
-    <div><p class="text-sm text-slate-500 mb-1">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
-  `;
+function analyzeDefenses(q4Answers, q5Answers) {
+    const all = [...q4Answers, ...q5Answers];
+    if (all.length === 0) return [];
+    const defenses = [];
+    const mindReading = all.filter(t => /(подумают|думают обо мне|мнение|считают|кажется, что я|осужд|боюсь показаться)/i.test(t)); if (mindReading.length) defenses.push({ title: 'Чтение мыслей', count: mindReading.length, desc: 'Убеждение: «Я точно знаю, что обо мне думают другие». Высокая чувствительность к чужому мнению.', examples: mindReading.slice(0, 2) });
+    const deval = all.filter(t => /(ничего не получаю|не получаю|все равно|неважно|недостаточно|плохо|неидеальн|обесцен|не умею|не справляюсь|зря)/i.test(t)); if (deval.length) defenses.push({ title: 'Обесценивание', count: deval.length, desc: 'Убеждение: «Я недостаточно хорош(а)». Склонность обесценивать свои достижения.', examples: deval.slice(0, 2) });
+    const hyper = all.filter(t => /(ответственн|отвечать|за все|должен|должна|обязан|обязана|надо)/i.test(t)); if (hyper.length) defenses.push({ title: 'Гиперответственность', count: hyper.length, desc: 'Убеждение: «Я отвечаю за всё, что происходит вокруг». Склонность брать на себя лишнюю нагрузку.', examples: hyper.slice(0, 2) });
+    const cat = all.filter(t => /(катастроф|ужас|кошмар|пропало|конец|все плохо)/i.test(t)); if (cat.length) defenses.push({ title: 'Катастрофизация', count: cat.length, desc: 'Убеждение: «Если что-то пойдёт не так, случится непоправимое».', examples: cat.slice(0, 2) });
+    return defenses;
 }
 
-function resetAll() {
-  if (!confirm('Начать заново? Все записи будут удалены.')) return;
-  localStorage.removeItem('compass_data');
-  location.reload();
+function drawChart(pc) {
+    const ctx = document.getElementById('profileChart');
+    if (!ctx) return;
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: Object.values(P).map(p => p.l), datasets: [{ data: Object.values(pc), backgroundColor: Object.values(P).map(p => p.c), borderWidth: 2, borderColor: '#ffffff' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+    });
 }
 
-document.querySelectorAll('textarea, input').forEach(el => {
-  el.addEventListener('input', saveAll);
-});
+function exportToWord() {
+    if (subs.length === 0) return alert("Нет данных.");
+    const pc = {balanced:0, mild:0, moderate:0, intense:0};
+    subs.forEach(s => { pc[s.profile] = (pc[s.profile] || 0) + 1; });
+    const total = subs.length;
 
-loadAll();
+    const q4List = subs.map(s => s.q4).filter(t => t && t.trim() !== '');
+    const q5List = subs.map(s => s.q5).filter(t => t && t.trim() !== '');
+    const themes = analyzeText([...q4List, ...q5List]);
+    const defenses = analyzeDefenses(q4List, q5List);
+
+    let html = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset="utf-8"><title>Диагностика</title>
+    <style>body { font-family: 'Times New Roman', serif; font-size: 12pt; } h1 { text-align: center; } h2 { color: #333; } table { width: 100%; border-collapse: collapse; font-size: 11pt; margin-bottom: 20px; } th, td { border: 1px solid #ccc; padding: 8px; } th { background: #eee; } .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; background: #fafafa; }</style>
+    </head>
+    <body>
+        <h1>Психологический анализ теста</h1>
+        <p><b>Дата:</b> ${new Date().toLocaleString('ru-RU')} | <b>Всего ответов:</b> ${total}</p>
+        
+        <h2>1. Статистика профилей</h2>
+        <ul>${Object.entries(P).map(([k,v]) => `<li><b>${v.l}:</b> ${pc[k]} чел. (${Math.round((pc[k]/total)*100)}%)</li>`).join('')}</ul>
+
+        <h2>2. Тематический анализ</h2>
+        <ul>${themes.map(t => `<li>${t.name} — <b>${t.count}</b> упоминаний (${t.percent}%)</li>`).join('')}</ul>
+
+        <h2>3. Активные психологические защиты</h2>
+        ${defenses.length > 0 ? defenses.map(d => `
+            <div class="box"><h3>${d.title} (у ${d.count} чел.)</h3><p>${d.desc}</p><p><i>Примеры:</i></p><ul>${d.examples.map(ex => `<li>«${ex}»</li>`).join('')}</ul></div>
+        `).join('') : '<p>Не выявлено.</p>'}
+
+        <h2>4. Список ответов</h2>
+        <table><thead><tr><th>#</th><th>Дата</th><th>Профиль</th><th>Q4</th><th>Q5</th></tr></thead><tbody>
+        ${subs.map((s,i) => `<tr><td>${total-i}</td><td>${new Date(s.created_at).toLocaleString('ru-RU')}</td><td>${P[s.profile]?.l}</td><td>${s.q4||'-'}</td><td>${s.q5||'-'}</td></tr>`).join('')}
+        </tbody></table>
+    </body></html>`;
+
+    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Психологический_анализ_' + new Date().toISOString().slice(0,10) + '.doc';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function render(){
+  const app=document.getElementById('app');
+  
+  if(location.hash==='#admin'){
+    if(!window.isAdmin){
+        const pass = prompt("Введите пароль администратора:");
+        if(pass === 'admin2024'){ window.isAdmin = true; load(); } 
+        else { alert("Неверный пароль"); location.hash = ''; return; }
+    }
+
+    const pc={balanced:0,mild:0,moderate:0,intense:0};
+    subs.forEach(s=>{pc[s.profile]=(pc[s.profile]||0)+1;});
+    const t=subs.length;
+    
+    let overviewHTML = '';
+    if (view === 'overview' && t > 0) {
+        const q4Answers = subs.map(s => s.q4).filter(text => text && text.trim() !== '');
+        const q5Answers = subs.map(s => s.q5).filter(text => text && text.trim() !== '');
+        const themes = analyzeText([...q4Answers, ...q5Answers]);
+        const defenses = analyzeDefenses(q4Answers, q5Answers);
+
+        overviewHTML = `
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white rounded-xl p-6 shadow-sm flex flex-col items-center justify-center">
+                <h3 class="font-semibold mb-4 text-lg w-full text-left">Визуализация профилей</h3>
+                <div class="w-full h-64 relative"><canvas id="profileChart"></canvas></div>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+                <h3 class="font-semibold mb-4 text-lg">Детальная статистика</h3>
+                ${Object.entries(P).map(([k,v])=>{
+                    const c = pc[k] || 0;
+                    const p = t > 0 ? (c/t)*100 : 0;
+                    return `<div class="flex items-center gap-3 mb-3"><span class="w-32 text-sm font-medium">${v.l}</span><div class="flex-1 h-6 bg-gray-100 rounded"><div class="h-full rounded text-white text-xs flex items-center justify-end pr-2" style="width:${Math.max(p,2)}%;background-color:${v.c}">${c}</div></div><span class="text-sm w-12 text-right">${p.toFixed(0)}%</span></div>`;
+                }).join('')}
+            </div>
+        </div>
+
+        <div class="bg-rose-50 rounded-xl p-6 shadow-sm mb-4 border-l-4 border-rose-500">
+            <h3 class="font-semibold mb-2 text-lg text-rose-900">🛡 Активные психологические защиты</h3>
+            <p class="text-sm text-rose-700 mb-4">Алгоритм проанализировал тексты и выявил механизмы, которые психика использует для снижения тревоги.</p>
+            ${defenses.length > 0 ? `
+                <div class="grid md:grid-cols-2 gap-4">
+                    ${defenses.map(d => `
+                        <div class="bg-white p-4 rounded-lg border border-rose-100 shadow-sm">
+                            <div class="flex justify-between items-start mb-2"><h4 class="font-bold text-rose-800">${d.title}</h4><span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-1 rounded-full">${d.count} чел.</span></div>
+                            <p class="text-sm text-gray-600 mb-3">${d.desc}</p>
+                            <div class="text-xs text-gray-500"><span class="font-semibold block mb-1">Примеры:</span><ul class="list-disc pl-4 space-y-1">${d.examples.map(ex => `<li class="italic">«${ex}»</li>`).join('')}</ul></div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '<p class="text-sm text-gray-500 italic">Ярко выраженных защит не найдено.</p>'}
+        </div>
+
+        <div class="bg-white rounded-xl p-6 shadow-sm mb-4 border-l-4 border-violet-500">
+            <h3 class="font-semibold mb-4 text-lg text-violet-800">Исследование тем</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что мешает свободе (Q4)</h4>${analyzeText(q4Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q4Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-violet-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
+                <div><h4 class="font-bold text-gray-700 mb-3 border-b pb-2">Что изматывает (Q5)</h4>${analyzeText(q5Answers).length > 0 ? `<ul class="space-y-3">${analyzeText(q5Answers).map(item => `<li><div class="flex justify-between text-sm mb-1"><span class="font-medium">${item.name}</span><span class="text-gray-500">${item.count} чел.</span></div><div class="w-full bg-gray-100 rounded-full h-2"><div class="bg-fuchsia-500 h-2 rounded-full" style="width: ${item.percent}%"></div></div></li>`).join('')}</ul>` : '<p class="text-sm text-gray-400">Нет данных</p>'}</div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q4</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q4Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
+            <div class="bg-white rounded-xl p-6 shadow-sm"><h3 class="font-semibold mb-2 text-lg text-violet-700">Ответы на Q5</h3><ul class="space-y-2 max-h-60 overflow-y-auto pr-2">${q5Answers.map(ans => `<li class="bg-violet-50 p-3 rounded-lg text-sm text-gray-800 border-l-4 border-violet-300">${ans}</li>`).join('')}</ul></div>
+        </div>
+        `;
+        setTimeout(() => drawChart(pc), 50);
+    }
+
+    let listHTML = '';
+    if (view === 'list') {
+        listHTML = `<div class="bg-white rounded-xl p-6 mb-4 shadow-sm"><h3 class="font-semibold mb-4 text-lg">Все ответы (${t})</h3>`;
+        if (t === 0) listHTML += '<p>Пока нет ответов</p>';
+        else {
+            listHTML += `<div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b"><th class="p-2">#</th><th class="p-2">Дата</th><th class="p-2">Профиль</th><th class="p-2">Q4</th><th class="p-2">Q5</th></tr></thead><tbody>`;
+            listHTML += subs.map((s,i)=>`<tr class="border-b"><td class="p-2">${t-i}</td><td class="p-2 text-sm whitespace-nowrap">${new Date(s.created_at).toLocaleString('ru-RU')}</td><td class="p-2"><span class="px-2 py-1 rounded text-xs text-white" style="background-color:${P[s.profile]?.c}">${P[s.profile]?.l}</span></td><td class="p-2 text-sm">${s.q4 || '-'}</td><td class="p-2 text-sm">${s.q5 || '-'}</td></tr>`).join('');
+            listHTML += `</tbody></table></div>`;
+        }
+        listHTML += `</div>`;
+    }
+
+    app.innerHTML = `<div class="min-h-screen bg-gray-50 p-4"><div class="max-w-6xl mx-auto">
+        <div class="bg-white rounded-xl p-6 mb-6 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                <h1 class="text-2xl font-bold">Админ-панель</h1>
+                <button onclick="exportToWord()" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors flex items-center gap-2">📄 Скачать полный анализ в Word</button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                <div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold">${t}</div><div class="text-sm text-gray-500">Всего ответов</div></div>
+                ${Object.entries(P).map(([k,v])=>`<div class="bg-gray-50 rounded-xl p-4 border"><div class="text-3xl font-bold" style="color:${v.c}">${pc[k]}</div><div class="text-sm">${v.l}</div></div>`).join('')}
+            </div>
+            <button onclick="load()" id="refresh-btn" class="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors flex items-center gap-2"><span id="refresh-text">🔄 Обновить данные</span></button>
+        </div>
+        
+        ${view === 'overview' ? overviewHTML : listHTML}
+        
+        <div class="flex gap-2">
+            <button onclick="view='overview';render()" class="px-4 py-2 rounded-lg font-medium ${view==='overview'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Обзор</button>
+            <button onclick="view='list';render()" class="px-4 py-2 rounded-lg font-medium ${view==='list'?'bg-violet-600 text-white shadow-sm':'bg-white border text-gray-700 hover:bg-gray-50'}">Список ответов</button>
+        </div>
+    </div></div>`;
+    return;
+  }
+
+  if(step==='intro'){app.innerHTML=`<div class="min-h-screen flex items-center justify-center p-4"><div class="text-center"><div class="text-6xl mb-6">🧭</div><h1 class="text-3xl font-bold mb-4">Ваш внутренний GPS<br/>в стрессовых ситуациях</h1><p class="text-lg text-gray-600 mb-6 max-w-lg">Пара быстрых вопросов о том, как ваш мозг реагирует на мелочи. 1 минута, анонимно.</p><button onclick="step='q1';render()" class="px-8 py-4 bg-violet-600 text-white rounded-xl text-lg hover:bg-violet-700 transition-colors">Начать тест →</button></div></div>`;return;}
+  
+  if(step==='results'){const info = P[prof];app.innerHTML = `<div class="min-h-screen flex items-center justify-center p-4 py-12"><div class="bg-white rounded-2xl shadow-xl p-8 max-w-xl w-full">${saved ? '<div class="text-green-600 mb-4 text-center font-medium">✓ Ответы сохранены</div>' : ''}<div class="text-center mb-8"><h2 class="text-4xl font-bold mb-2 text-gray-800">${info.l}</h2><p class="text-lg text-violet-600 font-medium">${info.d}</p></div><div class="bg-gray-50 rounded-xl p-6 mb-6 text-gray-700 leading-relaxed border border-gray-100"><h3 class="font-bold mb-3 text-gray-900 flex items-center gap-2"><span class="text-xl">🧠</span> Что это значит?</h3><p>${info.desc}</p></div><div class="bg-violet-50 rounded-xl p-6 mb-8 text-gray-800 border border-violet-100"><h3 class="font-bold mb-3 text-violet-800 flex items-center gap-2"><span class="text-xl">💡</span> Практический совет</h3><p class="leading-relaxed">${info.tip}</p></div><div class="text-center border-t pt-6"><a href="guide.html" class="inline-block px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors mb-4">🧭 Перейти к разбору установки →</a><br><button onclick="a={q1:null,q2:null,q3:null,q4:'',q5:'',q6:null};saved=false;step='intro';render()" class="text-violet-600 font-medium hover:text-violet-800">Пройти заново ↺</button></div></div></div>`;return;}
+  
+  const q=Q[step];const ci=steps.indexOf(step);const prog=(ci+1)/steps.length*100;
+  const qHTML=q.o?`<div class="space-y-3">${q.o.map((opt,i)=>`<label class="block p-4 rounded-xl border-2 cursor-pointer ${a[step]===i?'border-violet-500 bg-violet-50':'border-gray-200'}"><input type="radio" ${a[step]===i?'checked':''} onchange="a['${step}']=${i};render()" class="hidden"/><span>${opt}</span></label>`).join('')}</div>`:`<textarea oninput="a['${step}']=this.value; checkNextBtn()" placeholder="Напишите..." class="w-full p-4 border-2 rounded-xl h-32">${a[step]}</textarea>`;
+  const can=q.o?a[step]!==null:a[step].trim().length>0;
+  app.innerHTML=`<div class="min-h-screen p-4"><div class="max-w-2xl mx-auto py-8"><div class="mb-6"><div class="flex justify-between text-sm mb-2"><span>Вопрос ${ci+1} из 6</span><span>${Math.round(prog)}%</span></div><div class="h-2 bg-gray-200 rounded-full"><div class="h-full bg-violet-500 rounded-full" style="width:${prog}%"></div></div></div><div class="bg-white rounded-xl shadow-xl p-6"><div class="text-xs text-violet-500 uppercase mb-2">${q.s}</div><h2 class="text-xl font-semibold mb-6">${q.t}</h2>${q.p?`<p class="text-gray-500 text-sm mb-4">${q.p}</p>`:''}${qHTML}</div><div class="flex justify-between mt-6">${ci>0?`<button onclick="step=steps[${ci-1}];render()" class="px-5 py-2 text-gray-500 hover:text-gray-800">← Назад</button>`:'<div></div>'}<button id="next-btn" onclick="${ci<5?`step=steps[${ci+1}];render()`:'submit()'}" ${!can?'disabled':''} class="px-6 py-2 rounded-xl font-semibold transition-colors ${can?'bg-violet-600 text-white hover:bg-violet-700':'bg-gray-200 text-gray-400 cursor-not-allowed'}">${ci<5?'Далее →':'Результат ✨'}</button></div></div></div>`;
+}
+
+function checkNextBtn() {
+    const txtArea = document.querySelector('textarea');
+    const nextBtn = document.getElementById('next-btn');
+    if (txtArea && nextBtn) {
+        const hasText = txtArea.value.trim().length > 0;
+        nextBtn.disabled = !hasText;
+        nextBtn.className = hasText ? 'px-6 py-2 rounded-xl font-semibold bg-violet-600 text-white hover:bg-violet-700 transition-colors' : 'px-6 py-2 rounded-xl font-semibold bg-gray-200 text-gray-400 cursor-not-allowed';
+    }
+}
+
+async function submit(){
+    const btn = document.getElementById('next-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerText = '⌛ Сохранение...';
+        btn.className = 'px-6 py-2 rounded-xl font-semibold bg-gray-400 text-white cursor-wait';
+    }
+
+    prof=calc();
+    try {
+        const { error } = await supabase.from('submissions').insert({
+            q1: a.q1, q2: a.q2, q3: a.q3, q4: a.q4, q5: a.q5, q6: a.q6, profile: prof
+        });
+        if (error) throw error;
+        saved = true;
+    } catch(e) {
+        console.error('Ошибка сохранения:', e);
+        alert('Не удалось сохранить ответ. Проверьте настройки доступа в Supabase.');
+    }
+    step='results';
+    render();
+}
+
+async function load(){
+    const textEl = document.getElementById('refresh-text');
+    if (textEl) textEl.innerText = '⌛ Загрузка...';
+    try {
+        const { data, error } = await supabase.from('submissions').select('*').order('created_at', {ascending:false});
+        if (error) throw error;
+        const uniqueSubs = [];
+        const seen = new Set();
+        (data || []).forEach(sub => {
+            const timeKey = new Date(sub.created_at).toISOString().slice(0, 19);
+            const key = `${sub.q1}_${sub.q2}_${sub.q3}_${sub.q4}_${sub.q5}_${sub.q6}_${timeKey}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueSubs.push(sub);
+            }
+        });
+        subs = uniqueSubs;
+    } catch(e) {
+        console.error('Ошибка загрузки:', e);
+        alert('Ошибка доступа к базе. Проверьте политики (Policies) в Supabase.');
+    } finally {
+        if (textEl) textEl.innerText = '🔄 Обновить данные';
+        render(); 
+    }
+}
+
+window.addEventListener('hashchange',render);
+render();
 </script>
 </body>
 </html>
