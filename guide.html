@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Путь к себе: работа с глубинным убеждением</title>
+<title>Разбор полётов: как перестать накручивать себя</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { 
@@ -63,12 +63,10 @@
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-30px) rotate(15deg); }
   }
-  .progress-ring { transition: stroke-dashoffset 0.5s ease; }
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
 
-<!-- Фоновые частицы -->
 <div class="particle" style="top: 10%; left: 10%;">🌙</div>
 <div class="particle" style="top: 20%; right: 15%; animation-delay: 1s;">✨</div>
 <div class="particle" style="bottom: 15%; left: 20%; animation-delay: 2s;">💫</div>
@@ -79,111 +77,111 @@
   <!-- Экран 0: Введение -->
   <div id="scene-0" class="scene">
     <div class="text-center mb-8 pt-8">
-      <div class="text-7xl mb-6">🌌</div>
-      <h1 class="text-4xl font-bold glow mb-4 text-gradient">Путь к себе</h1>
-      <p class="text-gray-400 text-lg mb-8">Интерактивное путешествие по лабиринтам своего подсознания</p>
+      <div class="text-7xl mb-6">🎢</div>
+      <h1 class="text-4xl font-bold glow mb-4 text-gradient">Разбор полётов</h1>
+      <p class="text-gray-400 text-lg mb-8">Как перестать накручивать себя и начать жить</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <p class="text-gray-300 mb-4 leading-relaxed">Каждый день мы слышим в голове голос, который комментирует наши действия. Иногда он говорит тихо, иногда кричит. Этот голос кажется нам нашим собственным, но это не так. Это — программа, которая когда-то помогала нам выжить, а теперь мешает жить.</p>
-      <p class="text-gray-300 leading-relaxed">Сегодня мы отправимся в путешествие. Мы встретимся с этим голосом лицом к лицу, узнаем, откуда он взялся, и попробуем его перепрограммировать. Это будет не быстро. Но это будет честно.</p>
+      <p class="text-gray-300 mb-4 leading-relaxed">В голове у каждого из нас живёт голос. Он комментирует всё, что мы делаем: «ну и зачем ты это сказал», «да кто тебя послушает», «опять ты всё испортил». Мы привыкли думать, что это наш голос. Но это не так.</p>
+      <p class="text-gray-300 leading-relaxed">Это голос установки — правила, которое когда-то помогло нам выжить, а теперь мешает жить. Сегодня мы разберём одну из таких установок. Не за один вечер, конечно. Но мы хотя бы посмотрим, откуда она взялась и как её переписать.</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-6 border border-white/10 mb-8">
-      <p class="text-sm text-gray-400 mb-2">📜 Правила путешествия:</p>
+      <p class="text-sm text-gray-400 mb-2">📜 Что нужно знать:</p>
       <ul class="text-sm text-gray-300 space-y-2">
-        <li>• Будьте честны с собой. Здесь нет неправильных ответов.</li>
-        <li>• Не торопитесь. Путь важнее результата.</li>
-        <li>• Ваши ответы сохраняются в этом браузере. Никто их не увидит.</li>
+        <li>• Это не тест. Здесь нет правильных ответов.</li>
+        <li>• Не торопитесь. Можно возвращаться.</li>
+        <li>• Всё, что вы напишете, останется в вашем браузере.</li>
       </ul>
     </div>
 
     <button onclick="goTo(1)" class="btn w-full py-4 rounded-2xl font-bold text-lg text-white">
-      Начать путешествие →
+      Поехали →
     </button>
   </div>
 
-  <!-- Экран 1: Встреча с голосом -->
+  <!-- Экран 1: Что случилось -->
   <div id="scene-1" class="scene hidden">
     <div class="text-center mb-8 pt-8">
-      <div class="text-6xl mb-4">🎭</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Встреча с голосом</h2>
-      <p class="text-gray-400">Вспомните ситуацию, где внутренний критик был особенно громким</p>
+      <div class="text-6xl mb-4">🎬</div>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">Что случилось?</h2>
+      <p class="text-gray-400">Вспомните ситуацию, где вы сами себя закопали</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
       <label class="block text-sm text-gray-400 mb-2">Что произошло?</label>
-      <textarea id="s1-situation" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Опишите ситуацию, которая вызвала сильные эмоции..."></textarea>
+      <textarea id="s1-situation" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Опишите ситуацию, которая выбила вас из колеи..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что сказал голос? (дословно)</label>
-      <textarea id="s1-voice" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="«Ты не справишься», «Ты недостаточно хорош»..."></textarea>
+      <label class="block text-sm text-gray-400 mb-2">Что вы сказали себе в тот момент?</label>
+      <textarea id="s1-voice" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что вы почувствовали в теле?</label>
-      <textarea id="s1-body" rows="2" class="w-full p-4 rounded-xl mb-6" placeholder="Напряжение, сжатие, тяжесть..."></textarea>
+      <label class="block text-sm text-gray-400 mb-2">Что вы почувствовали?</label>
+      <textarea id="s1-body" rows="2" class="w-full p-4 rounded-xl mb-6" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
     </div>
 
     <button onclick="goTo(2)" class="btn w-full py-4 rounded-2xl font-bold text-white">Дальше →</button>
   </div>
 
-  <!-- Экран 2: Спуск к корню -->
+  <!-- Экран 2: В чём фишка -->
   <div id="scene-2" class="scene hidden">
     <div class="text-center mb-8 pt-8">
-      <div class="text-6xl mb-4">🕳️</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Спуск к корню</h2>
-      <p class="text-gray-400">Голос — это верхушка айсберга. Под ним скрывается глубинное убеждение</p>
+      <div class="text-6xl mb-4">🔍</div>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">А в чём, собственно, фишка?</h2>
+      <p class="text-gray-400">То, что вы себе сказали — это не просто мысль. Это установка</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Какое правило стоит за этим голосом?</label>
+      <label class="block text-sm text-gray-400 mb-2">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-4 rounded-xl mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Правило — это то, как вы думаете, «должно» быть.</p>
+      <p class="text-xs text-gray-500 mb-6">Это то, как вы думаете, «должно» быть.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">А что под правилом? Какое убеждение о себе?</label>
+      <label class="block text-sm text-gray-400 mb-2">А какая установка о себе под этим?</label>
       <textarea id="s2-core" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Убеждение — это абсолютное утверждение о себе, которое кажется фактом.</p>
+      <p class="text-xs text-gray-500 mb-6">Это то, что вы думаете о себе, когда никто не видит.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Насколько вы верите в это убеждение сейчас? (0–100%)</label>
+      <label class="block text-sm text-gray-400 mb-2">Насколько вы в это верите? (0–100%)</label>
       <input id="s2-level" type="number" min="0" max="100" class="w-full p-4 rounded-xl mb-6" placeholder="80">
     </div>
 
     <button onclick="goTo(3)" class="btn w-full py-4 rounded-2xl font-bold text-white">Дальше →</button>
   </div>
 
-  <!-- Экран 3: Происхождение -->
+  <!-- Экран 3: Откуда ноги растут -->
   <div id="scene-3" class="scene hidden">
     <div class="text-center mb-8 pt-8">
-      <div class="text-6xl mb-4">📜</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Откуда это взялось?</h2>
-      <p class="text-gray-400">У каждого убеждения есть история</p>
+      <div class="text-6xl mb-4">🕰️</div>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">Откуда ноги растут?</h2>
+      <p class="text-gray-400">У каждой установки есть история</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Когда вы впервые почувствовали это?</label>
-      <textarea id="s3-origin" rows="4" class="w-full p-4 rounded-xl mb-6" placeholder="Ранний опыт, значимые взрослые, повторяющиеся ситуации..."></textarea>
+      <label class="block text-sm text-gray-400 mb-2">Когда вы впервые почувствовали что-то подобное?</label>
+      <textarea id="s3-origin" rows="4" class="w-full p-4 rounded-xl mb-6" placeholder="Детство, школа, чьи-то слова..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Какие ситуации в жизни его подтверждали?</label>
+      <label class="block text-sm text-gray-400 mb-2">Что в жизни это подтверждало?</label>
       <textarea id="s3-support" rows="4" class="w-full p-4 rounded-xl mb-6" placeholder="2–3 примера..."></textarea>
     </div>
 
     <button onclick="goTo(4)" class="btn w-full py-4 rounded-2xl font-bold text-white">Дальше →</button>
   </div>
 
-  <!-- Экран 4: Суд над убеждением -->
+  <!-- Экран 4: Проверка на вшивость -->
   <div id="scene-4" class="scene hidden">
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">⚖️</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Суд над убеждением</h2>
-      <p class="text-gray-400">Проверьте его на прочность</p>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка на вшивость</h2>
+      <p class="text-gray-400">Давайте посмотрим, на чём вообще держится эта установка</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Факты, которые, как вам кажется, подтверждают его</label>
+      <label class="block text-sm text-gray-400 mb-2">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Проверьте: это факт или интерпретация?</p>
+      <p class="text-xs text-gray-500 mb-6">Это факт или просто ваша интерпретация?</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Факты, которые его опровергают</label>
+      <label class="block text-sm text-gray-400 mb-2">А что это опровергает?</label>
       <textarea id="s4-against" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Проверьте: это факт или интерпретация?</p>
+      <p class="text-xs text-gray-500 mb-6">Это факт или просто ваша интерпретация?</p>
 
       <label class="block text-sm text-gray-400 mb-2">Что вы замечаете, когда смотрите на это?</label>
       <textarea id="s4-insight" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
@@ -201,36 +199,36 @@
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Старое убеждение</label>
+      <label class="block text-sm text-gray-400 mb-2">Старая установка</label>
       <textarea id="s5-old" rows="2" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Новое убеждение</label>
+      <label class="block text-sm text-gray-400 mb-2">Новая установка</label>
       <textarea id="s5-new" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Вызывает ли это доверие? Если нет — сделайте более приземлённым.</p>
+      <p class="text-xs text-gray-500 mb-6">Звучит правдоподобно? Если нет — сделайте попроще.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Насколько вы верите в новое убеждение? (0–100%)</label>
+      <label class="block text-sm text-gray-400 mb-2">Насколько вы верите в новую установку? (0–100%)</label>
       <input id="s5-level" type="number" min="0" max="100" class="w-full p-4 rounded-xl mb-6" placeholder="40">
     </div>
 
     <button onclick="goTo(6)" class="btn w-full py-4 rounded-2xl font-bold text-white">Дальше →</button>
   </div>
 
-  <!-- Экран 6: Эксперимент -->
+  <!-- Экран 6: Проверка на практике -->
   <div id="scene-6" class="scene hidden">
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">⚡</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка реальностью</h2>
-      <p class="text-gray-400">Убеждение меняется только через опыт</p>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка на практике</h2>
+      <p class="text-gray-400">Установка меняется только через опыт</p>
     </div>
 
     <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Что вы сделаете, чтобы проверить новое убеждение?</label>
-      <textarea id="s6-action" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Конкретное действие в ближайшие 24 часа..."></textarea>
+      <label class="block text-sm text-gray-400 mb-2">Что вы сделаете, чтобы проверить новую установку?</label>
+      <textarea id="s6-action" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Маленькое конкретное действие в ближайшие 24 часа..."></textarea>
 
       <label class="block text-sm text-gray-400 mb-2">Что произошло на самом деле?</label>
       <textarea id="s6-result" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Заполните после действия..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что это говорит о старом и новом убеждении?</label>
+      <label class="block text-sm text-gray-400 mb-2">Что это говорит о старой и новой установке?</label>
       <textarea id="s6-conclusion" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
     </div>
 
@@ -241,7 +239,7 @@
   <div id="scene-7" class="scene hidden">
     <div class="text-center mb-8 pt-8">
       <div class="text-7xl mb-4">🌅</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Путь завершён</h2>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">На этом всё</h2>
       <p class="text-gray-400">Но это только начало</p>
     </div>
 
@@ -258,7 +256,6 @@
 
 <script>
 let currentScene = 0;
-const totalScenes = 7;
 
 function goTo(n) {
   document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
@@ -305,17 +302,17 @@ function showSummary() {
 
   content.innerHTML = `
     <div class="border-l-4 border-violet-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Старое убеждение</p>
+      <p class="text-sm text-gray-500 mb-1">Старая установка</p>
       <p class="text-lg">${oldB || '—'}</p>
       <p class="text-sm text-gray-500 mt-1">Вера: ${oldLevel || '—'}%</p>
     </div>
     <div class="border-l-4 border-emerald-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Новое убеждение</p>
+      <p class="text-sm text-gray-500 mb-1">Новая установка</p>
       <p class="text-lg text-emerald-400">${newB || '—'}</p>
       <p class="text-sm text-gray-500 mt-1">Вера: ${newLevel || '—'}%</p>
     </div>
     <div class="border-l-4 border-amber-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Проверка реальностью</p>
+      <p class="text-sm text-gray-500 mb-1">Проверка на практике</p>
       <p>${action || '—'}</p>
       ${result ? `<p class="mt-2 text-sm text-gray-400">Результат: ${result}</p>` : ''}
     </div>
@@ -324,7 +321,7 @@ function showSummary() {
 }
 
 function resetAll() {
-  if (!confirm('Начать путешествие заново? Все записи будут удалены.')) return;
+  if (!confirm('Начать заново? Все записи будут удалены.')) return;
   localStorage.removeItem('journey_data');
   location.reload();
 }
