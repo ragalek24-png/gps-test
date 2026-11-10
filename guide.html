@@ -3,217 +3,273 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Перепрошивка убеждений: методичка</title>
+<title>Протокол работы с глубинным убеждением</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background: #f8fafc; font-family: 'Inter', system-ui, sans-serif; }
+  .stage-card { transition: all 0.3s ease; }
+  .stage-card.active { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+  .stage-card.done { border-color: #10b981; opacity: 0.85; }
+  textarea, input[type="text"], input[type="number"] { background: white; border: 1.5px solid #e2e8f0; transition: border 0.2s; }
+  textarea:focus, input:focus { border-color: #8b5cf6; outline: none; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+  .progress-bar { background: linear-gradient(90deg, #8b5cf6, #a78bfa); transition: width 0.4s ease; }
+</style>
 </head>
-<body class="bg-slate-50 min-h-screen">
-<div class="max-w-3xl mx-auto p-6">
+<body class="min-h-screen p-4">
+<div class="max-w-3xl mx-auto">
 
-  <div class="text-center mb-10">
-    <div class="text-6xl mb-4">🧠</div>
-    <h1 class="text-3xl font-bold mb-2">Перепрошивка убеждений</h1>
-    <p class="text-gray-600">Интерактивная методичка: 4 шага к адаптивному мышлению</p>
+  <div class="text-center mb-10 pt-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">Работа с глубинным убеждением</h1>
+    <p class="text-gray-500">Протокол из 6 этапов</p>
   </div>
 
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border-l-4 border-violet-500">
-    <h2 class="text-xl font-semibold mb-3">Как пользоваться</h2>
-    <p class="text-gray-700 mb-2">Эта методичка поможет вам самостоятельно выявить и изменить деструктивную установку. Заполняйте поля по порядку — от ситуации к новой, более гибкой мысли.</p>
-    <p class="text-gray-500 text-sm">Ваши ответы сохраняются в этом браузере и никуда не отправляются. Вы можете вернуться к работе позже.</p>
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-8 border-l-4 border-violet-500">
+    <h2 class="text-xl font-semibold mb-3 text-gray-800">Как это работает</h2>
+    <p class="text-gray-700 mb-2">Это не методичка на 10 минут. Это протокол, который помогает выявить глубинное убеждение, проверить его на прочность и сформулировать альтернативу, основанную на фактах.</p>
+    <p class="text-gray-500 text-sm">Заполняйте этапы по порядку. Каждый этап требует времени и честности. Если застряли — вернитесь к предыдущему.</p>
   </div>
 
-  <!-- Шаг 1 -->
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
-      <h2 class="text-xl font-semibold">Фиксация ситуации и эмоции</h2>
+  <!-- Прогресс -->
+  <div class="mb-6">
+    <div class="flex justify-between text-sm text-gray-500 mb-2">
+      <span>Прогресс</span>
+      <span id="progress-text">0 / 6 этапов</span>
     </div>
-    <p class="text-gray-600 mb-4">Вспомните ситуацию, которая вызвала у вас сильный дискомфорт. Опишите её и оцените эмоцию.</p>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Что произошло?</label>
-    <textarea id="s1-situation" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: начальник сделал замечание при коллегах"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Что вы почувствовали? Оцените силу от 0 до 10</label>
-    <input id="s1-emotion" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: стыд 8, тревога 7">
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Как вы отреагировали?</label>
-    <textarea id="s1-action" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: замкнулся, перестал говорить"></textarea>
-  </div>
-
-  <!-- Шаг 2 -->
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
-      <h2 class="text-xl font-semibold">Выявление установки</h2>
-    </div>
-    <p class="text-gray-600 mb-4">Какая мысль пронеслась у вас в голове? А что она говорит о вас? Спуститесь «стрелкой вниз» к глубинному убеждению.</p>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Автоматическая мысль</label>
-    <textarea id="s2-thought" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я не справляюсь"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Что это говорит обо мне?</label>
-    <textarea id="s2-meaning" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я плохой работник"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Глубинная установка</label>
-    <textarea id="s2-belief" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: я должен быть безупречным, иначе я неудачник"></textarea>
-  </div>
-
-  <!-- Шаг 3 -->
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
-      <h2 class="text-xl font-semibold">Диспутинг</h2>
-    </div>
-    <p class="text-gray-600 mb-4">Проверьте мысль на доказательства. Ответьте на три вопроса.</p>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">1. Где доказательства, что эта мысль на 100% верна?</label>
-    <textarea id="s3-evidence" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я действительно допустил ошибку"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">2. Какие факты говорят против этой мысли?</label>
-    <textarea id="s3-against" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я справился с пятью проектами в этом году"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">3. Помогает ли мне эта мысль достигать целей?</label>
-    <textarea id="s3-help" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: нет, она заставляет меня бояться новых задач"></textarea>
-  </div>
-
-  <!-- Шаг 4 -->
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-    <div class="flex items-center gap-3 mb-4">
-      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</span>
-      <h2 class="text-xl font-semibold">Формирование адаптивной установки</h2>
-    </div>
-    <p class="text-gray-600 mb-4">Замените категоричные слова («должен», «всегда», «никогда») на вероятностные («хотелось бы», «иногда», «могу попробовать»).</p>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Было (деструктивная установка)</label>
-    <textarea id="s4-old" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я должен быть безупречным"></textarea>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Стало (новая, гибкая мысль)</label>
-    <textarea id="s4-new" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-2 focus:border-violet-500 outline-none" placeholder="Например: я хотел бы быть внимательным, но у меня есть право на ошибки"></textarea>
-
-    <!-- Подсказки -->
-    <div class="mb-4">
-      <button onclick="showHints()" class="text-sm text-violet-600 hover:text-violet-800 font-medium underline">
-        💡 Не получается переформулировать? Показать подсказки
-      </button>
-      <div id="hints" class="hidden mt-3 bg-violet-50 rounded-xl p-4 text-sm text-gray-700 space-y-2">
-        <p class="font-semibold mb-1">Попробуйте один из вариантов:</p>
-        <p>• «Я <b>могу попробовать</b> выразить раздражение, даже если это будет неидеально»</p>
-        <p>• «Я <b>имею право</b> злиться и говорить об этом, даже если мне страшно»</p>
-        <p>• «Мне <b>не обязательно</b> быть идеально вежливой, чтобы меня принимали»</p>
-        <p>• «Я <b>могу</b> сказать "мне это не нравится", даже если голос дрожит»</p>
-        <p class="mt-2 text-gray-500">Главное — чтобы новая мысль была <b>чуть более смелой</b>, чем сейчас, но реалистичной.</p>
-      </div>
-    </div>
-
-    <label class="block text-sm font-medium text-gray-700 mb-1">Как изменилась ваша эмоция после этого? (0–10)</label>
-    <input id="s4-emotion" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: тревога снизилась с 7 до 3">
-  </div>
-
-  <!-- Кнопки -->
-  <div class="flex flex-wrap gap-3 justify-center mb-8">
-    <button onclick="save()" class="px-6 py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">💾 Сохранить</button>
-    <button onclick="showResult()" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700">✨ Показать результат</button>
-    <button onclick="reset()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300">↺ Очистить</button>
-  </div>
-
-  <!-- Результат -->
-  <div id="result" class="hidden bg-emerald-50 border-l-4 border-emerald-500 rounded-2xl p-6 mb-8">
-    <h2 class="text-xl font-semibold mb-3 text-emerald-900">Ваш результат</h2>
-    <div id="result-content" class="text-gray-800 space-y-2"></div>
-  </div>
-
-  <!-- Дополнительные упражнения -->
-  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-    <h2 class="text-xl font-semibold mb-4">Дополнительные упражнения</h2>
-    <div class="space-y-4">
-      <div class="bg-violet-50 rounded-xl p-4">
-        <h3 class="font-semibold mb-1">Дневник побед</h3>
-        <p class="text-sm text-gray-600">Для установки «Я недостаточно хорош». Каждый вечер записывайте 3 вещи, которые у вас получились сегодня, даже маленькие.</p>
-      </div>
-      <div class="bg-violet-50 rounded-xl p-4">
-        <h3 class="font-semibold mb-1">Круг контроля</h3>
-        <p class="text-sm text-gray-600">Для установок «Всё под контролем» и «Гиперответственность». Нарисуйте круг: внутри — то, что вы можете контролировать, снаружи — то, что не можете.</p>
-      </div>
-      <div class="bg-violet-50 rounded-xl p-4">
-        <h3 class="font-semibold mb-1">Не моя зона ответственности</h3>
-        <p class="text-sm text-gray-600">Когда чувствуете вину, спросите: «Это действительно моя задача или я взвалил(а) на себя чужую?»</p>
-      </div>
-      <div class="bg-violet-50 rounded-xl p-4">
-        <h3 class="font-semibold mb-1">Достаточно хороший результат</h3>
-        <p class="text-sm text-gray-600">Разрешите себе сделать работу на 80% и сдать её. Отслеживайте, что произошло — обычно катастрофы не случается.</p>
-      </div>
+    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full progress-bar rounded-full" style="width: 0%"></div>
     </div>
   </div>
 
-  <div class="text-center text-sm text-gray-500 mb-8">
-    <p>Методичка основана на методах КПТ (А. Бек) и РЭПТ (А. Эллис).</p>
-    <p>При клинических состояниях обратитесь к специалисту.</p>
+  <!-- Этап 1 -->
+  <div id="stage-1" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 1. Идентификация убеждения</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Начните с конкретной ситуации, где вы почувствовали сильную эмоцию. Затем спуститесь «стрелкой вниз» к глубинному убеждению о себе, о других или о мире.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Ситуация</label>
+    <textarea id="s1-situation" rows="2" class="w-full p-3 rounded-xl mb-3" placeholder="Что произошло?"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Автоматическая мысль</label>
+    <textarea id="s1-thought" rows="2" class="w-full p-3 rounded-xl mb-3" placeholder="Что пронеслось в голове?"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Промежуточное убеждение (правило, установка)</label>
+    <textarea id="s1-rule" rows="2" class="w-full p-3 rounded-xl mb-3" placeholder="Например: если я не идеальна, меня не примут"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Глубинное убеждение</label>
+    <textarea id="s1-core" rows="2" class="w-full p-3 rounded-xl mb-2" placeholder="Например: я не заслуживаю любви"></textarea>
+    <p class="text-xs text-gray-500 mb-3">Глубинное убеждение — это абсолютное утверждение о себе, других или мире. Оно часто начинается с «я…», «люди…», «мир…».</p>
+
+    <button onclick="markStage(1)" class="w-full py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">Этап пройден</button>
+  </div>
+
+  <!-- Этап 2 -->
+  <div id="stage-2" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 2. Оценка и происхождение</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Оцените, насколько вы верите в это убеждение сейчас. И вспомните, откуда оно взялось.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Насколько я верю в это убеждение сейчас? (0–100%)</label>
+    <input id="s2-belief-level" type="number" min="0" max="100" class="w-full p-3 rounded-xl mb-3" placeholder="Например: 80">
+
+    <label class="block text-sm text-gray-600 mb-1">Когда и где я впервые почувствовал это?</label>
+    <textarea id="s2-origin" rows="3" class="w-full p-3 rounded-xl mb-3" placeholder="Ранний опыт, значимые взрослые, повторяющиеся ситуации"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Какие ситуации в жизни его подтверждали?</label>
+    <textarea id="s2-support" rows="3" class="w-full p-3 rounded-xl mb-4" placeholder="Опишите 2–3 примера"></textarea>
+
+    <button onclick="markStage(2)" class="w-full py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">Этап пройден</button>
+  </div>
+
+  <!-- Этап 3 -->
+  <div id="stage-3" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 3. Анализ доказательств</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка факта. Запишите доказательства за и против убеждения.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Факты, которые, как мне кажется, подтверждают убеждение</label>
+    <textarea id="s3-for" rows="3" class="w-full p-3 rounded-xl mb-2" placeholder="Например: я один раз получила замечание"></textarea>
+    <p class="text-xs text-gray-500 mb-3">Проверьте: это факт или интерпретация? Можно ли это проверить?</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Факты, которые опровергают убеждение</label>
+    <textarea id="s3-against" rows="3" class="w-full p-3 rounded-xl mb-2" placeholder="Например: у меня есть друзья, которые меня поддерживают"></textarea>
+    <p class="text-xs text-gray-500 mb-3">Проверьте: это факт или интерпретация? Можно ли это проверить?</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Что я замечаю, когда смотрю на это?</label>
+    <textarea id="s3-insight" rows="2" class="w-full p-3 rounded-xl mb-4" placeholder="Например: доказательства за — это в основном мои интерпретации, а не факты"></textarea>
+
+    <button onclick="markStage(3)" class="w-full py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">Этап пройден</button>
+  </div>
+
+  <!-- Этап 4 -->
+  <div id="stage-4" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 4. Альтернативное убеждение</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Сформулируйте новое убеждение, которое основано на фактах, а не на желаниях. Оно должно быть реалистичным и вызывать у вас доверие.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Старое убеждение</label>
+    <textarea id="s4-old" rows="2" class="w-full p-3 rounded-xl mb-3" placeholder="Из этапа 1"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Новое убеждение</label>
+    <textarea id="s4-new" rows="3" class="w-full p-3 rounded-xl mb-2" placeholder="Например: я могу ошибаться и всё равно быть ценным человеком"></textarea>
+    <p class="text-xs text-gray-500 mb-3">Проверка: вызывает ли это доверие? Если нет — сделайте формулировку более приземлённой.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Насколько я верю в новое убеждение сейчас? (0–100%)</label>
+    <input id="s4-belief-level" type="number" min="0" max="100" class="w-full p-3 rounded-xl mb-4" placeholder="Например: 40">
+
+    <button onclick="markStage(4)" class="w-full py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">Этап пройден</button>
+  </div>
+
+  <!-- Этап 5 -->
+  <div id="stage-5" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 5. Поведенческий эксперимент</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Глубинное убеждение не меняется без нового опыта. Спланируйте конкретное действие, которое проверит новое убеждение в реальности.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Что я сделаю, чтобы проверить новое убеждение?</label>
+    <textarea id="s5-action" rows="3" class="w-full p-3 rounded-xl mb-3" placeholder="Например: скажу коллеге, что мне не нравится его шутка"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Когда?</label>
+    <input id="s5-when" type="text" class="w-full p-3 rounded-xl mb-3" placeholder="Например: завтра на планёрке">
+
+    <label class="block text-sm text-gray-600 mb-1">Что произошло на самом деле?</label>
+    <textarea id="s5-result" rows="3" class="w-full p-3 rounded-xl mb-3" placeholder="Заполните после действия"></textarea>
+
+    <label class="block text-sm text-gray-600 mb-1">Что это говорит о старом и новом убеждении?</label>
+    <textarea id="s5-conclusion" rows="3" class="w-full p-3 rounded-xl mb-4" placeholder="Например: старый страх не подтвердился, новое убеждение стало чуть более реальным"></textarea>
+
+    <button onclick="markStage(5)" class="w-full py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">Этап пройден</button>
+  </div>
+
+  <!-- Этап 6 -->
+  <div id="stage-6" class="stage-card bg-white rounded-2xl shadow-sm p-6 mb-4 border-2 border-gray-100">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold text-gray-800">Этап 6. Итог и оценка сдвига</h3>
+      <span class="text-xs bg-gray-100 text-gray-500 px-3 py-1 rounded-full">Ожидает</span>
+    </div>
+    <p class="text-sm text-gray-600 mb-4">Вернитесь к началу и оцените, насколько вы верите в старое убеждение сейчас. Сформулируйте, что изменилось.</p>
+
+    <label class="block text-sm text-gray-600 mb-1">Насколько я верю в старое убеждение сейчас? (0–100%)</label>
+    <input id="s6-old-level" type="number" min="0" max="100" class="w-full p-3 rounded-xl mb-3" placeholder="Было: 80">
+
+    <label class="block text-sm text-gray-600 mb-1">Насколько я верю в новое убеждение сейчас? (0–100%)</label>
+    <input id="s6-new-level" type="number" min="0" max="100" class="w-full p-3 rounded-xl mb-3" placeholder="Было: 40">
+
+    <label class="block text-sm text-gray-600 mb-1">Что изменилось?</label>
+    <textarea id="s6-change" rows="3" class="w-full p-3 rounded-xl mb-4" placeholder="Опишите сдвиг, даже если он небольшой"></textarea>
+
+    <button onclick="markStage(6)" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700">Завершить протокол</button>
+  </div>
+
+  <!-- Итог -->
+  <div id="summary" class="hidden bg-white rounded-2xl shadow-sm p-6 mb-8 border-l-4 border-emerald-500">
+    <h2 class="text-xl font-semibold mb-3 text-gray-800">Итог работы</h2>
+    <div id="summary-content" class="text-gray-700 space-y-3"></div>
+    <button onclick="resetAll()" class="mt-4 text-sm text-gray-500 underline">Очистить всё</button>
   </div>
 
 </div>
 
 <script>
-const fields = ['s1-situation','s1-emotion','s1-action','s2-thought','s2-meaning','s2-belief','s3-evidence','s3-against','s3-help','s4-old','s4-new','s4-emotion'];
+const stages = [1,2,3,4,5,6];
+let completed = {};
 
-function save() {
-  const data = {};
-  fields.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
-  localStorage.setItem('guide_data', JSON.stringify(data));
-  alert('Сохранено!');
+function markStage(n) {
+  const el = document.getElementById('stage-' + n);
+  el.classList.add('done');
+  const badge = el.querySelector('span');
+  badge.textContent = 'Готово';
+  badge.className = 'text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full';
+  completed[n] = true;
+  updateProgress();
+  saveAll();
+  if (n === 6) showSummary();
+  window.scrollTo({ top: el.offsetTop - 20, behavior: 'smooth' });
 }
 
-function load() {
-  const saved = localStorage.getItem('guide_data');
+function updateProgress() {
+  const done = Object.keys(completed).length;
+  const pct = (done / 6) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = done + ' / 6 этапов';
+}
+
+function saveAll() {
+  const data = { completed };
+  stages.forEach(n => {
+    const stage = document.getElementById('stage-' + n);
+    stage.querySelectorAll('textarea, input').forEach((f, i) => {
+      if (f.id) data[f.id] = f.value;
+    });
+  });
+  localStorage.setItem('protocol_data', JSON.stringify(data));
+}
+
+function loadAll() {
+  const saved = localStorage.getItem('protocol_data');
   if (!saved) return;
   try {
     const data = JSON.parse(saved);
-    fields.forEach(id => { const el = document.getElementById(id); if (el && data[id]) el.value = data[id]; });
+    if (data.completed) completed = data.completed;
+    Object.keys(data).forEach(id => {
+      const el = document.getElementById(id);
+      if (el && id !== 'completed') el.value = data[id];
+    });
+    Object.keys(completed).forEach(n => {
+      const el = document.getElementById('stage-' + n);
+      if (el) {
+        el.classList.add('done');
+        const badge = el.querySelector('span');
+        badge.textContent = 'Готово';
+        badge.className = 'text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full';
+      }
+    });
+    updateProgress();
   } catch(e) {}
 }
 
-function reset() {
-  if (!confirm('Очистить все поля?')) return;
-  fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  localStorage.removeItem('guide_data');
-  document.getElementById('result').classList.add('hidden');
-  document.getElementById('hints').classList.add('hidden');
-}
+function showSummary() {
+  const summary = document.getElementById('summary');
+  const content = document.getElementById('summary-content');
 
-function showHints() {
-  document.getElementById('hints').classList.toggle('hidden');
-}
-
-function showResult() {
-  const old = document.getElementById('s4-old').value.trim();
-  const neu = document.getElementById('s4-new').value.trim();
-  const emo = document.getElementById('s4-emotion').value.trim();
-  const res = document.getElementById('result');
-  const content = document.getElementById('result-content');
-
-  if (!old || !neu) {
-    alert('Заполните шаг 4: «Было» и «Стало», чтобы увидеть результат.');
-    return;
-  }
-
-  // Проверка: если новая мысль слишком короткая или не содержит "разрешения"
-  let warning = '';
-  if (neu.length < 15) {
-    warning = '<p class="text-amber-700 text-sm mt-2">⚠️ Новая мысль слишком короткая. Попробуйте сформулировать её подробнее — что именно вы себе разрешаете?</p>';
-  } else if (!/(могу|имею право|разрешаю|попробую|не обязательно|хотелось бы)/i.test(neu)) {
-    warning = '<p class="text-amber-700 text-sm mt-2">⚠️ В новой мысли пока нет «разрешения» (могу, имею право, попробую). Попробуйте добавить это слово — оно помогает сдвинуть установку.</p>';
-  }
+  const oldB = document.getElementById('s4-old').value;
+  const newB = document.getElementById('s4-new').value;
+  const oldLevel = document.getElementById('s6-old-level').value;
+  const newLevel = document.getElementById('s6-new-level').value;
+  const change = document.getElementById('s6-change').value;
 
   content.innerHTML = `
-    <p><strong>Было:</strong> ${old}</p>
-    <p><strong>Стало:</strong> ${neu}</p>
-    ${emo ? `<p><strong>Эмоция:</strong> ${emo}</p>` : ''}
-    ${warning}
-    <p class="text-sm text-gray-500 mt-3">Сохраните результат или сделайте скриншот. Регулярно возвращайтесь к этой практике.</p>
+    <p><strong>Старое убеждение:</strong> ${oldB || '—'}</p>
+    <p><strong>Новое убеждение:</strong> ${newB || '—'}</p>
+    <p><strong>Вера в старое убеждение:</strong> ${oldLevel || '—'}% → сейчас</p>
+    <p><strong>Вера в новое убеждение:</strong> ${newLevel || '—'}% → сейчас</p>
+    <p><strong>Что изменилось:</strong> ${change || '—'}</p>
+    <p class="text-sm text-gray-500 mt-3">Сохраните этот итог. Вернитесь к нему через месяц и посмотрите, что изменилось.</p>
   `;
-  res.classList.remove('hidden');
-  res.scrollIntoView({ behavior: 'smooth' });
+  summary.classList.remove('hidden');
+  summary.scrollIntoView({ behavior: 'smooth' });
 }
 
-load();
+function resetAll() {
+  if (!confirm('Очистить все записи?')) return;
+  localStorage.removeItem('protocol_data');
+  location.reload();
+}
+
+document.querySelectorAll('textarea, input').forEach(el => {
+  el.addEventListener('input', saveAll);
+});
+
+loadAll();
 </script>
 </body>
 </html>
