@@ -49,9 +49,14 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .hint-box {
-    background: #1e1b2e;
+  .phrase-option {
+    background: #1a1a2e;
     border-left: 3px solid #a78bfa;
+    transition: all 0.2s;
+  }
+  .phrase-option:hover {
+    background: #252540;
+    border-left-color: #c4b5fd;
   }
 </style>
 </head>
@@ -189,13 +194,8 @@
       <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
-      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
-      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">💡 Показать варианты под эту мысль</button>
-      <div id="hints-container" class="hidden mb-4">
-        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
-        <div id="hints-list" class="space-y-2"></div>
-      </div>
+      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="Начните печатать, или выберите вариант ниже..." onfocus="suggestPhrase()"></textarea>
+      <div id="phrase-hint" class="space-y-2 mb-4"></div>
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
     </div>
@@ -215,6 +215,14 @@
     <div class="card rounded-2xl p-6 mb-6">
       <div id="summary-content" class="space-y-4 text-slate-300"></div>
     </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <h3 class="text-lg font-bold text-violet-300 mb-3">Что важно помнить</h3>
+      <p class="text-slate-300 mb-3 leading-relaxed">Установки — это не приговор. Они когда-то были защитой. Но их можно менять, если замечать, проверять и пробовать по-новому.</p>
+      <p class="text-slate-300 mb-3 leading-relaxed">Возвращайтесь к этому разбору через неделю, месяц. Сравнивайте, что изменилось. Не требуйте от себя мгновенных перемен — они идут маленькими шагами.</p>
+      <p class="text-slate-300">Если чувствуете, что справиться сложно, — это не слабость. Это сигнал, что нужна поддержка. Можно обратиться к психологу или близкому человеку.</p>
+    </div>
+
     <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">Пройти заново</button>
   </div>
 
@@ -225,12 +233,22 @@ let currentScene = 0;
 
 function getHints(text) {
   const lower = text.toLowerCase();
-  const matchedHints = [];
+  const hints = [];
 
-  // Проекция (люди плохие, используют, мягкость)
-  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
+  const aggressionKeys = ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж', 'хочу ударить', 'кричу', 'не умею злиться', 'не могу злиться'];
+  if (aggressionKeys.some(k => lower.includes(k))) {
+    hints.push(
+      'Я могу выражать злость, не разрушая отношения',
+      'Я имею право злиться и говорить об этом',
+      'Моя агрессия — это сигнал, а не запрет',
+      'Я могу сказать «нет», даже если это кому-то не понравится',
+      'Я могу защищать себя, не чувствуя вины'
+    );
+  }
+
+  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'не могу отказать', 'не могу сказать нет'];
   if (projectionKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Моя мягкость — это не разрешение другим нарушать мои границы',
       'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
       'Я могу говорить «нет» и оставаться добрым(ой)',
@@ -239,10 +257,9 @@ function getHints(text) {
     );
   }
 
-  // Самокритика
   const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
   if (selfCriticismKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Я могу ошибаться и всё равно быть ценным человеком',
       'Моя ценность не зависит от того, насколько я хорош(а)',
       'Я могу быть мягче к себе в этой ситуации',
@@ -250,95 +267,88 @@ function getHints(text) {
     );
   }
 
-  // Отрицание
   const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'];
   if (denialKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
       'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
       'Я могу сказать «мне плохо» и получить поддержку'
     );
   }
 
-  // Рационализация
   const rationalKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
   if (rationalKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Я могу не объяснять свои чувства логикой — они просто есть',
       'Я могу признать, что мне больно, без «потому что»',
       'Мои чувства не нуждаются в оправдании'
     );
   }
 
-  // Страх
   const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник'];
   if (fearKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Страх — это сигнал, а не запрет на действие',
       'Я могу действовать, даже если мне страшно',
       'Я могу попробовать, и мир не рухнет, если не получится'
     );
   }
 
-  // Усталость
   const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ'];
   if (tiredKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Я имею право на отдых, даже если не всё сделано',
       'Моя усталость — это сигнал, а не слабость',
       'Я могу заботиться о себе, не чувствуя вины'
     );
   }
 
-  // Вина
   const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня'];
   if (guiltKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Я могу чувствовать вину, но это не значит, что я виноват(а)',
       'Моя вина — это не приговор, а сигнал разобраться',
       'Я могу простить себя и идти дальше'
     );
   }
 
-  // Стыд
   const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко'];
   if (shameKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
+    hints.push(
       'Мне не нужно стыдиться того, что я чувствую',
       'Стыд — это эмоция, а не оценка меня как человека',
       'Я могу быть собой, даже если это кому-то не нравится'
     );
   }
 
-  // Если ничего не нашли — универсальные подсказки
-  if (matchedHints.length === 0) {
+  if (hints.length === 0) {
     return [
       'Я могу попробовать по-другому, даже если пока не уверен(а)',
       'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации'
+      'Я могу быть мягче к себе в этой ситуации',
+      'Я могу начать с малого шага',
+      'Я не обязан(а) быть идеальным(ой), чтобы двигаться вперёд'
     ];
   }
 
-  return [...new Set(matchedHints)];
+  return [...new Set(hints)];
 }
 
-function showHints() {
+function suggestPhrase() {
   const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
-  const container = document.getElementById('hints-container');
-  const list = document.getElementById('hints-list');
   const hints = getHints(oldText);
+  const container = document.getElementById('phrase-hint');
   
-  container.classList.remove('hidden');
-  list.innerHTML = hints.map(h => `
-    <div class="hint-box p-3 rounded-lg text-sm text-slate-300 cursor-pointer hover:bg-slate-800 transition" onclick="useHint(this)">
+  container.innerHTML = hints.map(h => `
+    <div class="phrase-option p-3 rounded-lg text-sm text-slate-400 cursor-pointer" onclick="insertPhrase('${h.replace(/'/g, "\\'")}')">
       «${h}»
     </div>
   `).join('');
 }
 
-function useHint(el) {
-  const text = el.textContent.replace(/[«»]/g, '');
-  document.getElementById('s5-new').value = text;
+function insertPhrase(phrase) {
+  document.getElementById('s5-new').value = phrase;
+  document.getElementById('phrase-hint').innerHTML = '';
   saveAll();
 }
 
@@ -347,6 +357,7 @@ function goTo(n) {
   document.getElementById('scene-' + n).classList.remove('hidden');
   currentScene = n;
   saveAll();
+  if (n === 5) suggestPhrase();
   if (n === 6) showSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
