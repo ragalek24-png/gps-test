@@ -7,48 +7,48 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { 
-    background: #0a0a0f; 
+    background: #1a1a2e; 
     color: #e2e8f0; 
     font-family: 'Georgia', serif;
     overflow-x: hidden;
   }
   .scene { transition: opacity 0.6s ease, transform 0.6s ease; }
   .scene.hidden { opacity: 0; transform: translateY(20px); pointer-events: none; position: absolute; }
-  .glow { text-shadow: 0 0 30px rgba(139, 92, 246, 0.5); }
+  .glow { text-shadow: 0 0 30px rgba(167, 139, 250, 0.6); }
   .text-gradient {
-    background: linear-gradient(135deg, #a78bfa, #f472b6);
+    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   textarea, input { 
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(139, 92, 246, 0.3); 
-    color: #e2e8f0;
+    background: rgba(255,255,255,0.08); 
+    border: 1px solid rgba(167, 139, 250, 0.4); 
+    color: #f1f5f9;
     transition: all 0.3s;
     font-family: inherit;
   }
   textarea:focus, input:focus { 
-    border-color: #8b5cf6; 
+    border-color: #a78bfa; 
     outline: none; 
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
-    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+    background: rgba(255,255,255,0.12);
   }
   .btn { 
-    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    background: linear-gradient(135deg, #a78bfa, #f472b6);
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
   }
   .btn:hover { 
     transform: translateY(-2px); 
-    box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 10px 40px rgba(167, 139, 250, 0.5);
   }
   .btn::after {
     content: '';
     position: absolute;
     top: 0; left: -100%;
     width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
     transition: left 0.5s;
   }
   .btn:hover::after { left: 100%; }
@@ -57,11 +57,16 @@
     pointer-events: none;
     font-size: 20px;
     animation: float 4s ease-in-out infinite;
-    opacity: 0.6;
+    opacity: 0.4;
   }
   @keyframes float {
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(-30px) rotate(15deg); }
+  }
+  .card {
+    background: rgba(30, 30, 50, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(167, 139, 250, 0.2);
   }
 </style>
 </head>
@@ -79,18 +84,18 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-7xl mb-6">🎢</div>
       <h1 class="text-4xl font-bold glow mb-4 text-gradient">Разбор полётов</h1>
-      <p class="text-gray-400 text-lg mb-8">Как перестать накручивать себя и начать жить</p>
+      <p class="text-gray-300 text-lg mb-8">Как перестать накручивать себя и начать жить</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <p class="text-gray-300 mb-4 leading-relaxed">Иногда в голове звучит голос, который комментирует всё, что мы делаем: «ну и зачем ты это сказал», «кто тебя вообще слушает», «опять ты всё испортил». Мы привыкли считать, что это наш собственный голос. Но это не совсем так.</p>
-      <p class="text-gray-300 mb-4 leading-relaxed">Это голос внутреннего правила, которое когда-то помогало нам справляться, а теперь мешает. Например: «чтобы меня любили, я должен быть удобным», «если я ошибусь, это будет катастрофа», «я не имею права хотеть большего».</p>
-      <p class="text-gray-300 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но их можно заметить, проверить и заменить на другие — более гибкие и честные.</p>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-4 leading-relaxed">Иногда в голове звучит голос, который комментирует всё, что мы делаем: «ну и зачем ты это сказал», «кто тебя вообще слушает», «опять ты всё испортил». Мы привыкли считать, что это наш собственный голос. Но это не совсем так.</p>
+      <p class="text-gray-200 mb-4 leading-relaxed">Это голос внутреннего правила, которое когда-то помогало нам справляться, а теперь мешает. Например: «чтобы меня любили, я должен быть удобным», «если я ошибусь, это будет катастрофа», «я не имею права хотеть большего».</p>
+      <p class="text-gray-200 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но их можно заметить, проверить и заменить на другие — более гибкие и честные. Именно этим мы и займёмся.</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-6 border border-white/10 mb-8">
+    <div class="card rounded-3xl p-6 mb-8">
       <p class="text-sm text-gray-400 mb-2">📜 Что вас ждёт:</p>
-      <ul class="text-sm text-gray-300 space-y-2">
+      <ul class="text-sm text-gray-200 space-y-2">
         <li>• 7 экранов — от первого «что случилось» до новой мысли.</li>
         <li>• Без терминов и сложных слов. Просто и по делу.</li>
         <li>• Ваши ответы сохраняются в браузере. Никто их не увидит.</li>
@@ -107,17 +112,20 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">🎬</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Что случилось?</h2>
-      <p class="text-gray-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
+      <p class="text-gray-300">Вспомните ситуацию, где вы были к себе особенно строги</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Что произошло?</label>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Начнём с конкретного случая. Это может быть недавняя ситуация, а может быть что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание, а не абстрактное «я всегда всё порчу».</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Что произошло?</label>
       <textarea id="s1-situation" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Опишите ситуацию, которая выбила вас из колеи..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что вы сказали себе в тот момент?</label>
-      <textarea id="s1-voice" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
+      <label class="block text-sm text-gray-300 mb-2">Что вы сказали себе в тот момент?</label>
+      <textarea id="s1-voice" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
+      <p class="text-xs text-gray-400 mb-6">Постарайтесь вспомнить дословно. Именно эта фраза — ключ к правилу, которое за ней стоит.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Что вы почувствовали?</label>
+      <label class="block text-sm text-gray-300 mb-2">Что вы почувствовали в теле?</label>
       <textarea id="s1-body" rows="2" class="w-full p-4 rounded-xl mb-6" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
     </div>
 
@@ -129,19 +137,21 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">🔍</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">А в чём, собственно, фишка?</h2>
-      <p class="text-gray-400">То, что вы себе сказали — это не просто мысль. Это правило</p>
+      <p class="text-gray-300">То, что вы себе сказали — это не просто мысль. Это правило</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Какое правило стоит за этой мыслью?</label>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Любая такая фраза — это верхушка айсберга. Под ней лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-4 rounded-xl mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Это то, как вы думаете, «должно» быть.</p>
+      <p class="text-xs text-gray-400 mb-6">Это то, как вы думаете, «должно» быть. Часто оно начинается со слов «если... то...».</p>
 
-      <label class="block text-sm text-gray-400 mb-2">А какая мысль о себе под этим?</label>
+      <label class="block text-sm text-gray-300 mb-2">А какая мысль о себе под этим?</label>
       <textarea id="s2-core" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Это то, что вы думаете о себе, когда никто не видит.</p>
+      <p class="text-xs text-gray-400 mb-6">Это то, что вы думаете о себе, когда никто не видит. Оно звучит как приговор, а не как гипотеза.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Насколько вы в это верите? (0–100%)</label>
+      <label class="block text-sm text-gray-300 mb-2">Насколько вы в это верите? (0–100%)</label>
       <input id="s2-level" type="number" min="0" max="100" class="w-full p-4 rounded-xl mb-6" placeholder="80">
     </div>
 
@@ -153,14 +163,17 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">🕰️</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Откуда ноги растут?</h2>
-      <p class="text-gray-400">У каждого такого правила есть история</p>
+      <p class="text-gray-300">У каждого такого правила есть история</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Когда вы впервые почувствовали что-то подобное?</label>
-      <textarea id="s3-origin" rows="4" class="w-full p-4 rounded-xl mb-6" placeholder="Детство, школа, чьи-то слова..."></textarea>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Правила не берутся из воздуха. Они формируются в детстве, в школе, в отношениях. Кто-то сказал слово, что-то произошло — и мозг запомнил: «так безопаснее». Давайте найдём истоки.</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Что в жизни это подтверждало?</label>
+      <label class="block text-sm text-gray-300 mb-2">Когда вы впервые почувствовали что-то подобное?</label>
+      <textarea id="s3-origin" rows="4" class="w-full p-4 rounded-xl mb-2" placeholder="Детство, школа, чьи-то слова..."></textarea>
+      <p class="text-xs text-gray-400 mb-6">Это может быть одно яркое воспоминание или просто ощущение, которое тянется с детства.</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Что в жизни это подтверждало?</label>
       <textarea id="s3-support" rows="4" class="w-full p-4 rounded-xl mb-6" placeholder="2–3 примера..."></textarea>
     </div>
 
@@ -172,19 +185,21 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">⚖️</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка на вшивость</h2>
-      <p class="text-gray-400">Давайте посмотрим, на чём вообще держится это правило</p>
+      <p class="text-gray-300">Давайте посмотрим, на чём вообще держится это правило</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Что, по-вашему, это подтверждает?</label>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Правило кажется правдой, но это не значит, что оно истинно. Сейчас мы разделим факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка факта. Запишите доказательства за и против.</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Это факт или просто ваша интерпретация?</p>
+      <p class="text-xs text-gray-400 mb-6">Проверьте: это факт или ваша интерпретация? Можно ли это проверить?</p>
 
-      <label class="block text-sm text-gray-400 mb-2">А что это опровергает?</label>
+      <label class="block text-sm text-gray-300 mb-2">А что это опровергает?</label>
       <textarea id="s4-against" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Это факт или просто ваша интерпретация?</p>
+      <p class="text-xs text-gray-400 mb-6">Проверьте: это факт или ваша интерпретация? Можно ли это проверить?</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Что вы замечаете, когда смотрите на это?</label>
+      <label class="block text-sm text-gray-300 mb-2">Что вы замечаете, когда смотрите на это?</label>
       <textarea id="s4-insight" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
     </div>
 
@@ -196,18 +211,20 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">🌱</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Новая мысль</h2>
-      <p class="text-gray-400">Не мечта, а вывод из фактов</p>
+      <p class="text-gray-300">Не мечта, а вывод из фактов</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Старая мысль</label>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Новая мысль</label>
+      <label class="block text-sm text-gray-300 mb-2">Новая мысль</label>
       <textarea id="s5-new" rows="3" class="w-full p-4 rounded-xl mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-gray-500 mb-6">Звучит правдоподобно? Если нет — сделайте попроще.</p>
+      <p class="text-xs text-gray-400 mb-6">Звучит правдоподобно? Если нет — сделайте попроще. Например: «я могу ошибаться и всё равно быть ценным человеком».</p>
 
-      <label class="block text-sm text-gray-400 mb-2">Насколько вы верите в новую мысль? (0–100%)</label>
+      <label class="block text-sm text-gray-300 mb-2">Насколько вы верите в новую мысль? (0–100%)</label>
       <input id="s5-level" type="number" min="0" max="100" class="w-full p-4 rounded-xl mb-6" placeholder="40">
     </div>
 
@@ -219,17 +236,19 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">⚡</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка на практике</h2>
-      <p class="text-gray-400">Мысль меняется только через опыт</p>
+      <p class="text-gray-300">Мысль меняется только через опыт</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <label class="block text-sm text-gray-400 mb-2">Что вы сделаете, чтобы проверить новую мысль?</label>
+    <div class="card rounded-3xl p-8 mb-6">
+      <p class="text-gray-200 mb-6">Новая мысль останется просто словами, если вы её не проверите. Спланируйте одно маленькое действие, которое сделаете в ближайшие 24 часа. Не подвиг, а маленький шаг.</p>
+
+      <label class="block text-sm text-gray-300 mb-2">Что вы сделаете, чтобы проверить новую мысль?</label>
       <textarea id="s6-action" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Маленькое конкретное действие в ближайшие 24 часа..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что произошло на самом деле?</label>
+      <label class="block text-sm text-gray-300 mb-2">Что произошло на самом деле?</label>
       <textarea id="s6-result" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Заполните после действия..."></textarea>
 
-      <label class="block text-sm text-gray-400 mb-2">Что это говорит о старой и новой мысли?</label>
+      <label class="block text-sm text-gray-300 mb-2">Что это говорит о старой и новой мысли?</label>
       <textarea id="s6-conclusion" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="..."></textarea>
     </div>
 
@@ -241,14 +260,14 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-7xl mb-4">🌅</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">На этом всё</h2>
-      <p class="text-gray-400">Но это только начало</p>
+      <p class="text-gray-300">Но это только начало</p>
     </div>
 
-    <div class="bg-white/5 backdrop-blur rounded-3xl p-8 border border-white/10 mb-6">
-      <div id="summary-content" class="text-gray-300 space-y-3"></div>
+    <div class="card rounded-3xl p-8 mb-6">
+      <div id="summary-content" class="text-gray-200 space-y-3"></div>
     </div>
 
-    <button onclick="resetAll()" class="w-full py-4 rounded-2xl font-semibold text-gray-400 border border-white/20 hover:bg-white/5 transition">
+    <button onclick="resetAll()" class="w-full py-4 rounded-2xl font-semibold text-gray-300 border border-white/20 hover:bg-white/5 transition">
       Пройти заново
     </button>
   </div>
@@ -303,21 +322,21 @@ function showSummary() {
 
   content.innerHTML = `
     <div class="border-l-4 border-violet-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Старая мысль</p>
+      <p class="text-sm text-gray-400 mb-1">Старая мысль</p>
       <p class="text-lg">${oldB || '—'}</p>
-      <p class="text-sm text-gray-500 mt-1">Вера: ${oldLevel || '—'}%</p>
+      <p class="text-sm text-gray-400 mt-1">Вера: ${oldLevel || '—'}%</p>
     </div>
     <div class="border-l-4 border-emerald-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Новая мысль</p>
+      <p class="text-sm text-gray-400 mb-1">Новая мысль</p>
       <p class="text-lg text-emerald-400">${newB || '—'}</p>
-      <p class="text-sm text-gray-500 mt-1">Вера: ${newLevel || '—'}%</p>
+      <p class="text-sm text-gray-400 mt-1">Вера: ${newLevel || '—'}%</p>
     </div>
     <div class="border-l-4 border-amber-500 pl-4 mb-4">
-      <p class="text-sm text-gray-500 mb-1">Проверка на практике</p>
+      <p class="text-sm text-gray-400 mb-1">Проверка на практике</p>
       <p>${action || '—'}</p>
       ${result ? `<p class="mt-2 text-sm text-gray-400">Результат: ${result}</p>` : ''}
     </div>
-    <p class="text-sm text-gray-500 mt-6">Сохраните этот экран. Вернитесь к нему через месяц и посмотрите, что изменилось.</p>
+    <p class="text-sm text-gray-400 mt-6">Сохраните этот экран. Вернитесь к нему через месяц и посмотрите, что изменилось.</p>
   `;
 }
 
