@@ -1,401 +1,274 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Внутренний компас</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  body { 
-    background: #0a0a0f; 
-    color: #e2e8f0; 
-    font-family: 'Georgia', serif;
-    overflow-x: hidden;
-  }
-  .card {
-    background: #14141f;
-    border: 1px solid #2a2a3e;
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
-  }
-  textarea, input { 
-    background: #1a1a2e; 
-    border: 1.5px solid #2a2a3e; 
-    color: #e2e8f0;
-    transition: all 0.3s;
-    font-family: inherit;
-  }
-  textarea:focus, input:focus { 
-    border-color: #a78bfa; 
-    outline: none; 
-    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
-    background: #1e1e36;
-  }
-  textarea::placeholder, input::placeholder {
-    color: #4a4a6a;
-  }
-  .btn { 
-    background: #a78bfa;
-    transition: all 0.3s;
-  }
-  .btn:hover { 
-    background: #c4b5fd;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
-  }
-  .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
-  .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
-  .text-gradient {
-    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hint-box {
-    background: #1e1b2e;
-    border-left: 3px solid #a78bfa;
-  }
-</style>
-</head>
-<body class="min-h-screen p-4 flex items-center justify-center">
-
-<div class="max-w-2xl mx-auto w-full">
-
-  <!-- Экран 0: Введение -->
-  <div id="scene-0" class="scene">
-    <div class="text-center mb-8 pt-4">
-      <div class="text-6xl mb-4">🧭</div>
-      <h1 class="text-3xl font-bold text-gradient mb-3">Внутренний компас</h1>
-      <p class="text-lg text-slate-400 mb-8">Как понять, что мешает вам жить — и что с этим делать</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <h2 class="text-xl font-bold text-violet-300 mb-3">О чём это?</h2>
-      <p class="text-slate-300 mb-3 leading-relaxed">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего».</p>
-      <p class="text-slate-300 mb-3 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
-      <p class="text-slate-300 leading-relaxed">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <h2 class="text-xl font-bold text-violet-300 mb-3">Что вас ждёт?</h2>
-      <ul class="text-slate-300 space-y-2">
-        <li>• 5 простых шагов — без сложных терминов.</li>
-        <li>• Записи сохраняются в браузере. Никто их не увидит.</li>
-        <li>• Вы можете вернуться в любой момент.</li>
-      </ul>
-    </div>
-
-    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg text-white">
-      Начать →
-    </button>
-  </div>
-
-  <!-- Экран 1 -->
-  <div id="scene-1" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🎬</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 1. Что случилось?</h2>
-      <p class="text-slate-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что произошло?</label>
-      <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы сказали себе в тот момент?</label>
-      <textarea id="s1-voice" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Постарайтесь вспомнить дословно.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы почувствовали в теле?</label>
-      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Какие эмоции были сильнее всего?</label>
-      <textarea id="s1-emotions" rows="2" class="w-full p-3 rounded-lg" placeholder="Стыд, страх, злость, обида..."></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button onclick="goTo(0)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(2)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 2 -->
-  <div id="scene-2" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🔍</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 2. Какое правило за этим?</h2>
-      <p class="text-slate-400">То, что вы себе сказали — это верхушка айсберга</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Какое правило стоит за этой мыслью?</label>
-      <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это то, как вы думаете, «должно» быть.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">А какая мысль о себе под этим?</label>
-      <textarea id="s2-core" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это то, что вы думаете о себе, когда никто не видит.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите это?</label>
-      <textarea id="s2-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="Тяжесть, пустоту, злость..."></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button onclick="goTo(1)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(3)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 3 -->
-  <div id="scene-3" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🕰️</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 3. Откуда это взялось?</h2>
-      <p class="text-slate-400">У каждого правила есть история</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Правила не берутся из воздуха. Они формируются в детстве, в школе, в отношениях. Кто-то сказал слово, что-то произошло — и мозг запомнил: «так безопаснее». Давайте найдём истоки.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Когда вы впервые почувствовали что-то подобное?</label>
-      <textarea id="s3-origin" rows="4" class="w-full p-3 rounded-lg mb-2" placeholder="Детство, школа, чьи-то слова..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Это может быть одно яркое воспоминание или просто ощущение, которое тянется с детства.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что в жизни это подтверждало?</label>
-      <textarea id="s3-support" rows="4" class="w-full p-3 rounded-lg" placeholder="2–3 примера..."></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button onclick="goTo(2)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(4)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 4 -->
-  <div id="scene-4" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">⚖️</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 4. Проверка</h2>
-      <p class="text-slate-400">Посмотрим, на чём держится это правило</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что, по-вашему, это подтверждает?</label>
-      <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">А что это опровергает?</label>
-      <textarea id="s4-against" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда смотрите на это?</label>
-      <textarea id="s4-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button onclick="goTo(3)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(5)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
-    </div>
-  </div>
-
-  <!-- Экран 5 -->
-  <div id="scene-5" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-4xl mb-2">🌱</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 5. Новая мысль</h2>
-      <p class="text-slate-400">Не мечта, а вывод из фактов</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
-      <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
-      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
-
-      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">
-        💡 Не получается? Показать варианты под вашу мысль
-      </button>
-
-      <div id="hints-container" class="hidden mb-4">
-        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
-        <div id="hints-list" class="space-y-2"></div>
-      </div>
-
-      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
-      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
-    </div>
-
-    <div class="flex gap-3">
-      <button onclick="goTo(4)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
-      <button onclick="goTo(6)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Завершить</button>
-    </div>
-  </div>
-
-  <!-- Экран 6 -->
-  <div id="scene-6" class="scene hidden">
-    <div class="text-center mb-6 pt-4">
-      <div class="text-6xl mb-4">🌅</div>
-      <h2 class="text-2xl font-bold text-violet-300 mb-2">Ваш разбор</h2>
-      <p class="text-slate-400 mb-6">Сохраните этот экран. Вернитесь к нему через месяц.</p>
-    </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <div id="summary-content" class="space-y-4 text-slate-300"></div>
-    </div>
-
-    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">
-      Пройти заново
-    </button>
-  </div>
-
-</div>
-
 <script>
 let currentScene = 0;
 
-const beliefHints = [
-  { keys: ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж'], hints: [
-    'Я могу выражать злость, не разрушая отношения',
-    'Я имею право злиться и говорить об этом',
-    'Моя агрессия — это сигнал, а не запрет',
-    'Я могу сказать «нет», даже если это кому-то не понравится',
-    'Я могу защищать себя, не чувствуя вины'
-  ]},
-  { keys: ['не могу', 'не умею', 'не получается', 'не справляюсь'], hints: [
-    'Я могу попробовать, даже если не умею пока',
-    'Я могу начать с малого и посмотреть, что будет',
-    'Я не обязан(а) уметь всё сразу — я учусь'
-  ]},
-  { keys: ['недостаточно', 'не хватает', 'хуже других', 'не такой'], hints: [
-    'Я могу ошибаться и всё равно быть ценным человеком',
-    'Моя ценность не зависит от того, насколько я хорош(а)',
-    'Я имею право быть неидеальным и всё равно заслуживать уважения'
-  ]},
-  { keys: ['не заслуживаю', 'не достоин', 'не достойна'], hints: [
-    'Я заслуживаю хорошего отношения просто потому, что я есть',
-    'Мне не нужно заслуживать право на заботу и любовь',
-    'Я могу принимать хорошее, даже если не чувствую, что «заслужил(а)»'
-  ]},
-  { keys: ['должен', 'должна', 'обязан', 'обязана', 'надо'], hints: [
-    'Я могу выбирать, а не только следовать правилам',
-    'Мне не обязательно быть удобным для всех',
-    'У меня есть право на свои желания, даже если они кому-то не нравятся'
-  ]},
-  { keys: ['не имею права', 'нельзя', 'не положено'], hints: [
-    'Я имею право занимать место и говорить о своих потребностях',
-    'Мне не нужно разрешение, чтобы хотеть большего',
-    'Я могу заявлять о себе, даже если это кому-то не понравится'
-  ]},
-  { keys: ['ошиб', 'провал', 'неудач', 'облажал'], hints: [
-    'Ошибка — это опыт, а не приговор',
-    'Я могу ошибиться и всё равно двигаться дальше',
-    'Ошибка не делает меня плохим человеком'
-  ]},
-  { keys: ['боюсь', 'страшно', 'страх', 'тревог', 'паник'], hints: [
-    'Страх — это сигнал, а не запрет на действие',
-    'Я могу действовать, даже если мне страшно',
-    'Я могу попробовать, и мир не рухнет, если не получится'
-  ]},
-  { keys: ['плохой', 'плохая', 'никуда не гожусь', 'ничтожество'], hints: [
-    'Я не плохой и не хороший — я живой человек с разными сторонами',
-    'Мои поступки не определяют меня целиком',
-    'Я могу меняться, и это нормально'
-  ]},
-  { keys: ['никто', 'один', 'одна', 'никому не нужен', 'никому не нужна'], hints: [
-    'Есть люди, которым я важен(на), и я могу открыться им',
-    'Я не один(а), даже если сейчас так кажется',
-    'Я могу быть нужным и нужной, даже если не идеален(на)'
-  ]},
-  { keys: ['контрол', 'порядок', 'план', 'распоряд'], hints: [
-    'Я могу отпускать контроль и не разрушаться',
-    'Не всё в жизни должно быть под моим контролем',
-    'Я могу доверять миру хотя бы в мелочах'
-  ]},
-  { keys: ['вина', 'виноват', 'виновата', 'из-за меня'], hints: [
-    'Я могу чувствовать вину, но это не значит, что я виноват(а)',
-    'Моя вина — это не приговор, а сигнал разобраться',
-    'Я могу простить себя и идти дальше'
-  ]},
-  { keys: ['стыд', 'стыдно', 'позор', 'неловко'], hints: [
-    'Мне не нужно стыдиться того, что я чувствую',
-    'Стыд — это эмоция, а не оценка меня как человека',
-    'Я могу быть собой, даже если это кому-то не нравится'
-  ]},
-  { keys: ['устал', 'устала', 'нет сил', 'выгор', 'истощ'], hints: [
-    'Я имею право на отдых, даже если не всё сделано',
-    'Моя усталость — это сигнал, а не слабость',
-    'Я могу заботиться о себе, не чувствуя вины'
-  ]},
-  { keys: ['отказ', 'не могу отказать', 'не могу сказать нет'], hints: [
-    'Я могу говорить «нет», не объясняя причин',
-    'Мой отказ не делает меня плохим человеком',
-    'Я имею право на свои границы'
-  ]},
-  { keys: ['не уверен', 'неуверен', 'сомневаюсь', 'не знаю'], hints: [
-    'Я могу не знать всего — и это нормально',
-    'Я могу двигаться, даже если не уверен(а) на 100%',
-    'Моя неуверенность не делает меня слабым(ой)'
-  ]},
-  { keys: ['нрав', 'понрав', 'одобр', 'мнение', 'осужд'], hints: [
-    'Я не могу нравиться всем — и это нормально',
-    'Я могу быть собой, даже если кому-то это не понравится',
-    'Моя ценность не зависит от чужого одобрения'
-  ]},
-  { keys: ['лучше других', 'хуже других', 'сравнива', 'завиду'], hints: [
-    'У каждого свой путь, и я не обязан(а) никого догонять',
-    'Я могу учиться у других, не обесценивая себя',
-    'Моя жизнь — это моя жизнь, а не гонка'
-  ]},
-  { keys: ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного'], hints: [
-    'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
-    'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
-    'Я могу сказать «мне плохо» и получить поддержку'
-  ]},
-  { keys: ['они виноваты', 'из-за них', 'все вокруг', 'обвиня', 'они думают'], hints: [
-    'Я могу смотреть на свою часть ответственности, не обвиняя других',
-    'Я могу замечать, что другие делают, и отделять это от своих чувств',
-    'Я могу говорить о своих чувствах, не обвиняя'
-  ]},
-  { keys: ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'], hints: [
-    'Я могу не объяснять свои чувства логикой — они просто есть',
-    'Я могу признать, что мне больно, без «потому что»',
-    'Мои чувства не нуждаются в оправдании'
-  ]},
-  { keys: ['не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом'], hints: [
-    'Я могу замечать, что откладываю разговор с собой',
-    'Я могу посмотреть на то, что избегаю, — это безопаснее, чем кажется',
-    'Я могу начать с малого и не требовать от себя всего сразу'
-  ]},
-  { keys: ['сам виноват', 'сама виновата', 'сам дурак', 'сама дура', 'я урод'], hints: [
-    'Я могу перестать ругать себя за то, что уже произошло',
-    'Я могу относиться к себе с той же добротой, что и к другу',
-    'Я могу признать ошибку, не превращая её в приговор себе'
-  ]},
-  { keys: ['а вот я', 'а вот у меня', 'по сравнению', 'в отличие'], hints: [
-    'Я могу перестать сравнивать себя с другими',
-    'Моя ценность не измеряется чьими-то достижениями',
-    'Я могу замечать свои успехи, даже если они не такие громкие'
-  ]},
-  { keys: ['я не такой', 'я не такая', 'я другой', 'я другая', 'мне чужо'], hints: [
-    'Я могу быть другим(ой) и всё равно быть ценным(ой)',
-    'Моё отличие — это не изъян',
-    'Я могу искать своё место, не подстраиваясь под всех'
-  ]},
-  { keys: ['смешно', 'смех', 'шутка', 'пошутил', 'прикол'], hints: [
-    'Я могу говорить о своих чувствах серьёзно — это не слабость',
-    'Юмор — это способ справиться, но не единственный',
-    'Я могу позволить себе быть уязвимым(ой)'
-  ]}
+// Группы паттернов с приоритетами.
+// Приоритет: чем выше число, тем важнее этот посыл.
+// Например, "проекция" важнее, чем "беспомощность", если в тексте есть и то, и другое.
+const beliefGroups = [
+  // === ПРОЕКЦИЯ: люди плохие, используют, ездят ===
+  {
+    name: 'projection',
+    priority: 10,
+    keys: [
+      ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт'],
+      ['мне попадаются', 'все вокруг', 'из-за них', 'они виноваты']
+    ],
+    hints: [
+      'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
+      'Моя мягкость — это не разрешение другим нарушать мои границы',
+      'Я могу говорить «нет» и оставаться добрым(ой)',
+      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
+      'Я могу выбирать, кому открываться, а кому — нет'
+    ]
+  },
+
+  // === ОБЕСЦЕНИВАНИЕ СЕБЯ ===
+  {
+    name: 'self-devaluation',
+    priority: 9,
+    keys: [
+      ['недостаточно', 'хуже других', 'не такой', 'не такая', 'никуда не гожусь', 'ничтожество'],
+      ['я плохой', 'я плохая', 'я урод', 'сам виноват', 'сама виновата']
+    ],
+    hints: [
+      'Я могу ошибаться и всё равно быть ценным человеком',
+      'Моя ценность не зависит от того, насколько я хорош(а)',
+      'Я могу быть мягче к себе в этой ситуации',
+      'Я имею право быть неидеальным и всё равно заслуживать уважения'
+    ]
+  },
+
+  // === ОТРИЦАНИЕ: всё хорошо, нет проблем ===
+  {
+    name: 'denial',
+    priority: 9,
+    keys: [
+      ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'],
+      ['не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом']
+    ],
+    hints: [
+      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
+      'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
+      'Я могу сказать «мне плохо» и получить поддержку',
+      'Я могу посмотреть на то, что избегаю, — это безопаснее, чем кажется'
+    ]
+  },
+
+  // === РАЦИОНАЛИЗАЦИЯ: потому что, так как ===
+  {
+    name: 'rationalization',
+    priority: 8,
+    keys: [
+      ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель', 'потому']
+    ],
+    hints: [
+      'Я могу не объяснять свои чувства логикой — они просто есть',
+      'Я могу признать, что мне больно, без «потому что»',
+      'Мои чувства не нуждаются в оправдании'
+    ]
+  },
+
+  // === САМОКРИТИКА / РУГАНЬ ===
+  {
+    name: 'self-criticism',
+    priority: 9,
+    keys: [
+      ['сам дурак', 'сама дура', 'сам виноват', 'сама виновата', 'я урод', 'я тупой', 'я тупая', 'я никчемн']
+    ],
+    hints: [
+      'Я могу перестать ругать себя за то, что уже произошло',
+      'Я могу относиться к себе с той же добротой, что и к другу',
+      'Я могу признать ошибку, не превращая её в приговор себе'
+    ]
+  },
+
+  // === СРАВНЕНИЕ С ДРУГИМИ ===
+  {
+    name: 'comparison',
+    priority: 7,
+    keys: [
+      ['лучше других', 'хуже других', 'сравнива', 'завиду', 'а вот у меня', 'а вот я', 'по сравнению']
+    ],
+    hints: [
+      'У каждого свой путь, и я не обязан(а) никого догонять',
+      'Я могу учиться у других, не обесценивая себя',
+      'Моя жизнь — это моя жизнь, а не гонка',
+      'Я могу замечать свои успехи, даже если они не такие громкие'
+    ]
+  },
+
+  // === ОТЧУЖДЕНИЕ ===
+  {
+    name: 'alienation',
+    priority: 7,
+    keys: [
+      ['я не такой', 'я не такая', 'я другой', 'я другая', 'мне чужо', 'я не вписываюсь']
+    ],
+    hints: [
+      'Я могу быть другим(ой) и всё равно быть ценным(ой)',
+      'Моё отличие — это не изъян',
+      'Я могу искать своё место, не подстраиваясь под всех'
+    ]
+  },
+
+  // === ЮМОР КАК ЗАЩИТА ===
+  {
+    name: 'humor',
+    priority: 6,
+    keys: [
+      ['смешно', 'смех', 'шутка', 'пошутил', 'прикол', 'ха-ха', 'ржу']
+    ],
+    hints: [
+      'Я могу говорить о своих чувствах серьёзно — это не слабость',
+      'Юмор — это способ справиться, но не единственный',
+      'Я могу позволить себе быть уязвимым(ой)'
+    ]
+  },
+
+  // === АГРЕССИЯ ===
+  {
+    name: 'aggression',
+    priority: 8,
+    keys: [
+      ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж', 'хочу ударить', 'кричу']
+    ],
+    hints: [
+      'Я могу выражать злость, не разрушая отношения',
+      'Я имею право злиться и говорить об этом',
+      'Моя агрессия — это сигнал, а не запрет',
+      'Я могу сказать «нет», даже если это кому-то не понравится',
+      'Я могу защищать себя, не чувствуя вины'
+    ]
+  },
+
+  // === СТРАХ / ТРЕВОГА ===
+  {
+    name: 'fear',
+    priority: 8,
+    keys: [
+      ['боюсь', 'страшно', 'страх', 'тревог', 'паник', 'боязнь']
+    ],
+    hints: [
+      'Страх — это сигнал, а не запрет на действие',
+      'Я могу действовать, даже если мне страшно',
+      'Я могу попробовать, и мир не рухнет, если не получится'
+    ]
+  },
+
+  // === ОДИНОЧЕСТВО ===
+  {
+    name: 'loneliness',
+    priority: 7,
+    keys: [
+      ['никто', 'один', 'одна', 'никому не нужен', 'никому не нужна', 'все ушли']
+    ],
+    hints: [
+      'Есть люди, которым я важен(на), и я могу открыться им',
+      'Я не один(а), даже если сейчас так кажется',
+      'Я могу быть нужным и нужной, даже если не идеален(на)'
+    ]
+  },
+
+  // === КОНТРОЛЬ ===
+  {
+    name: 'control',
+    priority: 7,
+    keys: [
+      ['контрол', 'порядок', 'план', 'распоряд', 'всё должно']
+    ],
+    hints: [
+      'Я могу отпускать контроль и не разрушаться',
+      'Не всё в жизни должно быть под моим контролем',
+      'Я могу доверять миру хотя бы в мелочах'
+    ]
+  },
+
+  // === ВИНА ===
+  {
+    name: 'guilt',
+    priority: 8,
+    keys: [
+      ['вина', 'виноват', 'виновата', 'из-за меня', 'я причина']
+    ],
+    hints: [
+      'Я могу чувствовать вину, но это не значит, что я виноват(а)',
+      'Моя вина — это не приговор, а сигнал разобраться',
+      'Я могу простить себя и идти дальше'
+    ]
+  },
+
+  // === СТЫД ===
+  {
+    name: 'shame',
+    priority: 8,
+    keys: [
+      ['стыд', 'стыдно', 'позор', 'неловко', 'неудобно']
+    ],
+    hints: [
+      'Мне не нужно стыдиться того, что я чувствую',
+      'Стыд — это эмоция, а не оценка меня как человека',
+      'Я могу быть собой, даже если это кому-то не нравится'
+    ]
+  },
+
+  // === УСТАЛОСТЬ / ВЫГОРАНИЕ ===
+  {
+    name: 'exhaustion',
+    priority: 7,
+    keys: [
+      ['устал', 'устала', 'нет сил', 'выгор', 'истощ', 'не могу больше']
+    ],
+    hints: [
+      'Я имею право на отдых, даже если не всё сделано',
+      'Моя усталость — это сигнал, а не слабость',
+      'Я могу заботиться о себе, не чувствуя вины'
+    ]
+  },
+
+  // === ГРАНИЦЫ ===
+  {
+    name: 'boundaries',
+    priority: 8,
+    keys: [
+      ['отказ', 'не могу отказать', 'не могу сказать нет', 'границ', 'на шею']
+    ],
+    hints: [
+      'Я могу говорить «нет», не объясняя причин',
+      'Мой отказ не делает меня плохим человеком',
+      'Я имею право на свои границы'
+    ]
+  },
+
+  // === НЕУВЕРЕННОСТЬ ===
+  {
+    name: 'uncertainty',
+    priority: 6,
+    keys: [
+      ['не уверен', 'неуверен', 'сомневаюсь', 'не знаю', 'кажется']
+    ],
+    hints: [
+      'Я могу не знать всего — и это нормально',
+      'Я могу двигаться, даже если не уверен(а) на 100%',
+      'Моя неуверенность не делает меня слабым(ой)'
+    ]
+  },
+
+  // === ОДОБРЕНИЕ ===
+  {
+    name: 'approval',
+    priority: 7,
+    keys: [
+      ['нрав', 'понрав', 'одобр', 'мнение', 'осужд', 'оцен']
+    ],
+    hints: [
+      'Я не могу нравиться всем — и это нормально',
+      'Я могу быть собой, даже если кому-то это не понравится',
+      'Моя ценность не зависит от чужого одобрения'
+    ]
+  }
 ];
 
+// Универсальные подсказки
 const universalHints = [
   'Я могу попробовать по-другому, даже если пока не уверен(а)',
   'Я имею право на ошибку и на новый опыт',
@@ -404,18 +277,39 @@ const universalHints = [
   'Я не обязан(а) быть идеальным(ой), чтобы двигаться вперёд'
 ];
 
-function getHints(text) {
+// Анализ текста: ищем не просто слова, а сочетания и приоритеты
+function analyzeText(text) {
   const lower = text.toLowerCase();
-  const matched = [];
-  for (const group of beliefHints) {
-    if (group.keys.some(k => lower.includes(k))) {
-      matched.push(...group.hints);
+  const matches = [];
+
+  for (const group of beliefGroups) {
+    let matched = false;
+    // В группе keys — массив массивов. Достаточно, чтобы совпал хотя бы один массив целиком
+    // (все слова из него есть в тексте).
+    for (const combination of group.keys) {
+      if (combination.every(word => lower.includes(word))) {
+        matched = true;
+        break;
+      }
+    }
+    if (matched) {
+      matches.push(group);
     }
   }
-  if (matched.length === 0) {
-    return universalHints;
-  }
-  return [...new Set(matched)];
+
+  // Сортируем по приоритету: сначала самые важные
+  matches.sort((a, b) => b.priority - a.priority);
+
+  return matches;
+}
+
+function getHints(text) {
+  const matches = analyzeText(text);
+  if (matches.length === 0) return universalHints;
+
+  // Берём только самую важную группу (с самым высоким приоритетом)
+  const topGroup = matches[0];
+  return topGroup.hints;
 }
 
 function showHints() {
@@ -435,93 +329,5 @@ function useHint(el) {
   saveAll();
 }
 
-function goTo(n) {
-  document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
-  document.getElementById('scene-' + n).classList.remove('hidden');
-  currentScene = n;
-  saveAll();
-  if (n === 6) showSummary();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function saveAll() {
-  const data = { currentScene };
-  document.querySelectorAll('textarea, input').forEach(el => {
-    if (el.id) data[el.id] = el.value;
-  });
-  localStorage.setItem('compass_data', JSON.stringify(data));
-}
-
-function loadAll() {
-  const saved = localStorage.getItem('compass_data');
-  if (!saved) return;
-  try {
-    const data = JSON.parse(saved);
-    Object.keys(data).forEach(id => {
-      if (id === 'currentScene') {
-        currentScene = data[id];
-      } else {
-        const el = document.getElementById(id);
-        if (el) el.value = data[id];
-      }
-    });
-    if (currentScene > 0) goTo(currentScene);
-  } catch(e) {}
-}
-
-function showSummary() {
-  const content = document.getElementById('summary-content');
-  const situation = document.getElementById('s1-situation').value;
-  const voice = document.getElementById('s1-voice').value;
-  const rule = document.getElementById('s2-rule').value;
-  const core = document.getElementById('s2-core').value;
-  const oldB = document.getElementById('s5-old').value;
-  const newB = document.getElementById('s5-new').value;
-  const feeling = document.getElementById('s5-feeling').value;
-
-  content.innerHTML = `
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Ситуация</p>
-      <p>${situation || '—'}</p>
-    </div>
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Что вы себе сказали</p>
-      <p>${voice || '—'}</p>
-    </div>
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Правило</p>
-      <p>${rule || '—'}</p>
-    </div>
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Мысль о себе</p>
-      <p>${core || '—'}</p>
-    </div>
-    <div class="border-t border-slate-700 pt-4">
-      <p class="text-sm text-slate-500 mb-1">Старая мысль</p>
-      <p>${oldB || '—'}</p>
-    </div>
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Новая мысль</p>
-      <p class="text-emerald-400 font-semibold">${newB || '—'}</p>
-    </div>
-    <div>
-      <p class="text-sm text-slate-500 mb-1">Что вы чувствуете</p>
-      <p>${feeling || '—'}</p>
-    </div>
-  `;
-}
-
-function resetAll() {
-  if (!confirm('Начать заново? Все записи будут удалены.')) return;
-  localStorage.removeItem('compass_data');
-  location.reload();
-}
-
-document.querySelectorAll('textarea, input').forEach(el => {
-  el.addEventListener('input', saveAll);
-});
-
-loadAll();
+// ... остальной код без изменений (goTo, saveAll, loadAll, showSummary, resetAll, loadAll()) ...
 </script>
-</body>
-</html>
