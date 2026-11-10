@@ -49,6 +49,15 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .phrase-option {
+    background: #1a1a2e;
+    border-left: 3px solid #a78bfa;
+    transition: all 0.2s;
+  }
+  .phrase-option:hover {
+    background: #252540;
+    border-left-color: #c4b5fd;
+  }
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
@@ -185,8 +194,8 @@
       <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
-      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="Начните печатать, или нажмите на серую подсказку ниже..." onfocus="suggestPhrase()"></textarea>
-      <div id="phrase-hint" class="text-sm text-slate-500 mb-4 cursor-pointer hover:text-slate-300 transition" onclick="insertPhrase()"></div>
+      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="Начните печатать, или выберите вариант ниже..." onfocus="suggestPhrase()"></textarea>
+      <div id="phrase-hint" class="space-y-2 mb-4"></div>
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
     </div>
@@ -221,18 +230,30 @@
 
 <script>
 let currentScene = 0;
-let currentPhrase = '';
 
 function getHints(text) {
   const lower = text.toLowerCase();
   const hints = [];
+
+  const aggressionKeys = ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж', 'хочу ударить', 'кричу', 'не умею злиться', 'не могу злиться'];
+  if (aggressionKeys.some(k => lower.includes(k))) {
+    hints.push(
+      'Я могу выражать злость, не разрушая отношения',
+      'Я имею право злиться и говорить об этом',
+      'Моя агрессия — это сигнал, а не запрет',
+      'Я могу сказать «нет», даже если это кому-то не понравится',
+      'Я могу защищать себя, не чувствуя вины'
+    );
+  }
 
   const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'не могу отказать', 'не могу сказать нет'];
   if (projectionKeys.some(k => lower.includes(k))) {
     hints.push(
       'Моя мягкость — это не разрешение другим нарушать мои границы',
       'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
-      'Я могу говорить «нет» и оставаться добрым(ой)'
+      'Я могу говорить «нет» и оставаться добрым(ой)',
+      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
+      'Я могу выбирать, кому открываться, а кому — нет'
     );
   }
 
@@ -241,6 +262,7 @@ function getHints(text) {
     hints.push(
       'Я могу ошибаться и всё равно быть ценным человеком',
       'Моя ценность не зависит от того, насколько я хорош(а)',
+      'Я могу быть мягче к себе в этой ситуации',
       'Я имею право быть неидеальным и всё равно заслуживать уважения'
     );
   }
@@ -303,7 +325,9 @@ function getHints(text) {
     return [
       'Я могу попробовать по-другому, даже если пока не уверен(а)',
       'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации'
+      'Я могу быть мягче к себе в этой ситуации',
+      'Я могу начать с малого шага',
+      'Я не обязан(а) быть идеальным(ой), чтобы двигаться вперёд'
     ];
   }
 
@@ -311,17 +335,20 @@ function getHints(text) {
 }
 
 function suggestPhrase() {
-  if (document.getElementById('s5-new').value.trim() !== '') return;
   const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
   const hints = getHints(oldText);
-  currentPhrase = hints[0];
-  document.getElementById('phrase-hint').textContent = 'Попробуйте: «' + currentPhrase + '»';
+  const container = document.getElementById('phrase-hint');
+  
+  container.innerHTML = hints.map(h => `
+    <div class="phrase-option p-3 rounded-lg text-sm text-slate-400 cursor-pointer" onclick="insertPhrase('${h.replace(/'/g, "\\'")}')">
+      «${h}»
+    </div>
+  `).join('');
 }
 
-function insertPhrase() {
-  if (!currentPhrase) return;
-  document.getElementById('s5-new').value = currentPhrase;
-  document.getElementById('phrase-hint').textContent = '';
+function insertPhrase(phrase) {
+  document.getElementById('s5-new').value = phrase;
+  document.getElementById('phrase-hint').innerHTML = '';
   saveAll();
 }
 
