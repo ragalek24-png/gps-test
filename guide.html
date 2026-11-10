@@ -1,21 +1,325 @@
-function analyzeText(text) {
-  const lower = text.toLowerCase();
-  const matches = [];
-  for (const group of beliefGroups) {
-    let matched = false;
-    for (const combination of group.keys) {
-      if (combination.every(word => lower.includes(word))) { matched = true; break; }
-    }
-    if (matched) matches.push(group);
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Внутренний компас</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { 
+    background: #0a0a0f; 
+    color: #e2e8f0; 
+    font-family: 'Georgia', serif;
+    overflow-x: hidden;
   }
-  matches.sort((a, b) => b.priority - a.priority);
-  return matches;
-}
+  .card {
+    background: #14141f;
+    border: 1px solid #2a2a3e;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
+  }
+  textarea, input { 
+    background: #1a1a2e; 
+    border: 1.5px solid #2a2a3e; 
+    color: #e2e8f0;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+  textarea:focus, input:focus { 
+    border-color: #a78bfa; 
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+    background: #1e1e36;
+  }
+  textarea::placeholder, input::placeholder {
+    color: #4a4a6a;
+  }
+  .btn { 
+    background: #a78bfa;
+    transition: all 0.3s;
+  }
+  .btn:hover { 
+    background: #c4b5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
+  }
+  .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
+  .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
+  .text-gradient {
+    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hint-box {
+    background: #1e1b2e;
+    border-left: 3px solid #a78bfa;
+  }
+</style>
+</head>
+<body class="min-h-screen p-4 flex items-center justify-center">
+
+<div class="max-w-2xl mx-auto w-full">
+
+  <!-- Экран 0 -->
+  <div id="scene-0" class="scene">
+    <div class="text-center mb-8 pt-4">
+      <div class="text-6xl mb-4">🧭</div>
+      <h1 class="text-3xl font-bold text-gradient mb-3">Внутренний компас</h1>
+      <p class="text-lg text-slate-400 mb-8">Как понять, что мешает вам жить — и что с этим делать</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-violet-300 mb-3">О чём это?</h2>
+      <p class="text-slate-300 mb-3 leading-relaxed">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего».</p>
+      <p class="text-slate-300 mb-3 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
+      <p class="text-slate-300 leading-relaxed">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-violet-300 mb-3">Что вас ждёт?</h2>
+      <ul class="text-slate-300 space-y-2">
+        <li>• 5 простых шагов — без сложных терминов.</li>
+        <li>• Записи сохраняются в браузере. Никто их не увидит.</li>
+        <li>• Вы можете вернуться в любой момент.</li>
+      </ul>
+    </div>
+    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg text-white">Начать →</button>
+  </div>
+
+  <!-- Экран 1 -->
+  <div id="scene-1" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🎬</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 1. Что случилось?</h2>
+      <p class="text-slate-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что произошло?</label>
+      <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы сказали себе в тот момент?</label>
+      <textarea id="s1-voice" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Постарайтесь вспомнить дословно.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы почувствовали в теле?</label>
+      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Какие эмоции были сильнее всего?</label>
+      <textarea id="s1-emotions" rows="2" class="w-full p-3 rounded-lg" placeholder="Стыд, страх, злость, обида..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="goTo(0)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(2)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 2 -->
+  <div id="scene-2" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🔍</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 2. Какое правило за этим?</h2>
+      <p class="text-slate-400">То, что вы себе сказали — это верхушка айсберга</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Какое правило стоит за этой мыслью?</label>
+      <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это то, как вы думаете, «должно» быть.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">А какая мысль о себе под этим?</label>
+      <textarea id="s2-core" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это то, что вы думаете о себе, когда никто не видит.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите это?</label>
+      <textarea id="s2-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="Тяжесть, пустоту, злость..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="goTo(1)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(3)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 3 -->
+  <div id="scene-3" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🕰️</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 3. Откуда это взялось?</h2>
+      <p class="text-slate-400">У каждого правила есть история</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Правила не берутся из воздуха. Они формируются в детстве, в школе, в отношениях. Кто-то сказал слово, что-то произошло — и мозг запомнил: «так безопаснее». Давайте найдём истоки.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Когда вы впервые почувствовали что-то подобное?</label>
+      <textarea id="s3-origin" rows="4" class="w-full p-3 rounded-lg mb-2" placeholder="Детство, школа, чьи-то слова..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это может быть одно яркое воспоминание или просто ощущение, которое тянется с детства.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что в жизни это подтверждало?</label>
+      <textarea id="s3-support" rows="4" class="w-full p-3 rounded-lg" placeholder="2–3 примера..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="goTo(2)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(4)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 4 -->
+  <div id="scene-4" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">⚖️</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 4. Проверка</h2>
+      <p class="text-slate-400">Посмотрим, на чём держится это правило</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что, по-вашему, это подтверждает?</label>
+      <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">А что это опровергает?</label>
+      <textarea id="s4-against" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда смотрите на это?</label>
+      <textarea id="s4-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="goTo(3)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(5)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 5 -->
+  <div id="scene-5" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🌱</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 5. Новая мысль</h2>
+      <p class="text-slate-400">Не мечта, а вывод из фактов</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
+      <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
+      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
+      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">💡 Показать варианты под эту мысль</button>
+      <div id="hints-container" class="hidden mb-4">
+        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
+        <div id="hints-list" class="space-y-2"></div>
+      </div>
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
+      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="goTo(4)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(6)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Завершить</button>
+    </div>
+  </div>
+
+  <!-- Экран 6 -->
+  <div id="scene-6" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-6xl mb-4">🌅</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Ваш разбор</h2>
+      <p class="text-slate-400 mb-6">Сохраните этот экран. Вернитесь к нему через месяц.</p>
+    </div>
+    <div class="card rounded-2xl p-6 mb-6">
+      <div id="summary-content" class="space-y-4 text-slate-300"></div>
+    </div>
+    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">Пройти заново</button>
+  </div>
+
+</div>
+
+<script>
+let currentScene = 0;
 
 function getHints(text) {
-  const matches = analyzeText(text);
-  if (matches.length === 0) return universalHints;
-  return matches[0].hints;
+  const lower = text.toLowerCase();
+  const matchedHints = [];
+
+  // Проекция (люди плохие, используют, мягкость)
+  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
+  if (projectionKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Моя мягкость — это не разрешение другим нарушать мои границы',
+      'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
+      'Я могу говорить «нет» и оставаться добрым(ой)',
+      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
+      'Я могу выбирать, кому открываться, а кому — нет'
+    );
+  }
+
+  // Самокритика
+  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
+  if (selfCriticismKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу ошибаться и всё равно быть ценным человеком',
+      'Моя ценность не зависит от того, насколько я хорош(а)',
+      'Я могу быть мягче к себе в этой ситуации',
+      'Я имею право быть неидеальным и всё равно заслуживать уважения'
+    );
+  }
+
+  // Отрицание
+  const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'];
+  if (denialKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
+      'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
+      'Я могу сказать «мне плохо» и получить поддержку'
+    );
+  }
+
+  // Рационализация
+  const rationalKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
+  if (rationalKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу не объяснять свои чувства логикой — они просто есть',
+      'Я могу признать, что мне больно, без «потому что»',
+      'Мои чувства не нуждаются в оправдании'
+    );
+  }
+
+  // Страх
+  const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник'];
+  if (fearKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Страх — это сигнал, а не запрет на действие',
+      'Я могу действовать, даже если мне страшно',
+      'Я могу попробовать, и мир не рухнет, если не получится'
+    );
+  }
+
+  // Усталость
+  const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ'];
+  if (tiredKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я имею право на отдых, даже если не всё сделано',
+      'Моя усталость — это сигнал, а не слабость',
+      'Я могу заботиться о себе, не чувствуя вины'
+    );
+  }
+
+  // Вина
+  const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня'];
+  if (guiltKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу чувствовать вину, но это не значит, что я виноват(а)',
+      'Моя вина — это не приговор, а сигнал разобраться',
+      'Я могу простить себя и идти дальше'
+    );
+  }
+
+  // Стыд
+  const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко'];
+  if (shameKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Мне не нужно стыдиться того, что я чувствую',
+      'Стыд — это эмоция, а не оценка меня как человека',
+      'Я могу быть собой, даже если это кому-то не нравится'
+    );
+  }
+
+  // Если ничего не нашли — универсальные подсказки
+  if (matchedHints.length === 0) {
+    return [
+      'Я могу попробовать по-другому, даже если пока не уверен(а)',
+      'Я имею право на ошибку и на новый опыт',
+      'Я могу быть мягче к себе в этой ситуации'
+    ];
+  }
+
+  return [...new Set(matchedHints)];
 }
 
 function showHints() {
@@ -23,6 +327,83 @@ function showHints() {
   const container = document.getElementById('hints-container');
   const list = document.getElementById('hints-list');
   const hints = getHints(oldText);
+  
   container.classList.remove('hidden');
-  list.innerHTML = hints.map(h => `<div class="hint-box p-3 rounded-lg text-sm text-slate-300 cursor-pointer hover:bg-slate-800 transition" onclick="useHint(this)">«${h}»</div>`).join('');
+  list.innerHTML = hints.map(h => `
+    <div class="hint-box p-3 rounded-lg text-sm text-slate-300 cursor-pointer hover:bg-slate-800 transition" onclick="useHint(this)">
+      «${h}»
+    </div>
+  `).join('');
 }
+
+function useHint(el) {
+  const text = el.textContent.replace(/[«»]/g, '');
+  document.getElementById('s5-new').value = text;
+  saveAll();
+}
+
+function goTo(n) {
+  document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
+  document.getElementById('scene-' + n).classList.remove('hidden');
+  currentScene = n;
+  saveAll();
+  if (n === 6) showSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function saveAll() {
+  const data = { currentScene };
+  document.querySelectorAll('textarea, input').forEach(el => {
+    if (el.id) data[el.id] = el.value;
+  });
+  localStorage.setItem('compass_data', JSON.stringify(data));
+}
+
+function loadAll() {
+  const saved = localStorage.getItem('compass_data');
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    Object.keys(data).forEach(id => {
+      if (id === 'currentScene') { currentScene = data[id]; }
+      else { const el = document.getElementById(id); if (el) el.value = data[id]; }
+    });
+    if (currentScene > 0) goTo(currentScene);
+  } catch(e) {}
+}
+
+function showSummary() {
+  const content = document.getElementById('summary-content');
+  const situation = document.getElementById('s1-situation').value;
+  const voice = document.getElementById('s1-voice').value;
+  const rule = document.getElementById('s2-rule').value;
+  const core = document.getElementById('s2-core').value;
+  const oldB = document.getElementById('s5-old').value;
+  const newB = document.getElementById('s5-new').value;
+  const feeling = document.getElementById('s5-feeling').value;
+
+  content.innerHTML = `
+    <div><p class="text-sm text-slate-500 mb-1">Ситуация</p><p>${situation || '—'}</p></div>
+    <div><p class="text-sm text-slate-500 mb-1">Что вы себе сказали</p><p>${voice || '—'}</p></div>
+    <div><p class="text-sm text-slate-500 mb-1">Правило</p><p>${rule || '—'}</p></div>
+    <div><p class="text-sm text-slate-500 mb-1">Мысль о себе</p><p>${core || '—'}</p></div>
+    <div class="border-t border-slate-700 pt-4"><p class="text-sm text-slate-500 mb-1">Старая мысль</p><p>${oldB || '—'}</p></div>
+    <div><p class="text-sm text-slate-500 mb-1">Новая мысль</p><p class="text-emerald-400 font-semibold">${newB || '—'}</p></div>
+    <div><p class="text-sm text-slate-500 mb-1">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
+  `;
+}
+
+function resetAll() {
+  if (!confirm('Начать заново? Все записи будут удалены.')) return;
+  localStorage.removeItem('compass_data');
+  location.reload();
+}
+
+document.querySelectorAll('textarea, input').forEach(el => {
+  el.addEventListener('input', saveAll);
+});
+
+loadAll();
+</script>
+</body>
+</html>
