@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Перепрошивка убеждений: методичка</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+<div class="max-w-3xl mx-auto p-6">
+
+  <!-- Заголовок -->
+  <div class="text-center mb-10">
+    <div class="text-6xl mb-4">🧠</div>
+    <h1 class="text-3xl font-bold mb-2">Перепрошивка убеждений</h1>
+    <p class="text-gray-600">Интерактивная методичка: 4 шага к адаптивному мышлению</p>
+  </div>
+
+  <!-- Введение -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6 border-l-4 border-violet-500">
+    <h2 class="text-xl font-semibold mb-3">Как пользоваться</h2>
+    <p class="text-gray-700 mb-2">Эта методичка поможет вам самостоятельно выявить и изменить деструктивную установку. Заполняйте поля по порядку — от ситуации к новой, более гибкой мысли.</p>
+    <p class="text-gray-500 text-sm">Ваши ответы сохраняются в этом браузере и никуда не отправляются. Вы можете вернуться к работе позже.</p>
+  </div>
+
+  <!-- Шаг 1 -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</span>
+      <h2 class="text-xl font-semibold">Фиксация ситуации и эмоции</h2>
+    </div>
+    <p class="text-gray-600 mb-4">Вспомните ситуацию, которая вызвала у вас сильный дискомфорт. Опишите её и оцените эмоцию.</p>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Что произошло?</label>
+    <textarea id="s1-situation" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: начальник сделал замечание при коллегах"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Что вы почувствовали? Оцените силу от 0 до 10</label>
+    <input id="s1-emotion" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: стыд 8, тревога 7">
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Как вы отреагировали?</label>
+    <textarea id="s1-action" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: замкнулся, перестал говорить"></textarea>
+  </div>
+
+  <!-- Шаг 2 -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</span>
+      <h2 class="text-xl font-semibold">Выявление установки</h2>
+    </div>
+    <p class="text-gray-600 mb-4">Какая мысль пронеслась у вас в голове? А что она говорит о вас? Спуститесь «стрелкой вниз» к глубинному убеждению.</p>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Автоматическая мысль</label>
+    <textarea id="s2-thought" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я не справляюсь"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Что это говорит обо мне?</label>
+    <textarea id="s2-meaning" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я плохой работник"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Глубинная установка</label>
+    <textarea id="s2-belief" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: я должен быть безупречным, иначе я неудачник"></textarea>
+  </div>
+
+  <!-- Шаг 3 -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</span>
+      <h2 class="text-xl font-semibold">Диспутинг</h2>
+    </div>
+    <p class="text-gray-600 mb-4">Проверьте мысль на доказательства. Ответьте на три вопроса.</p>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">1. Где доказательства, что эта мысль на 100% верна?</label>
+    <textarea id="s3-evidence" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я действительно допустил ошибку"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">2. Какие факты говорят против этой мысли?</label>
+    <textarea id="s3-against" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я справился с пятью проектами в этом году"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">3. Помогает ли мне эта мысль достигать целей?</label>
+    <textarea id="s3-help" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: нет, она заставляет меня бояться новых задач"></textarea>
+  </div>
+
+  <!-- Шаг 4 -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="bg-violet-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">4</span>
+      <h2 class="text-xl font-semibold">Формирование адаптивной установки</h2>
+    </div>
+    <p class="text-gray-600 mb-4">Замените категоричные слова («должен», «всегда», «никогда») на вероятностные («хотелось бы», «иногда», «могу попробовать»).</p>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Было (деструктивная установка)</label>
+    <textarea id="s4-old" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я должен быть безупречным"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Стало (новая, гибкая мысль)</label>
+    <textarea id="s4-new" rows="2" class="w-full p-3 border-2 border-gray-200 rounded-xl mb-3 focus:border-violet-500 outline-none" placeholder="Например: я хотел бы быть внимательным, но у меня есть право на ошибки"></textarea>
+
+    <label class="block text-sm font-medium text-gray-700 mb-1">Как изменилась ваша эмоция после этого? (0–10)</label>
+    <input id="s4-emotion" type="text" class="w-full p-3 border-2 border-gray-200 rounded-xl focus:border-violet-500 outline-none" placeholder="Например: тревога снизилась с 7 до 3">
+  </div>
+
+  <!-- Кнопки -->
+  <div class="flex flex-wrap gap-3 justify-center mb-8">
+    <button onclick="save()" class="px-6 py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700">💾 Сохранить</button>
+    <button onclick="showResult()" class="px-6 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700">✨ Показать результат</button>
+    <button onclick="reset()" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300">↺ Очистить</button>
+  </div>
+
+  <!-- Результат -->
+  <div id="result" class="hidden bg-emerald-50 border-l-4 border-emerald-500 rounded-2xl p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-3 text-emerald-900">Ваш результат</h2>
+    <div id="result-content" class="text-gray-800 space-y-2"></div>
+  </div>
+
+  <!-- Дополнительные упражнения -->
+  <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Дополнительные упражнения</h2>
+    <div class="space-y-4">
+      <div class="bg-violet-50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Дневник побед</h3>
+        <p class="text-sm text-gray-600">Для установки «Я недостаточно хорош». Каждый вечер записывайте 3 вещи, которые у вас получились сегодня, даже маленькие.</p>
+      </div>
+      <div class="bg-violet-50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Круг контроля</h3>
+        <p class="text-sm text-gray-600">Для установок «Всё под контролем» и «Гиперответственность». Нарисуйте круг: внутри — то, что вы можете контролировать, снаружи — то, что не можете.</p>
+      </div>
+      <div class="bg-violet-50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Не моя зона ответственности</h3>
+        <p class="text-sm text-gray-600">Когда чувствуете вину, спросите: «Это действительно моя задача или я взвалил(а) на себя чужую?»</p>
+      </div>
+      <div class="bg-violet-50 rounded-xl p-4">
+        <h3 class="font-semibold mb-1">Достаточно хороший результат</h3>
+        <p class="text-sm text-gray-600">Разрешите себе сделать работу на 80% и сдать её. Отслеживайте, что произошло — обычно катастрофы не случается.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center text-sm text-gray-500 mb-8">
+    <p>Методичка основана на методах КПТ (А. Бек) и РЭПТ (А. Эллис).</p>
+    <p>При клинических состояниях обратитесь к специалисту.</p>
+  </div>
+
+</div>
+
+<script>
+const fields = ['s1-situation','s1-emotion','s1-action','s2-thought','s2-meaning','s2-belief','s3-evidence','s3-against','s3-help','s4-old','s4-new','s4-emotion'];
+
+function save() {
+  const data = {};
+  fields.forEach(id => { const el = document.getElementById(id); if (el) data[id] = el.value; });
+  localStorage.setItem('guide_data', JSON.stringify(data));
+  alert('Сохранено!');
+}
+
+function load() {
+  const saved = localStorage.getItem('guide_data');
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    fields.forEach(id => { const el = document.getElementById(id); if (el && data[id]) el.value = data[id]; });
+  } catch(e) {}
+}
+
+function reset() {
+  if (!confirm('Очистить все поля?')) return;
+  fields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  localStorage.removeItem('guide_data');
+  document.getElementById('result').classList.add('hidden');
+}
+
+function showResult() {
+  const old = document.getElementById('s4-old').value.trim();
+  const neu = document.getElementById('s4-new').value.trim();
+  const emo = document.getElementById('s4-emotion').value.trim();
+  const res = document.getElementById('result');
+  const content = document.getElementById('result-content');
+
+  if (!old || !neu) {
+    alert('Заполните шаг 4: «Было» и «Стало», чтобы увидеть результат.');
+    return;
+  }
+
+  content.innerHTML = `
+    <p><strong>Было:</strong> ${old}</p>
+    <p><strong>Стало:</strong> ${neu}</p>
+    ${emo ? `<p><strong>Эмоция:</strong> ${emo}</p>` : ''}
+    <p class="text-sm text-gray-500 mt-3">Сохраните результат или сделайте скриншот. Регулярно возвращайтесь к этой практике.</p>
+  `;
+  res.classList.remove('hidden');
+  res.scrollIntoView({ behavior: 'smooth' });
+}
+
+load();
+</script>
+</body>
+</html>
