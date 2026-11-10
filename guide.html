@@ -231,19 +231,20 @@
     <button onclick="goTo(6)" class="btn w-full py-4 rounded-2xl font-bold text-white">Дальше →</button>
   </div>
 
-  <!-- Экран 6: Проверка на практике -->
+  <!-- Экран 6: Проверка реальностью -->
   <div id="scene-6" class="scene hidden">
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">⚡</div>
-      <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка на практике</h2>
-      <p class="text-gray-300">Мысль меняется только через опыт</p>
+      <h2 class="text-3xl font-bold glow text-gradient mb-2">Проверка реальностью</h2>
+      <p class="text-gray-300">Слова — это просто слова. Пока вы их не проверите</p>
     </div>
 
     <div class="card rounded-3xl p-8 mb-6">
-      <p class="text-gray-200 mb-6">Новая мысль останется просто словами, если вы её не проверите. Спланируйте одно маленькое действие, которое сделаете в ближайшие 24 часа. Не подвиг, а маленький шаг.</p>
+      <p class="text-gray-200 mb-6">Новая мысль останется фантазией, если вы её не проверите. Но это не значит, что нужно идти на подвиг. Достаточно одного маленького шага — такого, который вы можете сделать в ближайшие 24 часа. Шаг, который немного противоречит старому правилу, но не пугает до дрожи.</p>
+      <p class="text-gray-200 mb-6">Например: если старое правило говорит «не высовывайся», шагом может быть «задать один вопрос на встрече». Если правило говорит «ты всё испортишь», шагом может быть «приготовить новое блюдо и не расстраиваться, если не идеально».</p>
 
-      <label class="block text-sm text-gray-300 mb-2">Что вы сделаете, чтобы проверить новую мысль?</label>
-      <textarea id="s6-action" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Маленькое конкретное действие в ближайшие 24 часа..."></textarea>
+      <label class="block text-sm text-gray-300 mb-2">Какой шаг вы сделаете, чтобы проверить новую мысль?</label>
+      <textarea id="s6-action" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Маленькое, но конкретное действие в ближайшие 24 часа..."></textarea>
 
       <label class="block text-sm text-gray-300 mb-2">Что произошло на самом деле?</label>
       <textarea id="s6-result" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Заполните после действия..."></textarea>
@@ -332,7 +333,7 @@ function showSummary() {
       <p class="text-sm text-gray-400 mt-1">Вера: ${newLevel || '—'}%</p>
     </div>
     <div class="border-l-4 border-amber-500 pl-4 mb-4">
-      <p class="text-sm text-gray-400 mb-1">Проверка на практике</p>
+      <p class="text-sm text-gray-400 mb-1">Проверка реальностью</p>
       <p>${action || '—'}</p>
       ${result ? `<p class="mt-2 text-sm text-gray-400">Результат: ${result}</p>` : ''}
     </div>
