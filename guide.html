@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Разбор полётов: как перестать накручивать себя</title>
+<title>Внутренний компас: как перестать накручивать себя</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { 
@@ -72,7 +72,7 @@
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
 
-<div class="particle" style="top: 10%; left: 10%;">🌙</div>
+<div class="particle" style="top: 10%; left: 10%;">🧭</div>
 <div class="particle" style="top: 20%; right: 15%; animation-delay: 1s;">✨</div>
 <div class="particle" style="bottom: 15%; left: 20%; animation-delay: 2s;">💫</div>
 <div class="particle" style="top: 60%; right: 10%; animation-delay: 0.5s;">⭐</div>
@@ -82,15 +82,15 @@
   <!-- Экран 0: Введение -->
   <div id="scene-0" class="scene">
     <div class="text-center mb-8 pt-8">
-      <div class="text-7xl mb-6">🎢</div>
-      <h1 class="text-4xl font-bold glow mb-4 text-gradient">Разбор полётов</h1>
+      <div class="text-7xl mb-6">🧭</div>
+      <h1 class="text-4xl font-bold glow mb-4 text-gradient">Внутренний компас</h1>
       <p class="text-gray-300 text-lg mb-8">Как перестать накручивать себя и начать жить</p>
     </div>
 
     <div class="card rounded-3xl p-8 mb-6">
-      <p class="text-gray-200 mb-4 leading-relaxed">Иногда в голове звучит голос, который комментирует всё, что мы делаем: «ну и зачем ты это сказал», «кто тебя вообще слушает», «опять ты всё испортил». Мы привыкли считать, что это наш собственный голос. Но это не совсем так.</p>
-      <p class="text-gray-200 mb-4 leading-relaxed">Это голос внутреннего правила, которое когда-то помогало нам справляться, а теперь мешает. Например: «чтобы меня любили, я должен быть удобным», «если я ошибусь, это будет катастрофа», «я не имею права хотеть большего».</p>
-      <p class="text-gray-200 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но их можно заметить, проверить и заменить на другие — более гибкие и честные. Именно этим мы и займёмся.</p>
+      <p class="text-gray-200 mb-4 leading-relaxed">У каждого из нас есть внутренний компас. Это наши правила, которые помогают ориентироваться в жизни: «будь вежлив», «не высовывайся», «сначала подумай, потом делай». Они когда-то были полезны. Но иногда компас сбивается.</p>
+      <p class="text-gray-200 mb-4 leading-relaxed">Тогда он начинает показывать не туда. Мы слышим в голове голос, который комментирует всё, что мы делаем: «ну и зачем ты это сказал», «кто тебя вообще слушает», «опять ты всё испортил». И мы думаем, что это наш собственный голос. Но это голос сбитого компаса.</p>
+      <p class="text-gray-200 leading-relaxed">Сегодня мы попробуем его перенастроить. Не за один вечер, конечно. Но мы хотя бы посмотрим, откуда он взялся и как его поправить.</p>
     </div>
 
     <div class="card rounded-3xl p-6 mb-8">
@@ -103,7 +103,7 @@
     </div>
 
     <button onclick="goTo(1)" class="btn w-full py-4 rounded-2xl font-bold text-lg text-white">
-      Начать разбор →
+      Начать настройку →
     </button>
   </div>
 
@@ -112,11 +112,11 @@
     <div class="text-center mb-8 pt-8">
       <div class="text-6xl mb-4">🎬</div>
       <h2 class="text-3xl font-bold glow text-gradient mb-2">Что случилось?</h2>
-      <p class="text-gray-300">Вспомните ситуацию, где вы были к себе особенно строги</p>
+      <p class="text-gray-300">Вспомните ситуацию, где компас сбил вас с пути</p>
     </div>
 
     <div class="card rounded-3xl p-8 mb-6">
-      <p class="text-gray-200 mb-6">Начнём с конкретного случая. Это может быть недавняя ситуация, а может быть что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание, а не абстрактное «я всегда всё порчу».</p>
+      <p class="text-gray-200 mb-6">Начнём с конкретного случая. Это может быть недавняя ситуация, а может быть что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
 
       <label class="block text-sm text-gray-300 mb-2">Что произошло?</label>
       <textarea id="s1-situation" rows="3" class="w-full p-4 rounded-xl mb-6" placeholder="Опишите ситуацию, которая выбила вас из колеи..."></textarea>
