@@ -1,9 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Внутренний компас</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { 
+    background: #0a0a0f; 
+    color: #e2e8f0; 
+    font-family: 'Georgia', serif;
+    overflow-x: hidden;
+  }
+  .card {
+    background: #14141f;
+    border: 1px solid #2a2a3e;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.05);
+  }
+  textarea, input { 
+    background: #1a1a2e; 
+    border: 1.5px solid #2a2a3e; 
+    color: #e2e8f0;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+  textarea:focus, input:focus { 
+    border-color: #a78bfa; 
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+    background: #1e1e36;
+  }
+  textarea::placeholder, input::placeholder {
+    color: #4a4a6a;
+  }
+  .btn { 
+    background: #a78bfa;
+    transition: all 0.3s;
+  }
+  .btn:hover { 
+    background: #c4b5fd;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
+  }
+  .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
+  .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
+  .text-gradient {
+    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hint-box {
+    background: #1e1b2e;
+    border-left: 3px solid #a78bfa;
+  }
+</style>
+</head>
+<body class="min-h-screen p-4 flex items-center justify-center">
+
+<div class="max-w-2xl mx-auto w-full">
+
+  <!-- Экран 0: Введение -->
+  <div id="scene-0" class="scene">
+    <div class="text-center mb-8 pt-4">
+      <div class="text-6xl mb-4">🧭</div>
+      <h1 class="text-3xl font-bold text-gradient mb-3">Внутренний компас</h1>
+      <p class="text-lg text-slate-400 mb-8">Как понять, что мешает вам жить — и что с этим делать</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-violet-300 mb-3">О чём это?</h2>
+      <p class="text-slate-300 mb-3 leading-relaxed">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего».</p>
+      <p class="text-slate-300 mb-3 leading-relaxed">Эти правила не осознаются. Они кажутся правдой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
+      <p class="text-slate-300 leading-relaxed">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold text-violet-300 mb-3">Что вас ждёт?</h2>
+      <ul class="text-slate-300 space-y-2">
+        <li>• 5 простых шагов — без сложных терминов.</li>
+        <li>• Записи сохраняются в браузере. Никто их не увидит.</li>
+        <li>• Вы можете вернуться в любой момент.</li>
+      </ul>
+    </div>
+
+    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg text-white">
+      Начать →
+    </button>
+  </div>
+
+  <!-- Экран 1 -->
+  <div id="scene-1" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🎬</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 1. Что случилось?</h2>
+      <p class="text-slate-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что произошло?</label>
+      <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы сказали себе в тот момент?</label>
+      <textarea id="s1-voice" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Постарайтесь вспомнить дословно.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы почувствовали в теле?</label>
+      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Какие эмоции были сильнее всего?</label>
+      <textarea id="s1-emotions" rows="2" class="w-full p-3 rounded-lg" placeholder="Стыд, страх, злость, обида..."></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="goTo(0)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(2)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 2 -->
+  <div id="scene-2" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🔍</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 2. Какое правило за этим?</h2>
+      <p class="text-slate-400">То, что вы себе сказали — это верхушка айсберга</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Какое правило стоит за этой мыслью?</label>
+      <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это то, как вы думаете, «должно» быть.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">А какая мысль о себе под этим?</label>
+      <textarea id="s2-core" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Я не заслуживаю любви», «Я недостаточно хорош»..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это то, что вы думаете о себе, когда никто не видит.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите это?</label>
+      <textarea id="s2-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="Тяжесть, пустоту, злость..."></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="goTo(1)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(3)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 3 -->
+  <div id="scene-3" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🕰️</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 3. Откуда это взялось?</h2>
+      <p class="text-slate-400">У каждого правила есть история</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Правила не берутся из воздуха. Они формируются в детстве, в школе, в отношениях. Кто-то сказал слово, что-то произошло — и мозг запомнил: «так безопаснее». Давайте найдём истоки.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Когда вы впервые почувствовали что-то подобное?</label>
+      <textarea id="s3-origin" rows="4" class="w-full p-3 rounded-lg mb-2" placeholder="Детство, школа, чьи-то слова..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это может быть одно яркое воспоминание или просто ощущение, которое тянется с детства.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что в жизни это подтверждало?</label>
+      <textarea id="s3-support" rows="4" class="w-full p-3 rounded-lg" placeholder="2–3 примера..."></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="goTo(2)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(4)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 4 -->
+  <div id="scene-4" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">⚖️</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 4. Проверка</h2>
+      <p class="text-slate-400">Посмотрим, на чём держится это правило</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что, по-вашему, это подтверждает?</label>
+      <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">А что это опровергает?</label>
+      <textarea id="s4-against" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда смотрите на это?</label>
+      <textarea id="s4-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="goTo(3)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(5)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Дальше →</button>
+    </div>
+  </div>
+
+  <!-- Экран 5 -->
+  <div id="scene-5" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-4xl mb-2">🌱</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Шаг 5. Новая мысль</h2>
+      <p class="text-slate-400">Не мечта, а вывод из фактов</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <p class="text-slate-300 mb-5">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
+      <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
+      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
+
+      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">
+        💡 Не получается? Показать варианты под вашу мысль
+      </button>
+
+      <div id="hints-container" class="hidden mb-4">
+        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
+        <div id="hints-list" class="space-y-2"></div>
+      </div>
+
+      <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
+      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+    </div>
+
+    <div class="flex gap-3">
+      <button onclick="goTo(4)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
+      <button onclick="goTo(6)" class="btn flex-1 py-3 rounded-xl font-bold text-white">Завершить</button>
+    </div>
+  </div>
+
+  <!-- Экран 6 -->
+  <div id="scene-6" class="scene hidden">
+    <div class="text-center mb-6 pt-4">
+      <div class="text-6xl mb-4">🌅</div>
+      <h2 class="text-2xl font-bold text-violet-300 mb-2">Ваш разбор</h2>
+      <p class="text-slate-400 mb-6">Сохраните этот экран. Вернитесь к нему через месяц.</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <div id="summary-content" class="space-y-4 text-slate-300"></div>
+    </div>
+
+    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">
+      Пройти заново
+    </button>
+  </div>
+
+</div>
+
 <script>
 let currentScene = 0;
 
-// Максимально широкий набор паттернов и подсказок
 const beliefHints = [
-  // === ГЛУБИННЫЕ УБЕЖДЕНИЯ ===
   { keys: ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж'], hints: [
     'Я могу выражать злость, не разрушая отношения',
     'Я имею право злиться и говорить об этом',
@@ -96,8 +354,6 @@ const beliefHints = [
     'Я могу учиться у других, не обесценивая себя',
     'Моя жизнь — это моя жизнь, а не гонка'
   ]},
-
-  // === ПСИХОЛОГИЧЕСКИЕ ЗАЩИТЫ ===
   { keys: ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного'], hints: [
     'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
     'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
@@ -140,7 +396,6 @@ const beliefHints = [
   ]}
 ];
 
-// Универсальные подсказки
 const universalHints = [
   'Я могу попробовать по-другому, даже если пока не уверен(а)',
   'Я имею право на ошибку и на новый опыт',
@@ -268,3 +523,5 @@ document.querySelectorAll('textarea, input').forEach(el => {
 
 loadAll();
 </script>
+</body>
+</html>
