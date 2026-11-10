@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Тест базы</title></head>
+<body style="font-family:sans-serif; padding:20px;">
+  <h1>Проверка базы данных</h1>
+  <div id="result" style="font-size:18px; margin-top:20px;">Загрузка...</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script>
+    const { createClient } = window.supabase;
+    const supabase = createClient('https://vurnrdqxbzqijwkcywsf.supabase.co', 'sb_publishable_nsz3vSuJz1JumMT3IVoRMg_vMLEe4n2');
+    
+    async function test() {
+      const res = document.getElementById('result');
+      try {
+        const { data, error } = await supabase.from('submissions').select('*').limit(5);
+        if (error) {
+          res.innerHTML = '❌ Ошибка от Supabase: <br><b>' + error.message + '</b><br>Код: ' + error.code;
+        } else {
+          res.innerHTML = '✅ Подключение работает!<br>Получено записей: ' + data.length;
+        }
+      } catch (e) {
+        res.innerHTML = '❌ Сетевая ошибка: <br><b>' + e.message + '</b>';
+      }
+    }
+    test();
+  </script>
+</body>
+</html>
