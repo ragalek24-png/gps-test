@@ -74,12 +74,6 @@
     color: #f0b8b8;
     margin: 16px 0;
   }
-  /* Переопределяем сиреневые и зелёные акценты Tailwind под нашу палитру */
-  .text-violet-300 { color: #e8a33d !important; }
-  .text-emerald-400 { color: #e8a33d !important; }
-  .bg-emerald-900\/30 { background-color: rgba(184, 58, 75, 0.15) !important; }
-  .border-emerald-700 { border-color: #b83a4b !important; }
-  .text-emerald-300 { color: #f0b8b8 !important; }
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
@@ -234,7 +228,6 @@
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Новая мысль</label>
       <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
 
-      <!-- Подсказки всегда на виду -->
       <div class="mb-4">
         <p class="text-sm mb-3" style="color: #e8a33d;">Возможные варианты новой мысли:</p>
         <div id="hints-list" class="space-y-2"></div>
@@ -247,7 +240,6 @@
         <strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Защита — это не глупость и не упрямство. Это способ психики справиться с болью. Если вы чувствуете, что «не верите» в новую мысль — это не провал. Это сигнал, что защита ещё работает. Вернитесь к шагу 4 или к шагу 1 (к телу). Иногда нужно несколько проходов.
       </div>
 
-      <!-- Техника «Якорь» -->
       <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
         <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
         <p class="text-sm mb-4" style="color: #c9b8a8;">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело и действие, а не на логику.</p>
@@ -479,4 +471,9 @@ function showSummary() {
 
   content.innerHTML = `
     <div><p class="text-sm mb-1" style="color: #6b5248;">Ситуация</p><p>${situation || '—'}</p></div>
-    <div><p class="text-sm mb-1"
+    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы себе сказали</p><p>${voice || '—'}</p></div>
+    <div><p class="text-sm mb-1" style="color: #6b5248;">Правило</p><p>${rule || '—'}</p></div>
+    <div><p class="text-sm mb-1" style="color: #6b5248;">Мысль о себе</p><p>${core || '—'}</p></div>
+    <div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Старая мысль</p><p>${oldB || '—'}</p></div>
+    <div><p class="text-sm mb-1" style="color: #6b5248;">Новая мысль</p><p style="color: #e8a33d; font-weight: 600;">${newB || '—'}</p></div>
+    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы
