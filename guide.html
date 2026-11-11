@@ -307,37 +307,51 @@ function getHints(text) {
 
   // 5. Отрицание / избегание
   const denialKeys = [
-    'всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного',
-    'а так ок', 'не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом',
-    'не буду', 'мне всё равно', 'плевать', 'пофиг'
-  ];
-  if (denialKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
-      'Мне не нужно делать вид, что всё в порядке',
-      'Я могу сказать «мне плохо» и получить поддержку',
-      'Я могу посмотреть на то, что избегаю, — это безопаснее, чем кажется'
-    );
-  }
+         <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
+        <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
+        <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
 
-  // 6. Страх / тревога
-  const fearKeys = [
-    'боюсь', 'страшно', 'страх', 'тревог', 'паник', 'боязнь', 'опасно',
-    'а вдруг', 'трясёт', 'колотит', 'не могу дышать'
-  ];
-  if (fearKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Страх — это сигнал, а не запрет на действие',
-      'Я могу действовать, даже если мне страшно',
-      'Я могу попробовать, и мир не рухнет, если не получится'
-    );
-  }
+        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">1. Какое слово будет напоминать о новой мысли?</label>
+        <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю»">
+        
+        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
+          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты для разных установок:</p>
+          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
+            <li>• Для мягкости и границ: «Я выбираю», «Стоп. Я могу», «Моё нет»</li>
+            <li>• Для отчуждения и отличия: «Я есть», «Я другой — и это ок», «Меня достаточно»</li>
+            <li>• Для самокритики: «Я могу ошибаться», «Я ценен(на) и так», «Я справлюсь»</li>
+            <li>• Для страха: «Я могу бояться и делать», «Мир не рухнет», «Шаг за шагом»</li>
+            <li>• Для усталости: «Я имею право на отдых», «Я не машина», «Тише едешь»</li>
+            <li>• Для вины: «Я не виноват(а)», «Я сделал(а), что мог(ла)», «Хватит»</li>
+            <li>• Для стыда: «Я имею право быть», «Мне не стыдно», «Я живой человек»</li>
+            <li>• Для контроля: «Отпускаю», «Не всё под контролем — и это нормально»</li>
+          </ul>
+        </div>
 
-  // 7. Усталость / выгорание
-  const tiredKeys = [
-    'устал', 'устала', 'нет сил', 'выгор', 'истощ', 'не могу больше',
-    'надоело', 'вымотан', 'вымотана', 'тяжело', 'невыносимо'
-  ];
+        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">2. Какое действие будет сопровождать это слово?</label>
+        <textarea id="anchor-action" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="Например: вдох-выдох, рука на грудь..."></textarea>
+        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
+          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты действий:</p>
+          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
+            <li>• Глубокий вдох и выдох</li>
+            <li>• Положить руку на грудь</li>
+            <li>• Сжать и разжать кулаки</li>
+            <li>• Потереть ладони</li>
+            <li>• Почувствовать стопы на полу</li>
+            <li>• Посмотреть по сторонам и назвать 3 предмета</li>
+          </ul>
+        </div>
+
+        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">3. Где и когда вы попробуете якорь?</label>
+        <textarea id="anchor-when" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Например: в следующий раз, когда почувствую, что меня используют"></textarea>
+
+        <button onclick="showAnchor()" class="text-sm underline" style="color: #e8a33d;">🔒 Показать карточку-якорь</button>
+
+        <div id="anchor-result" class="hidden mt-4 p-4 rounded-xl" style="background: rgba(184, 58, 75, 0.15); border: 1px solid #b83a4b;">
+          <p class="text-sm mb-2" style="color: #f0b8b8;">Ваш якорь готов:</p>
+          <div id="anchor-content" class="space-y-2 text-sm" style="color: #f5e6d3;"></div>
+        </div>
+      </div>
   if (tiredKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я имею право на отдых, даже если не всё сделано',
