@@ -22,10 +22,8 @@
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
-
 <div class="max-w-2xl mx-auto w-full">
 
-  <!-- Экран 0 -->
   <div id="scene-0" class="scene">
     <div class="text-center mb-8 pt-4">
       <div class="text-6xl mb-4">🧭</div>
@@ -49,7 +47,6 @@
     <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg">Начать →</button>
   </div>
 
-  <!-- Экран 1 -->
   <div id="scene-1" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🎬</div>
@@ -76,7 +73,6 @@
     </div>
   </div>
 
-  <!-- Экран 2 -->
   <div id="scene-2" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🔍</div>
@@ -101,7 +97,6 @@
     </div>
   </div>
 
-  <!-- Экран 3 -->
   <div id="scene-3" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🕰️</div>
@@ -122,7 +117,6 @@
     </div>
   </div>
 
-  <!-- Экран 4 -->
   <div id="scene-4" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">⚖️</div>
@@ -147,7 +141,6 @@
     </div>
   </div>
 
-  <!-- Экран 5 -->
   <div id="scene-5" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🌱</div>
@@ -213,7 +206,6 @@
     </div>
   </div>
 
-  <!-- Экран 6 -->
   <div id="scene-6" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-6xl mb-4">🌅</div>
@@ -254,7 +246,8 @@
 
 </div>
 
-let currentScene = 0;
+<script>
+  let currentScene = 0;
 
 function getHints(text) {
   const lower = text.toLowerCase();
@@ -262,220 +255,44 @@ function getHints(text) {
 
   const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
   if (projectionKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Моя мягкость — это не разрешение другим нарушать мои границы',
-      'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
-      'Я могу говорить «нет» и оставаться добрым(ой)',
-      'Я могу замечать, когда моей добротой пользуются, и защищать себя'
-    );
+    matchedHints.push('Моя мягкость — это не разрешение другим нарушать мои границы', 'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит', 'Я могу говорить «нет» и оставаться добрым(ой)', 'Я могу замечать, когда моей добротой пользуются, и защищать себя');
   }
 
   const alienationKeys = ['отличаюсь', 'не такой', 'не такая', 'не как все', 'чужой', 'чужая', 'не принимают', 'обзывают', 'травят', 'изгой', 'белая ворона', 'не вписываюсь'];
   if (alienationKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу быть другим(ой) и всё равно быть ценным человеком',
-      'Моё отличие — это не изъян, а часть меня',
-      'Я могу искать тех, кто принимает меня таким(ой), какой(ая) я есть',
-      'Меня не обязаны принимать все'
-    );
+    matchedHints.push('Я могу быть другим(ой) и всё равно быть ценным человеком', 'Моё отличие — это не изъян, а часть меня', 'Я могу искать тех, кто принимает меня таким(ой), какой(ая) я есть', 'Меня не обязаны принимать все');
   }
 
   const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не справляюсь', 'неудачник', 'неудачница', 'бездарь'];
   if (selfCriticismKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу ошибаться и всё равно быть ценным человеком',
-      'Моя ценность не зависит от того, насколько я хорош(а)',
-      'Я могу быть мягче к себе в этой ситуации',
-      'Я имею право быть неидеальным и всё равно заслуживать уважения'
-    );
+    matchedHints.push('Я могу ошибаться и всё равно быть ценным человеком', 'Моя ценность не зависит от того, насколько я хорош(а)', 'Я могу быть мягче к себе в этой ситуации', 'Я имею право быть неидеальным и всё равно заслуживать уважения');
   }
 
   const rationalizationKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель', 'это нормально', 'так сложилось', 'все так делают'];
   if (rationalizationKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу не объяснять свои чувства логикой — они просто есть',
-      'Я могу признать, что мне больно, без «потому что»',
-      'Мои чувства не нуждаются в оправдании'
-    );
+    matchedHints.push('Я могу не объяснять свои чувства логикой — они просто есть', 'Я могу признать, что мне больно, без «потому что»', 'Мои чувства не нуждаются в оправдании');
   }
 
   const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок', 'не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом'];
   if (denialKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
-      'Мне не нужно делать вид, что всё в порядке',
-      'Я могу сказать «мне плохо» и получить поддержку'
-    );
+    matchedHints.push('Я могу признать, что мне плохо, — это не делает меня слабым(ой)', 'Мне не нужно делать вид, что всё в порядке', 'Я могу сказать «мне плохо» и получить поддержку');
   }
 
   const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник', 'боязнь', 'опасно', 'а вдруг', 'трясёт', 'колотит'];
   if (fearKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Страх — это сигнал, а не запрет на действие',
-      'Я могу действовать, даже если мне страшно',
-      'Я могу попробовать, и мир не рухнет, если не получится'
-    );
+    matchedHints.push('Страх — это сигнал, а не запрет на действие', 'Я могу действовать, даже если мне страшно', 'Я могу попробовать, и мир не рухнет, если не получится');
   }
 
   const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ', 'не могу больше', 'надоело', 'вымотан', 'вымотана', 'тяжело', 'невыносимо'];
   if (tiredKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я имею право на отдых, даже если не всё сделано',
-      'Моя усталость — это сигнал, а не слабость',
-      'Я могу заботиться о себе, не чувствуя вины'
-    );
+    matchedHints.push('Я имею право на отдых, даже если не всё сделано', 'Моя усталость — это сигнал, а не слабость', 'Я могу заботиться о себе, не чувствуя вины');
   }
 
   const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня', 'я причина', 'я подвёл', 'я подвела'];
   if (guiltKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу чувствовать вину, но это не значит, что я виноват(а)',
-      'Моя вина — это не приговор, а сигнал разобраться',
-      'Я могу простить себя и идти дальше'
-    );
+    matchedHints.push('Я могу чувствовать вину, но это не значит, что я виноват(а)', 'Моя вина — это не приговор, а сигнал разобраться', 'Я могу простить себя и идти дальше');
   }
 
   const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко', 'неудобно', 'сгораю от стыда', 'хочу провалиться', 'сквозь землю'];
   if (shameKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Мне не нужно стыдиться того, что я чувствую',
-      'Стыд — это эмоция, а не оценка меня как человека',
-      'Я могу быть собой, даже если это кому-то не нравится'
-    );
-  }
-
-  const intellectualizationKeys = ['онтолог', 'фундамент', 'сущность', 'характеристик', 'предикат', 'концепт', 'парадигм', 'философ', 'абстракц', 'теоретич'];
-  if (intellectualizationKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу говорить о своих чувствах простыми словами',
-      'Я могу признать, что мне больно, без философских объяснений',
-      'Я имею право на простые, живые эмоции без анализа'
-    );
-  }
-
-  const devaluationKeys = ['ничего не получаю', 'зря', 'всё равно', 'бесполезно', 'не имеет смысла', 'ничего не изменится', 'толку нет'];
-  if (devaluationKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу замечать даже маленькие результаты, они имеют значение',
-      'Мои усилия не напрасны, даже если результат не сразу',
-      'Я могу ценить то, что делаю, даже если это не идеально'
-    );
-  }
-
-  if (matchedHints.length === 0) {
-    return [
-      'Я могу попробовать по-другому, даже если пока не уверен(а)',
-      'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации'
-    ];
-  }
-
-  return [...new Set(matchedHints)];
-}
-
-function updateHints() {
-  const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
-  const list = document.getElementById('hints-list');
-  const hints = getHints(oldText);
-  list.innerHTML = hints.map(h => `<div class="hint-box" onclick="useHint(this)">«${h}»</div>`).join('');
-}
-
-function useHint(el) {
-  const text = el.textContent.replace(/[«»]/g, '').trim();
-  document.getElementById('s5-new').value = text;
-  saveAll();
-}
-
-function showAnchor() {
-  const word = document.getElementById('anchor-word').value.trim();
-  const action = document.getElementById('anchor-action').value.trim();
-  const when = document.getElementById('anchor-when').value.trim();
-  const box = document.getElementById('anchor-result');
-  const content = document.getElementById('anchor-content');
-
-  if (!word || !action) {
-    alert('Заполните хотя бы слово и действие для якоря.');
-    return;
-  }
-
-  content.innerHTML = `
-    <p><strong>Слово:</strong> «${word}»</p>
-    <p><strong>Действие:</strong> ${action}</p>
-    ${when ? `<p><strong>Когда попробую:</strong> ${when}</p>` : ''}
-  `;
-  box.classList.remove('hidden');
-  box.scrollIntoView({ behavior: 'smooth' });
-}
-
-function goTo(n) {
-  document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
-  document.getElementById('scene-' + n).classList.remove('hidden');
-  currentScene = n;
-  saveAll();
-  if (n === 5) updateHints();
-  if (n === 6) showSummary();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function saveAll() {
-  const data = { currentScene };
-  document.querySelectorAll('textarea, input').forEach(el => {
-    if (el.id) data[el.id] = el.value;
-  });
-  localStorage.setItem('compass_data', JSON.stringify(data));
-}
-
-function loadAll() {
-  const saved = localStorage.getItem('compass_data');
-  if (!saved) return;
-  try {
-    const data = JSON.parse(saved);
-    Object.keys(data).forEach(id => {
-      if (id === 'currentScene') { currentScene = data[id]; }
-      else { const el = document.getElementById(id); if (el) el.value = data[id]; }
-    });
-    if (currentScene > 0) goTo(currentScene);
-  } catch(e) {}
-}
-
-function showSummary() {
-  const content = document.getElementById('summary-content');
-  const situation = document.getElementById('s1-situation').value;
-  const voice = document.getElementById('s1-voice').value;
-  const rule = document.getElementById('s2-rule').value;
-  const core = document.getElementById('s2-core').value;
-  const oldB = document.getElementById('s5-old').value;
-  const newB = document.getElementById('s5-new').value;
-  const feeling = document.getElementById('s5-feeling').value;
-  const anchorWord = document.getElementById('anchor-word').value;
-  const anchorAction = document.getElementById('anchor-action').value;
-
-  content.innerHTML = `
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Ситуация</p><p>${situation || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы себе сказали</p><p>${voice || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Правило</p><p>${rule || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Мысль о себе</p><p>${core || '—'}</p></div>
-    <div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Старая мысль</p><p>${oldB || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Новая мысль</p><p style="color: #e8a33d; font-weight: 600;">${newB || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
-    ${anchorWord ? `<div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Ваш якорь</p><p>Слово: «${anchorWord}»</p><p>Действие: ${anchorAction}</p></div>` : ''}
-  `;
-}
-
-function resetAll() {
-  if (!confirm('Начать заново? Все записи будут удалены.')) return;
-  localStorage.removeItem('compass_data');
-  location.reload();
-}
-
-document.querySelectorAll('textarea, input').forEach(el => {
-  el.addEventListener('input', saveAll);
-});
-
-document.getElementById('s5-old').addEventListener('input', updateHints);
-document.getElementById('s2-core').addEventListener('input', updateHints);
-
-loadAll();
-</script>
-</body>
-</html>
+    matchedHints.push('Мне не нужно стыдиться того, что я чувствую', 'Стыд — это эмоция, а не оценка меня как человека', 'Я могу быть собой, даже если это
