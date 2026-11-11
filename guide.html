@@ -172,8 +172,32 @@
         <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
         <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">1. Какое слово будет напоминать о новой мысли?</label>
         <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю»">
+        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
+          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты для разных установок:</p>
+          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
+            <li>• Для мягкости и границ: «Я выбираю», «Стоп. Я могу», «Моё нет»</li>
+            <li>• Для отчуждения и отличия: «Я есть», «Я другой — и это ок», «Меня достаточно»</li>
+            <li>• Для самокритики: «Я могу ошибаться», «Я ценен(на) и так», «Я справлюсь»</li>
+            <li>• Для страха: «Я могу бояться и делать», «Мир не рухнет», «Шаг за шагом»</li>
+            <li>• Для усталости: «Я имею право на отдых», «Я не машина», «Тише едешь»</li>
+            <li>• Для вины: «Я не виноват(а)», «Я сделал(а), что мог(ла)», «Хватит»</li>
+            <li>• Для стыда: «Я имею право быть», «Мне не стыдно», «Я живой человек»</li>
+            <li>• Для контроля: «Отпускаю», «Не всё под контролем — и это нормально»</li>
+          </ul>
+        </div>
         <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">2. Какое действие будет сопровождать это слово?</label>
         <textarea id="anchor-action" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="Например: вдох-выдох, рука на грудь..."></textarea>
+        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
+          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты действий:</p>
+          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
+            <li>• Глубокий вдох и выдох</li>
+            <li>• Положить руку на грудь</li>
+            <li>• Сжать и разжать кулаки</li>
+            <li>• Потереть ладони</li>
+            <li>• Почувствовать стопы на полу</li>
+            <li>• Посмотреть по сторонам и назвать 3 предмета</li>
+          </ul>
+        </div>
         <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">3. Где и когда вы попробуете якорь?</label>
         <textarea id="anchor-when" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Например: в следующий раз, когда почувствую, что меня используют"></textarea>
         <button onclick="showAnchor()" class="text-sm underline" style="color: #e8a33d;">🔒 Показать карточку-якорь</button>
@@ -199,159 +223,101 @@
     <div class="card rounded-2xl p-6 mb-6">
       <div id="summary-content" class="space-y-4" style="color: #e0d0c0;"></div>
     </div>
-    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold transition" style="background: #2a1c18; color: #c9b8a8; border: 1px solid #3d2a24;">Пройти заново</button>
-  </div>
-
-  <!-- Дополнительные практики -->
-  <div class="card rounded-2xl p-6 mb-6">
-    <h2 class="text-xl font-bold mb-4" style="color: #e8a33d;">📚 Дополнительные практики</h2>
-    <p class="text-sm mb-4" style="color: #c9b8a8;">Если ваша установка из списка ниже — попробуйте эти упражнения.</p>
-    <div class="space-y-3">
-      <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
-        <h3 class="font-semibold mb-1" style="color: #e8a33d;">Круг контроля</h3>
-        <p class="text-sm" style="color: #e0d0c0;">Для установки «Всё под контролем». Нарисуйте круг: внутри — что можете контролировать, снаружи — что не можете.</p>
-      </div>
-      <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
-        <h3 class="font-semibold mb-1" style="color: #e8a33d;">Не моя зона ответственности</h3>
-        <p class="text-sm" style="color: #e0d0c0;">Для «Гиперответственности». Спросите: «Это действительно моя задача или я взвалил(а) чужую?»</p>
-      </div>
-      <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
-        <h3 class="font-semibold mb-1" style="color: #e8a33d;">Что я потеряю?</h3>
-        <p class="text-sm" style="color: #e0d0c0;">Для «Нужно одобрение». Спросите: «Что я потеряю, если этот человек будет думать обо мне плохо?»</p>
-      </div>
-      <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
-        <h3 class="font-semibold mb-1" style="color: #e8a33d;">Дневник побед</h3>
-        <p class="text-sm" style="color: #e0d0c0;">Для «Я недостаточно хорош». Каждый вечер записывайте 3 вещи, которые получились.</p>
-      </div>
-      <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
-        <h3 class="font-semibold mb-1" style="color: #e8a33d;">Достаточно хороший результат</h3>
-        <p class="text-sm" style="color: #e0d0c0;">Для «Быть идеальным». Разрешите себе сделать работу на 80% и сдать её.</p>
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold mb-4" style="color: #e8a33d;">📚 Дополнительные практики</h2>
+      <p class="text-sm mb-4" style="color: #c9b8a8;">Если ваша установка из списка ниже — попробуйте эти упражнения.</p>
+      <div class="space-y-3">
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Круг контроля</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для установки «Всё под контролем». Нарисуйте круг: внутри — что можете контролировать, снаружи — что не можете.</p>
+        </div>
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Не моя зона ответственности</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для «Гиперответственности». Спросите: «Это действительно моя задача или я взвалил(а) чужую?»</p>
+        </div>
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Что я потеряю?</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для «Нужно одобрение». Спросите: «Что я потеряю, если этот человек будет думать обо мне плохо?»</p>
+        </div>
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Дневник побед</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для «Я недостаточно хорош». Каждый вечер записывайте 3 вещи, которые получились.</p>
+        </div>
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Достаточно хороший результат</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для «Быть идеальным». Разрешите себе сделать работу на 80% и сдать её.</p>
+        </div>
       </div>
     </div>
+    <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold transition" style="background: #2a1c18; color: #c9b8a8; border: 1px solid #3d2a24;">Пройти заново</button>
   </div>
 
 </div>
 
-<script>
 let currentScene = 0;
 
 function getHints(text) {
   const lower = text.toLowerCase();
   const matchedHints = [];
 
-  // 1. Проекция / мягкость / границы
-  const projectionKeys = [
-    'люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею',
-    'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет',
-    'навязыва', 'манипулир', 'хам', 'пользуются мной', 'моей добротой', 'позволяю',
-    'не умею отказывать', 'всегда соглашаюсь', 'мной пользуются', 'садятся'
-  ];
+  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
   if (projectionKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Моя мягкость — это не разрешение другим нарушать мои границы',
       'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
       'Я могу говорить «нет» и оставаться добрым(ой)',
-      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
-      'Я имею право на свои границы, даже если кому-то это не понравится'
+      'Я могу замечать, когда моей добротой пользуются, и защищать себя'
     );
   }
 
-  // 2. Отчуждение / непринятие / отличие от других
-  const alienationKeys = [
-    'отличаюсь', 'не такой', 'не такая', 'не как все', 'чужой', 'чужая',
-    'не принимают', 'обзывают', 'травят', 'изгой', 'белая ворона', 'не вписываюсь',
-    'не понимают', 'смеются', 'странный', 'странная', 'не такой как все',
-    'непохож', 'непохожа', 'выделяюсь', 'отталкивают', 'не хотят общаться'
-  ];
+  const alienationKeys = ['отличаюсь', 'не такой', 'не такая', 'не как все', 'чужой', 'чужая', 'не принимают', 'обзывают', 'травят', 'изгой', 'белая ворона', 'не вписываюсь'];
   if (alienationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу быть другим(ой) и всё равно быть ценным человеком',
       'Моё отличие — это не изъян, а часть меня',
       'Я могу искать тех, кто принимает меня таким(ой), какой(ая) я есть',
-      'Меня не обязаны принимать все — достаточно тех, кто видит во мне человека',
-      'Я могу защищать себя от тех, кто обзывается, и не верить их словам'
+      'Меня не обязаны принимать все'
     );
   }
 
-  // 3. Самокритика / обесценивание / "я плохой"
-  const selfCriticismKeys = [
-    'я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'я никчемн',
-    'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'не такой',
-    'никуда не гожусь', 'ничтожество', 'ничего не стою', 'не справляюсь',
-    'неудачник', 'неудачница', 'бездарь', 'бездарность', 'я не достоин', 'я не достойна'
-  ];
+  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не справляюсь', 'неудачник', 'неудачница', 'бездарь'];
   if (selfCriticismKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу ошибаться и всё равно быть ценным человеком',
       'Моя ценность не зависит от того, насколько я хорош(а)',
       'Я могу быть мягче к себе в этой ситуации',
-      'Я имею право быть неидеальным и всё равно заслуживать уважения',
-      'Я не обязан(а) заслуживать любовь — я уже ценен(на)'
+      'Я имею право быть неидеальным и всё равно заслуживать уважения'
     );
   }
 
-  // 4. Рационализация / объяснения
-  const rationalizationKeys = [
-    'потому что', 'так как', 'ведь', 'устойчивость', 'добродетель',
-    'это нормально', 'так сложилось', 'все так делают', 'по-другому нельзя',
-    'я объясняю', 'логично', 'рационально', 'всё правильно'
-  ];
+  const rationalizationKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель', 'это нормально', 'так сложилось', 'все так делают'];
   if (rationalizationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу не объяснять свои чувства логикой — они просто есть',
       'Я могу признать, что мне больно, без «потому что»',
-      'Мои чувства не нуждаются в оправдании',
-      'Я могу позволить себе чувствовать, даже если это нелогично'
+      'Мои чувства не нуждаются в оправдании'
     );
   }
 
-  // 5. Отрицание / избегание
-  const denialKeys = [
-         <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
-        <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
-        <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
+  const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок', 'не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом'];
+  if (denialKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
+      'Мне не нужно делать вид, что всё в порядке',
+      'Я могу сказать «мне плохо» и получить поддержку'
+    );
+  }
 
-        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">1. Какое слово будет напоминать о новой мысли?</label>
-        <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю»">
-        
-        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
-          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты для разных установок:</p>
-          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
-            <li>• Для мягкости и границ: «Я выбираю», «Стоп. Я могу», «Моё нет»</li>
-            <li>• Для отчуждения и отличия: «Я есть», «Я другой — и это ок», «Меня достаточно»</li>
-            <li>• Для самокритики: «Я могу ошибаться», «Я ценен(на) и так», «Я справлюсь»</li>
-            <li>• Для страха: «Я могу бояться и делать», «Мир не рухнет», «Шаг за шагом»</li>
-            <li>• Для усталости: «Я имею право на отдых», «Я не машина», «Тише едешь»</li>
-            <li>• Для вины: «Я не виноват(а)», «Я сделал(а), что мог(ла)», «Хватит»</li>
-            <li>• Для стыда: «Я имею право быть», «Мне не стыдно», «Я живой человек»</li>
-            <li>• Для контроля: «Отпускаю», «Не всё под контролем — и это нормально»</li>
-          </ul>
-        </div>
+  const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник', 'боязнь', 'опасно', 'а вдруг', 'трясёт', 'колотит'];
+  if (fearKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Страх — это сигнал, а не запрет на действие',
+      'Я могу действовать, даже если мне страшно',
+      'Я могу попробовать, и мир не рухнет, если не получится'
+    );
+  }
 
-        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">2. Какое действие будет сопровождать это слово?</label>
-        <textarea id="anchor-action" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="Например: вдох-выдох, рука на грудь..."></textarea>
-        <div class="mb-4 p-3 rounded-lg" style="background: #2a1c18; border: 1px solid #3d2a24;">
-          <p class="text-xs mb-2" style="color: #c9b8a8;">Варианты действий:</p>
-          <ul class="text-xs space-y-1" style="color: #e0d0c0;">
-            <li>• Глубокий вдох и выдох</li>
-            <li>• Положить руку на грудь</li>
-            <li>• Сжать и разжать кулаки</li>
-            <li>• Потереть ладони</li>
-            <li>• Почувствовать стопы на полу</li>
-            <li>• Посмотреть по сторонам и назвать 3 предмета</li>
-          </ul>
-        </div>
-
-        <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">3. Где и когда вы попробуете якорь?</label>
-        <textarea id="anchor-when" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Например: в следующий раз, когда почувствую, что меня используют"></textarea>
-
-        <button onclick="showAnchor()" class="text-sm underline" style="color: #e8a33d;">🔒 Показать карточку-якорь</button>
-
-        <div id="anchor-result" class="hidden mt-4 p-4 rounded-xl" style="background: rgba(184, 58, 75, 0.15); border: 1px solid #b83a4b;">
-          <p class="text-sm mb-2" style="color: #f0b8b8;">Ваш якорь готов:</p>
-          <div id="anchor-content" class="space-y-2 text-sm" style="color: #f5e6d3;"></div>
-        </div>
-      </div>
+  const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ', 'не могу больше', 'надоело', 'вымотан', 'вымотана', 'тяжело', 'невыносимо'];
   if (tiredKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я имею право на отдых, даже если не всё сделано',
@@ -360,11 +326,7 @@ function getHints(text) {
     );
   }
 
-  // 8. Вина
-  const guiltKeys = [
-    'вина', 'виноват', 'виновата', 'из-за меня', 'я причина',
-    'я подвёл', 'я подвела', 'мне стыдно за', 'я не должен был', 'я не должна была'
-  ];
+  const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня', 'я причина', 'я подвёл', 'я подвела'];
   if (guiltKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу чувствовать вину, но это не значит, что я виноват(а)',
@@ -373,12 +335,8 @@ function getHints(text) {
     );
   }
 
-  // 9. Стыд
-  const shameKeys = [
-    'стыд', 'стыдно', 'позор', 'неловко', 'неудобно', 'сгораю от стыда',
-    'хочу провалиться', 'сквозь землю'
-  ];
-    if (shameKeys.some(k => lower.includes(k))) {
+  const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко', 'неудобно', 'сгораю от стыда', 'хочу провалиться', 'сквозь землю'];
+  if (shameKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Мне не нужно стыдиться того, что я чувствую',
       'Стыд — это эмоция, а не оценка меня как человека',
@@ -386,11 +344,7 @@ function getHints(text) {
     );
   }
 
-  // 10. Интеллектуализация
-  const intellectualizationKeys = [
-    'онтолог', 'фундамент', 'сущность', 'характеристик', 'предикат',
-    'концепт', 'парадигм', 'философ', 'абстракц', 'теоретич'
-  ];
+  const intellectualizationKeys = ['онтолог', 'фундамент', 'сущность', 'характеристик', 'предикат', 'концепт', 'парадигм', 'философ', 'абстракц', 'теоретич'];
   if (intellectualizationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу говорить о своих чувствах простыми словами',
@@ -399,11 +353,7 @@ function getHints(text) {
     );
   }
 
-  // 11. Обесценивание
-  const devaluationKeys = [
-    'ничего не получаю', 'зря', 'всё равно', 'бесполезно', 'не имеет смысла',
-    'ничего не изменится', 'толку нет'
-  ];
+  const devaluationKeys = ['ничего не получаю', 'зря', 'всё равно', 'бесполезно', 'не имеет смысла', 'ничего не изменится', 'толку нет'];
   if (devaluationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу замечать даже маленькие результаты, они имеют значение',
