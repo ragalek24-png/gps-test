@@ -6,74 +6,19 @@
 <title>Внутренний компас</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-  body { 
-    background: #1a1210; 
-    color: #f5e6d3; 
-    font-family: 'Georgia', serif;
-    overflow-x: hidden;
-  }
-  .card {
-    background: #241815;
-    border: 1px solid #3d2a24;
-    box-shadow: 0 4px 20px rgba(217, 119, 6, 0.05);
-  }
-  textarea, input { 
-    background: #2a1c18; 
-    border: 1.5px solid #3d2a24; 
-    color: #f5e6d3;
-    transition: all 0.3s;
-    font-family: inherit;
-  }
-  textarea:focus, input:focus { 
-    border-color: #e8a33d; 
-    outline: none; 
-    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.15);
-    background: #2e1f1a;
-  }
-  textarea::placeholder, input::placeholder {
-    color: #6b5248;
-  }
-  .btn { 
-    background: #e8a33d;
-    transition: all 0.3s;
-    color: #1a1210;
-  }
-  .btn:hover { 
-    background: #f0b85c;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(232, 163, 61, 0.3);
-  }
+  body { background: #1a1210; color: #f5e6d3; font-family: 'Georgia', serif; overflow-x: hidden; }
+  .card { background: #241815; border: 1px solid #3d2a24; box-shadow: 0 4px 20px rgba(217, 119, 6, 0.05); }
+  textarea, input { background: #2a1c18; border: 1.5px solid #3d2a24; color: #f5e6d3; transition: all 0.3s; font-family: inherit; }
+  textarea:focus, input:focus { border-color: #e8a33d; outline: none; box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.15); background: #2e1f1a; }
+  textarea::placeholder, input::placeholder { color: #6b5248; }
+  .btn { background: #e8a33d; transition: all 0.3s; color: #1a1210; }
+  .btn:hover { background: #f0b85c; transform: translateY(-1px); box-shadow: 0 8px 25px rgba(232, 163, 61, 0.3); }
   .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
   .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
-  .text-gradient {
-    background: linear-gradient(135deg, #e8a33d, #b83a4b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .hint-box {
-    background: #2a1c18;
-    border-left: 4px solid #b83a4b;
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 15px;
-    line-height: 1.6;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #f5e6d3;
-  }
-  .hint-box:hover {
-    background: #33221d;
-    border-left-color: #e8a33d;
-  }
-  .defense-note {
-    background: rgba(184, 58, 75, 0.15);
-    border-left: 3px solid #b83a4b;
-    padding: 12px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #f0b8b8;
-    margin: 16px 0;
-  }
+  .text-gradient { background: linear-gradient(135deg, #e8a33d, #b83a4b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .hint-box { background: #2a1c18; border-left: 4px solid #b83a4b; padding: 16px; border-radius: 8px; font-size: 15px; line-height: 1.6; cursor: pointer; transition: all 0.2s; color: #f5e6d3; }
+  .hint-box:hover { background: #33221d; border-left-color: #e8a33d; }
+  .defense-note { background: rgba(184, 58, 75, 0.15); border-left: 3px solid #b83a4b; padding: 12px 16px; border-radius: 6px; font-size: 14px; color: #f0b8b8; margin: 16px 0; }
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
@@ -113,9 +58,7 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
-      <div class="defense-note">
-        <strong>Важно:</strong> здесь не нужно ничего объяснять. Не ищите причин и не оправдывайтесь. Просто опишите, что было, что вы почувствовали и что сделали. Тело и эмоции честнее слов.
-      </div>
+      <div class="defense-note"><strong>Важно:</strong> здесь не нужно ничего объяснять. Не ищите причин и не оправдывайтесь. Просто опишите, что было, что вы почувствовали и что сделали. Тело и эмоции честнее слов.</div>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что произошло?</label>
       <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что вы сказали себе в тот момент?</label>
@@ -142,9 +85,7 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
-      <div class="defense-note">
-        <strong>Важно:</strong> не нужно ничего объяснять. Если начинаете писать «потому что», «ведь», «так сложилось» — остановитесь. Нам нужно не объяснение, а само правило. Одно короткое предложение.
-      </div>
+      <div class="defense-note"><strong>Важно:</strong> не нужно ничего объяснять. Если начинаете писать «потому что», «ведь», «так сложилось» — остановитесь. Нам нужно не объяснение, а само правило. Одно короткое предложение.</div>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Это то, как вы думаете, «должно» быть.</p>
@@ -190,9 +131,7 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
-      <div class="defense-note">
-        <strong>Если хочется сказать «потому что» — это уже интерпретация.</strong> Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.
-      </div>
+      <div class="defense-note"><strong>Если хочется сказать «потому что» — это уже интерпретация.</strong> Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.</div>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Проверьте: это факт или ваша интерпретация?</p>
@@ -227,9 +166,7 @@
       </div>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
-      <div class="defense-note">
-        <strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Это способ психики справиться с болью. Если вы не верите в новую мысль — это не провал. Вернитесь к шагу 4 или к шагу 1.
-      </div>
+      <div class="defense-note"><strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Это способ психики справиться с болью. Если вы не верите в новую мысль — это не провал. Вернитесь к шагу 4 или к шагу 1.</div>
       <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
         <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
         <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
@@ -302,45 +239,92 @@ function getHints(text) {
   const lower = text.toLowerCase();
   const matchedHints = [];
 
-  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
+  // 1. Проекция / мягкость / границы
+  const projectionKeys = [
+    'люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею',
+    'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет',
+    'навязыва', 'манипулир', 'хам', 'пользуются мной', 'моей добротой', 'позволяю',
+    'не умею отказывать', 'всегда соглашаюсь', 'мной пользуются', 'садятся'
+  ];
   if (projectionKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Моя мягкость — это не разрешение другим нарушать мои границы',
       'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
       'Я могу говорить «нет» и оставаться добрым(ой)',
-      'Я могу замечать, когда моей добротой пользуются, и защищать себя'
+      'Я могу замечать, когда моей добротой пользуются, и защищать себя',
+      'Я имею право на свои границы, даже если кому-то это не понравится'
     );
   }
 
-  const rationalizationKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
-  if (rationalizationKeys.some(k => lower.includes(k))) {
+  // 2. Отчуждение / непринятие / отличие от других
+  const alienationKeys = [
+    'отличаюсь', 'не такой', 'не такая', 'не как все', 'чужой', 'чужая',
+    'не принимают', 'обзывают', 'травят', 'изгой', 'белая ворона', 'не вписываюсь',
+    'не понимают', 'смеются', 'странный', 'странная', 'не такой как все',
+    'непохож', 'непохожа', 'выделяюсь', 'отталкивают', 'не хотят общаться'
+  ];
+  if (alienationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
-      'Я могу не объяснять свои чувства логикой — они просто есть',
-      'Я могу признать, что мне больно, без «потому что»',
-      'Мои чувства не нуждаются в оправдании'
+      'Я могу быть другим(ой) и всё равно быть ценным человеком',
+      'Моё отличие — это не изъян, а часть меня',
+      'Я могу искать тех, кто принимает меня таким(ой), какой(ая) я есть',
+      'Меня не обязаны принимать все — достаточно тех, кто видит во мне человека',
+      'Я могу защищать себя от тех, кто обзывается, и не верить их словам'
     );
   }
 
-  const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'];
-  if (denialKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
-      'Мне не нужно делать вид, что всё в порядке',
-      'Я могу сказать «мне плохо» и получить поддержку'
-    );
-  }
-
-  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
+  // 3. Самокритика / обесценивание / "я плохой"
+  const selfCriticismKeys = [
+    'я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'я никчемн',
+    'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'не такой',
+    'никуда не гожусь', 'ничтожество', 'ничего не стою', 'не справляюсь',
+    'неудачник', 'неудачница', 'бездарь', 'бездарность', 'я не достоин', 'я не достойна'
+  ];
   if (selfCriticismKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу ошибаться и всё равно быть ценным человеком',
       'Моя ценность не зависит от того, насколько я хорош(а)',
       'Я могу быть мягче к себе в этой ситуации',
-      'Я имею право быть неидеальным и всё равно заслуживать уважения'
+      'Я имею право быть неидеальным и всё равно заслуживать уважения',
+      'Я не обязан(а) заслуживать любовь — я уже ценен(на)'
     );
   }
 
-  const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник'];
+  // 4. Рационализация / объяснения
+  const rationalizationKeys = [
+    'потому что', 'так как', 'ведь', 'устойчивость', 'добродетель',
+    'это нормально', 'так сложилось', 'все так делают', 'по-другому нельзя',
+    'я объясняю', 'логично', 'рационально', 'всё правильно'
+  ];
+  if (rationalizationKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу не объяснять свои чувства логикой — они просто есть',
+      'Я могу признать, что мне больно, без «потому что»',
+      'Мои чувства не нуждаются в оправдании',
+      'Я могу позволить себе чувствовать, даже если это нелогично'
+    );
+  }
+
+  // 5. Отрицание / избегание
+  const denialKeys = [
+    'всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного',
+    'а так ок', 'не думаю', 'не хочу думать', 'забыл', 'не помню', 'потом',
+    'не буду', 'мне всё равно', 'плевать', 'пофиг'
+  ];
+  if (denialKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
+      'Мне не нужно делать вид, что всё в порядке',
+      'Я могу сказать «мне плохо» и получить поддержку',
+      'Я могу посмотреть на то, что избегаю, — это безопаснее, чем кажется'
+    );
+  }
+
+  // 6. Страх / тревога
+  const fearKeys = [
+    'боюсь', 'страшно', 'страх', 'тревог', 'паник', 'боязнь', 'опасно',
+    'а вдруг', 'трясёт', 'колотит', 'не могу дышать'
+  ];
   if (fearKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Страх — это сигнал, а не запрет на действие',
@@ -349,7 +333,11 @@ function getHints(text) {
     );
   }
 
-  const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ'];
+  // 7. Усталость / выгорание
+  const tiredKeys = [
+    'устал', 'устала', 'нет сил', 'выгор', 'истощ', 'не могу больше',
+    'надоело', 'вымотан', 'вымотана', 'тяжело', 'невыносимо'
+  ];
   if (tiredKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я имею право на отдых, даже если не всё сделано',
@@ -358,7 +346,11 @@ function getHints(text) {
     );
   }
 
-  const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня'];
+  // 8. Вина
+  const guiltKeys = [
+    'вина', 'виноват', 'виновата', 'из-за меня', 'я причина',
+    'я подвёл', 'я подвела', 'мне стыдно за', 'я не должен был', 'я не должна была'
+  ];
   if (guiltKeys.some(k => lower.includes(k))) {
     matchedHints.push(
       'Я могу чувствовать вину, но это не значит, что я виноват(а)',
@@ -367,138 +359,9 @@ function getHints(text) {
     );
   }
 
-  const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко'];
-  if (shameKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Мне не нужно стыдиться того, что я чувствую',
-      'Стыд — это эмоция, а не оценка меня как человека',
-      'Я могу быть собой, даже если это кому-то не нравится'
-    );
-  }
-
-  const intellectualizationKeys = ['онтолог', 'фундамент', 'сущность', 'характеристик', 'предикат', 'концепт', 'парадигм'];
-  if (intellectualizationKeys.some(k => lower.includes(k))) {
-    matchedHints.push(
-      'Я могу говорить о своих чувствах простыми словами',
-      'Я могу признать, что мне больно, без философских объяснений',
-      'Я имею право на простые, живые эмоции без анализа'
-    );
-  }
-
-  if (matchedHints.length === 0) {
-    return [
-      'Я могу попробовать по-другому, даже если пока не уверен(а)',
-      'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации'
-    ];
-  }
-
-  return [...new Set(matchedHints)];
-}
-
-function updateHints() {
-  const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
-  const list = document.getElementById('hints-list');
-  const hints = getHints(oldText);
-  list.innerHTML = hints.map(h => `<div class="hint-box" onclick="useHint(this)">«${h}»</div>`).join('');
-}
-
-function useHint(el) {
-  const text = el.textContent.replace(/[«»]/g, '').trim();
-  document.getElementById('s5-new').value = text;
-  saveAll();
-}
-
-function showAnchor() {
-  const word = document.getElementById('anchor-word').value.trim();
-  const action = document.getElementById('anchor-action').value.trim();
-  const when = document.getElementById('anchor-when').value.trim();
-  const box = document.getElementById('anchor-result');
-  const content = document.getElementById('anchor-content');
-
-  if (!word || !action) {
-    alert('Заполните хотя бы слово и действие для якоря.');
-    return;
-  }
-
-  content.innerHTML = `
-    <p><strong>Слово:</strong> «${word}»</p>
-    <p><strong>Действие:</strong> ${action}</p>
-    ${when ? `<p><strong>Когда попробую:</strong> ${when}</p>` : ''}
-  `;
-  box.classList.remove('hidden');
-  box.scrollIntoView({ behavior: 'smooth' });
-}
-
-function goTo(n) {
-  document.querySelectorAll('.scene').forEach(el => el.classList.add('hidden'));
-  document.getElementById('scene-' + n).classList.remove('hidden');
-  currentScene = n;
-  saveAll();
-  if (n === 5) updateHints();
-  if (n === 6) showSummary();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function saveAll() {
-  const data = { currentScene };
-    document.querySelectorAll('textarea, input').forEach(el => {
-    if (el.id) data[el.id] = el.value;
-  });
-  localStorage.setItem('compass_data', JSON.stringify(data));
-}
-
-function loadAll() {
-  const saved = localStorage.getItem('compass_data');
-  if (!saved) return;
-  try {
-    const data = JSON.parse(saved);
-    Object.keys(data).forEach(id => {
-      if (id === 'currentScene') { currentScene = data[id]; }
-      else { const el = document.getElementById(id); if (el) el.value = data[id]; }
-    });
-    if (currentScene > 0) goTo(currentScene);
-  } catch(e) {}
-}
-
-function showSummary() {
-  const content = document.getElementById('summary-content');
-  const situation = document.getElementById('s1-situation').value;
-  const voice = document.getElementById('s1-voice').value;
-  const rule = document.getElementById('s2-rule').value;
-  const core = document.getElementById('s2-core').value;
-  const oldB = document.getElementById('s5-old').value;
-  const newB = document.getElementById('s5-new').value;
-  const feeling = document.getElementById('s5-feeling').value;
-  const anchorWord = document.getElementById('anchor-word').value;
-  const anchorAction = document.getElementById('anchor-action').value;
-
-  content.innerHTML = `
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Ситуация</p><p>${situation || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы себе сказали</p><p>${voice || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Правило</p><p>${rule || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Мысль о себе</p><p>${core || '—'}</p></div>
-    <div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Старая мысль</p><p>${oldB || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Новая мысль</p><p style="color: #e8a33d; font-weight: 600;">${newB || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
-    ${anchorWord ? `<div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Ваш якорь</p><p>Слово: «${anchorWord}»</p><p>Действие: ${anchorAction}</p></div>` : ''}
-  `;
-}
-
-function resetAll() {
-  if (!confirm('Начать заново? Все записи будут удалены.')) return;
-  localStorage.removeItem('compass_data');
-  location.reload();
-}
-
-document.querySelectorAll('textarea, input').forEach(el => {
-  el.addEventListener('input', saveAll);
-});
-
-document.getElementById('s5-old').addEventListener('input', updateHints);
-document.getElementById('s2-core').addEventListener('input', updateHints);
-
-loadAll();
-</script>
-</body>
-</html>
+  // 9. Стыд
+  const shameKeys = [
+    'стыд', 'стыдно', 'позор', 'неловко', 'неудобно', 'сгораю от стыда',
+    'хочу провалиться', 'сквозь землю'
+  ];
+  if (sh
