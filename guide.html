@@ -476,4 +476,25 @@ function showSummary() {
     <div><p class="text-sm mb-1" style="color: #6b5248;">Мысль о себе</p><p>${core || '—'}</p></div>
     <div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Старая мысль</p><p>${oldB || '—'}</p></div>
     <div><p class="text-sm mb-1" style="color: #6b5248;">Новая мысль</p><p style="color: #e8a33d; font-weight: 600;">${newB || '—'}</p></div>
-    <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы
+        <div><p class="text-sm mb-1" style="color: #6b5248;">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
+    ${anchorWord ? `<div class="pt-4" style="border-top: 1px solid #3d2a24;"><p class="text-sm mb-1" style="color: #6b5248;">Ваш якорь</p><p>Слово: «${anchorWord}»</p><p>Действие: ${anchorAction}</p></div>` : ''}
+  `;
+}
+
+function resetAll() {
+  if (!confirm('Начать заново? Все записи будут удалены.')) return;
+  localStorage.removeItem('compass_data');
+  location.reload();
+}
+
+document.querySelectorAll('textarea, input').forEach(el => {
+  el.addEventListener('input', saveAll);
+});
+
+document.getElementById('s5-old').addEventListener('input', updateHints);
+document.getElementById('s2-core').addEventListener('input', updateHints);
+
+loadAll();
+</script>
+</body>
+</html>
