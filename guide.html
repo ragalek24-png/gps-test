@@ -7,70 +7,74 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   body { 
-    background: #0a0a0f; 
-    color: #e2e8f0; 
+    background: #1a1210; 
+    color: #f5e6d3; 
     font-family: 'Georgia', serif;
     overflow-x: hidden;
   }
   .card {
-    background: #14141f;
-    border: 1px solid #2a2a3e;
-    box-shadow: 0 4px 20px rgba(167, 139, 250, 0.05);
+    background: #241815;
+    border: 1px solid #3d2a24;
+    box-shadow: 0 4px 20px rgba(217, 119, 6, 0.05);
   }
   textarea, input { 
-    background: #1a1a2e; 
-    border: 1.5px solid #2a2a3e; 
-    color: #e2e8f0;
+    background: #2a1c18; 
+    border: 1.5px solid #3d2a24; 
+    color: #f5e6d3;
     transition: all 0.3s;
     font-family: inherit;
   }
   textarea:focus, input:focus { 
-    border-color: #a78bfa; 
+    border-color: #e8a33d; 
     outline: none; 
-    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
-    background: #1e1e36;
+    box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.15);
+    background: #2e1f1a;
   }
   textarea::placeholder, input::placeholder {
-    color: #4a4a6a;
+    color: #6b5248;
   }
   .btn { 
-    background: #a78bfa;
+    background: #e8a33d;
     transition: all 0.3s;
-    color: #1a1a2e;
+    color: #1a1210;
   }
   .btn:hover { 
-    background: #c4b5fd;
+    background: #f0b85c;
     transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(167, 139, 250, 0.3);
+    box-shadow: 0 8px 25px rgba(232, 163, 61, 0.3);
   }
   .scene { transition: opacity 0.5s ease, transform 0.5s ease; }
   .scene.hidden { opacity: 0; transform: translateY(15px); pointer-events: none; position: absolute; }
   .text-gradient {
-    background: linear-gradient(135deg, #c4b5fd, #f9a8d4);
+    background: linear-gradient(135deg, #e8a33d, #b83a4b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .hint-box {
-    background: #1e1b2e;
-    border-left: 4px solid #a78bfa;
+    background: #2a1c18;
+    border-left: 4px solid #b83a4b;
     padding: 16px;
     border-radius: 8px;
     font-size: 15px;
     line-height: 1.6;
     cursor: pointer;
     transition: all 0.2s;
+    color: #f5e6d3;
   }
   .hint-box:hover {
-    background: #2a2440;
-    border-left-color: #c4b5fd;
+    background: #33221d;
+    border-left-color: #e8a33d;
   }
   .defense-note {
-    background: rgba(217, 119, 6, 0.1);
-    border-left: 3px solid #d97706;
+    background: rgba(184, 58, 75, 0.15);
+    border-left: 3px solid #b83a4b;
     padding: 12px 16px;
     border-radius: 6px;
     font-size: 14px;
-    color: #fbbf24;
+    color: #f0b8b8;
+    margin: 16px 0;
+  }
+</style>
     margin: 16px 0;
   }
 </style>
