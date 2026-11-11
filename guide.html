@@ -49,14 +49,9 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .phrase-option {
-    background: #1a1a2e;
+  .hint-box {
+    background: #1e1b2e;
     border-left: 3px solid #a78bfa;
-    transition: all 0.2s;
-  }
-  .phrase-option:hover {
-    background: #252540;
-    border-left-color: #c4b5fd;
   }
 </style>
 </head>
@@ -194,10 +189,39 @@
       <label class="block text-sm font-medium text-slate-400 mb-1">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
-      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="Начните печатать, или выберите вариант ниже..." onfocus="suggestPhrase()"></textarea>
-      <div id="phrase-hint" class="space-y-2 mb-4"></div>
+      <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
+      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
+      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">💡 Показать варианты под эту мысль</button>
+      <div id="hints-container" class="hidden mb-4">
+        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
+        <div id="hints-list" class="space-y-2"></div>
+      </div>
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+
+      <!-- Техника «Якорь» -->
+      <div class="border-t border-slate-700 pt-5 mt-5">
+        <h3 class="text-lg font-bold text-emerald-400 mb-3">🔑 Якорь для новой мысли</h3>
+        <p class="text-slate-400 text-sm mb-4">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову. Это называется «якорь».</p>
+
+        <label class="block text-sm font-medium text-slate-400 mb-1">1. Какое слово или короткая фраза будет напоминать о новой мысли?</label>
+        <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю» или «Стоп. Я могу»">
+        <p class="text-xs text-slate-500 mb-4">Коротко, звучно, чтобы можно было сказать про себя.</p>
+
+        <label class="block text-sm font-medium text-slate-400 mb-1">2. Какое действие будет сопровождать это слово?</label>
+        <textarea id="anchor-action" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="Например: сделать вдох-выдох, положить руку на грудь, сжать кулак..."></textarea>
+        <p class="text-xs text-slate-500 mb-4">Действие должно быть простым и незаметным для других.</p>
+
+        <label class="block text-sm font-medium text-slate-400 mb-1">3. Где и когда вы попробуете якорь в ближайшие дни?</label>
+        <textarea id="anchor-when" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Например: в следующий раз, когда почувствую, что меня используют"></textarea>
+
+        <button onclick="showAnchor()" class="text-sm text-violet-300 hover:text-violet-200 underline">🔒 Показать карточку-якорь</button>
+
+        <div id="anchor-result" class="hidden mt-4 p-4 rounded-xl bg-emerald-900/30 border border-emerald-700">
+          <p class="text-sm text-emerald-300 mb-2">Ваш якорь готов. Сохраните или сфотографируйте его:</p>
+          <div id="anchor-content" class="text-slate-200 space-y-2 text-sm"></div>
+        </div>
+      </div>
     </div>
     <div class="flex gap-3">
       <button onclick="goTo(4)" class="flex-1 py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">← Назад</button>
@@ -215,14 +239,6 @@
     <div class="card rounded-2xl p-6 mb-6">
       <div id="summary-content" class="space-y-4 text-slate-300"></div>
     </div>
-
-    <div class="card rounded-2xl p-6 mb-6">
-      <h3 class="text-lg font-bold text-violet-300 mb-3">Что важно помнить</h3>
-      <p class="text-slate-300 mb-3 leading-relaxed">Установки — это не приговор. Они когда-то были защитой. Но их можно менять, если замечать, проверять и пробовать по-новому.</p>
-      <p class="text-slate-300 mb-3 leading-relaxed">Возвращайтесь к этому разбору через неделю, месяц. Сравнивайте, что изменилось. Не требуйте от себя мгновенных перемен — они идут маленькими шагами.</p>
-      <p class="text-slate-300">Если чувствуете, что справиться сложно, — это не слабость. Это сигнал, что нужна поддержка. Можно обратиться к психологу или близкому человеку.</p>
-    </div>
-
     <button onclick="resetAll()" class="w-full py-3 rounded-xl font-semibold text-slate-400 bg-slate-800 hover:bg-slate-700 transition">Пройти заново</button>
   </div>
 
@@ -233,22 +249,11 @@ let currentScene = 0;
 
 function getHints(text) {
   const lower = text.toLowerCase();
-  const hints = [];
+  const matchedHints = [];
 
-  const aggressionKeys = ['агресс', 'злюсь', 'гнев', 'бесит', 'раздража', 'ненавиж', 'хочу ударить', 'кричу', 'не умею злиться', 'не могу злиться'];
-  if (aggressionKeys.some(k => lower.includes(k))) {
-    hints.push(
-      'Я могу выражать злость, не разрушая отношения',
-      'Я имею право злиться и говорить об этом',
-      'Моя агрессия — это сигнал, а не запрет',
-      'Я могу сказать «нет», даже если это кому-то не понравится',
-      'Я могу защищать себя, не чувствуя вины'
-    );
-  }
-
-  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'не могу отказать', 'не могу сказать нет'];
+  const projectionKeys = ['люд', 'козл', 'использу', 'пользуют', 'ездят', 'наглеют', 'садятся на шею', 'мягкост', 'доброт', 'добрый', 'добрая', 'не могу отказать', 'не могу сказать нет'];
   if (projectionKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Моя мягкость — это не разрешение другим нарушать мои границы',
       'Я могу быть добрым(ой), но не обязан(а) терпеть то, что мне не подходит',
       'Я могу говорить «нет» и оставаться добрым(ой)',
@@ -259,7 +264,7 @@ function getHints(text) {
 
   const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
   if (selfCriticismKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Я могу ошибаться и всё равно быть ценным человеком',
       'Моя ценность не зависит от того, насколько я хорош(а)',
       'Я могу быть мягче к себе в этой ситуации',
@@ -269,7 +274,7 @@ function getHints(text) {
 
   const denialKeys = ['всё хорошо', 'все хорошо', 'нормально', 'нет проблем', 'ничего страшного', 'а так ок'];
   if (denialKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Я могу признать, что мне плохо, — это не делает меня слабым(ой)',
       'Мне не нужно делать вид, что всё в порядке, чтобы меня принимали',
       'Я могу сказать «мне плохо» и получить поддержку'
@@ -278,7 +283,7 @@ function getHints(text) {
 
   const rationalKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
   if (rationalKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Я могу не объяснять свои чувства логикой — они просто есть',
       'Я могу признать, что мне больно, без «потому что»',
       'Мои чувства не нуждаются в оправдании'
@@ -287,7 +292,7 @@ function getHints(text) {
 
   const fearKeys = ['боюсь', 'страшно', 'страх', 'тревог', 'паник'];
   if (fearKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Страх — это сигнал, а не запрет на действие',
       'Я могу действовать, даже если мне страшно',
       'Я могу попробовать, и мир не рухнет, если не получится'
@@ -296,7 +301,7 @@ function getHints(text) {
 
   const tiredKeys = ['устал', 'устала', 'нет сил', 'выгор', 'истощ'];
   if (tiredKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Я имею право на отдых, даже если не всё сделано',
       'Моя усталость — это сигнал, а не слабость',
       'Я могу заботиться о себе, не чувствуя вины'
@@ -305,7 +310,7 @@ function getHints(text) {
 
   const guiltKeys = ['вина', 'виноват', 'виновата', 'из-за меня'];
   if (guiltKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Я могу чувствовать вину, но это не значит, что я виноват(а)',
       'Моя вина — это не приговор, а сигнал разобраться',
       'Я могу простить себя и идти дальше'
@@ -314,42 +319,63 @@ function getHints(text) {
 
   const shameKeys = ['стыд', 'стыдно', 'позор', 'неловко'];
   if (shameKeys.some(k => lower.includes(k))) {
-    hints.push(
+    matchedHints.push(
       'Мне не нужно стыдиться того, что я чувствую',
       'Стыд — это эмоция, а не оценка меня как человека',
       'Я могу быть собой, даже если это кому-то не нравится'
     );
   }
 
-  if (hints.length === 0) {
+  if (matchedHints.length === 0) {
     return [
       'Я могу попробовать по-другому, даже если пока не уверен(а)',
       'Я имею право на ошибку и на новый опыт',
-      'Я могу быть мягче к себе в этой ситуации',
-      'Я могу начать с малого шага',
-      'Я не обязан(а) быть идеальным(ой), чтобы двигаться вперёд'
+      'Я могу быть мягче к себе в этой ситуации'
     ];
   }
 
-  return [...new Set(hints)];
+  return [...new Set(matchedHints)];
 }
 
-function suggestPhrase() {
+function showHints() {
   const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
+  const container = document.getElementById('hints-container');
+  const list = document.getElementById('hints-list');
   const hints = getHints(oldText);
-  const container = document.getElementById('phrase-hint');
   
-  container.innerHTML = hints.map(h => `
-    <div class="phrase-option p-3 rounded-lg text-sm text-slate-400 cursor-pointer" onclick="insertPhrase('${h.replace(/'/g, "\\'")}')">
+  container.classList.remove('hidden');
+  list.innerHTML = hints.map(h => `
+    <div class="hint-box p-3 rounded-lg text-sm text-slate-300 cursor-pointer hover:bg-slate-800 transition" onclick="useHint(this)">
       «${h}»
     </div>
   `).join('');
 }
 
-function insertPhrase(phrase) {
-  document.getElementById('s5-new').value = phrase;
-  document.getElementById('phrase-hint').innerHTML = '';
+function useHint(el) {
+  const text = el.textContent.replace(/[«»]/g, '');
+  document.getElementById('s5-new').value = text;
   saveAll();
+}
+
+function showAnchor() {
+  const word = document.getElementById('anchor-word').value.trim();
+  const action = document.getElementById('anchor-action').value.trim();
+  const when = document.getElementById('anchor-when').value.trim();
+  const box = document.getElementById('anchor-result');
+  const content = document.getElementById('anchor-content');
+
+  if (!word || !action) {
+    alert('Заполните хотя бы слово и действие для якоря.');
+    return;
+  }
+
+  content.innerHTML = `
+    <p><strong>Слово:</strong> «${word}»</p>
+    <p><strong>Действие:</strong> ${action}</p>
+    ${when ? `<p><strong>Когда попробую:</strong> ${when}</p>` : ''}
+  `;
+  box.classList.remove('hidden');
+  box.scrollIntoView({ behavior: 'smooth' });
 }
 
 function goTo(n) {
@@ -357,7 +383,6 @@ function goTo(n) {
   document.getElementById('scene-' + n).classList.remove('hidden');
   currentScene = n;
   saveAll();
-  if (n === 5) suggestPhrase();
   if (n === 6) showSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -392,6 +417,8 @@ function showSummary() {
   const oldB = document.getElementById('s5-old').value;
   const newB = document.getElementById('s5-new').value;
   const feeling = document.getElementById('s5-feeling').value;
+  const anchorWord = document.getElementById('anchor-word').value;
+  const anchorAction = document.getElementById('anchor-action').value;
 
   content.innerHTML = `
     <div><p class="text-sm text-slate-500 mb-1">Ситуация</p><p>${situation || '—'}</p></div>
@@ -401,6 +428,7 @@ function showSummary() {
     <div class="border-t border-slate-700 pt-4"><p class="text-sm text-slate-500 mb-1">Старая мысль</p><p>${oldB || '—'}</p></div>
     <div><p class="text-sm text-slate-500 mb-1">Новая мысль</p><p class="text-emerald-400 font-semibold">${newB || '—'}</p></div>
     <div><p class="text-sm text-slate-500 mb-1">Что вы чувствуете</p><p>${feeling || '—'}</p></div>
+    ${anchorWord ? `<div class="border-t border-slate-700 pt-4"><p class="text-sm text-slate-500 mb-1">Ваш якорь</p><p>Слово: «${anchorWord}»</p><p>Действие: ${anchorAction}</p></div>` : ''}
   `;
 }
 
