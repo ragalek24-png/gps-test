@@ -51,7 +51,17 @@
   }
   .hint-box {
     background: #1e1b2e;
-    border-left: 3px solid #a78bfa;
+    border-left: 4px solid #a78bfa;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .hint-box:hover {
+    background: #2a2440;
+    border-left-color: #c4b5fd;
   }
 </style>
 </head>
@@ -190,19 +200,20 @@
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium text-slate-400 mb-1">Новая мысль</label>
       <textarea id="s5-new" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
-      <p class="text-xs text-slate-500 mb-3">Звучит правдоподобно? Если нет — сделайте попроще.</p>
-      <button onclick="showHints()" class="text-sm text-violet-300 hover:text-violet-200 underline mb-4">💡 Показать варианты под эту мысль</button>
-      <div id="hints-container" class="hidden mb-4">
-        <p class="text-sm text-violet-300 mb-2">Возможные варианты:</p>
+
+      <!-- Подсказки всегда на виду -->
+      <div class="mb-4">
+        <p class="text-sm text-violet-300 mb-3">Возможные варианты новой мысли:</p>
         <div id="hints-list" class="space-y-2"></div>
       </div>
+
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
 
       <!-- Техника «Якорь» -->
       <div class="border-t border-slate-700 pt-5 mt-5">
         <h3 class="text-lg font-bold text-emerald-400 mb-3">🔑 Якорь для новой мысли</h3>
-        <p class="text-slate-400 text-sm mb-4">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову. Это называется «якорь».</p>
+        <p class="text-slate-400 text-sm mb-4">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову.</p>
 
         <label class="block text-sm font-medium text-slate-400 mb-1">1. Какое слово или короткая фраза будет напоминать о новой мысли?</label>
         <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю» или «Стоп. Я могу»">
@@ -337,22 +348,20 @@ function getHints(text) {
   return [...new Set(matchedHints)];
 }
 
-function showHints() {
+function updateHints() {
   const oldText = document.getElementById('s5-old').value || document.getElementById('s2-core').value;
-  const container = document.getElementById('hints-container');
   const list = document.getElementById('hints-list');
   const hints = getHints(oldText);
   
-  container.classList.remove('hidden');
   list.innerHTML = hints.map(h => `
-    <div class="hint-box p-3 rounded-lg text-sm text-slate-300 cursor-pointer hover:bg-slate-800 transition" onclick="useHint(this)">
+    <div class="hint-box text-slate-200" onclick="useHint(this)">
       «${h}»
     </div>
   `).join('');
 }
 
 function useHint(el) {
-  const text = el.textContent.replace(/[«»]/g, '');
+  const text = el.textContent.replace(/[«»]/g, '').trim();
   document.getElementById('s5-new').value = text;
   saveAll();
 }
@@ -383,6 +392,7 @@ function goTo(n) {
   document.getElementById('scene-' + n).classList.remove('hidden');
   currentScene = n;
   saveAll();
+  if (n === 5) updateHints();
   if (n === 6) showSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -441,6 +451,9 @@ function resetAll() {
 document.querySelectorAll('textarea, input').forEach(el => {
   el.addEventListener('input', saveAll);
 });
+
+document.getElementById('s5-old').addEventListener('input', updateHints);
+document.getElementById('s2-core').addEventListener('input', updateHints);
 
 loadAll();
 </script>
