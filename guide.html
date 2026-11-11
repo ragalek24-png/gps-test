@@ -63,6 +63,15 @@
     background: #2a2440;
     border-left-color: #c4b5fd;
   }
+  .defense-note {
+    background: rgba(167, 139, 250, 0.08);
+    border-left: 3px solid #a78bfa;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #c4b5fd;
+    margin: 16px 0;
+  }
 </style>
 </head>
 <body class="min-h-screen p-4 flex items-center justify-center">
@@ -101,14 +110,20 @@
       <p class="text-slate-400">Вспомните ситуацию, где вы были к себе особенно строги</p>
     </div>
     <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
+      <p class="text-slate-300 mb-4">Начнём с конкретного случая. Это может быть недавняя ситуация или что-то из прошлого, что до сих пор отзывается. Главное — чтобы это было живое воспоминание.</p>
+      
+      <div class="defense-note">
+        <strong>Важно:</strong> здесь не нужно ничего объяснять. Не ищите причин и не оправдывайтесь. Просто опишите, что было, что вы почувствовали и что сделали. Тело и эмоции честнее слов.
+      </div>
+
       <label class="block text-sm font-medium text-slate-400 mb-1">Что произошло?</label>
       <textarea id="s1-situation" rows="3" class="w-full p-3 rounded-lg mb-4" placeholder="Опишите ситуацию..."></textarea>
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы сказали себе в тот момент?</label>
       <textarea id="s1-voice" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="«Ну и дурак», «я всегда всё порчу»..."></textarea>
       <p class="text-xs text-slate-500 mb-4">Постарайтесь вспомнить дословно.</p>
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы почувствовали в теле?</label>
-      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
+      <textarea id="s1-body" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="Сжались, покраснели, захотелось исчезнуть..."></textarea>
+      <p class="text-xs text-slate-500 mb-4">Это ключевой пункт. Тело не объясняет и не оправдывает — оно просто чувствует. Именно телесные сигналы помогают обойти защиту.</p>
       <label class="block text-sm font-medium text-slate-400 mb-1">Какие эмоции были сильнее всего?</label>
       <textarea id="s1-emotions" rows="2" class="w-full p-3 rounded-lg" placeholder="Стыд, страх, злость, обида..."></textarea>
     </div>
@@ -126,7 +141,12 @@
       <p class="text-slate-400">То, что вы себе сказали — это верхушка айсберга</p>
     </div>
     <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
+      <p class="text-slate-300 mb-4">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
+
+      <div class="defense-note">
+        <strong>Остановитесь, если хочется объяснить.</strong> Если вы начинаете писать «потому что», «ведь», «так сложилось» — это защита. Нам нужно не объяснение, а само правило. Одно короткое предложение.
+      </div>
+
       <label class="block text-sm font-medium text-slate-400 mb-1">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
       <p class="text-xs text-slate-500 mb-4">Это то, как вы думаете, «должно» быть.</p>
@@ -171,7 +191,12 @@
       <p class="text-slate-400">Посмотрим, на чём держится это правило</p>
     </div>
     <div class="card rounded-2xl p-6 mb-6">
-      <p class="text-slate-300 mb-5">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
+      <p class="text-slate-300 mb-4">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
+
+      <div class="defense-note">
+        <strong>Если хочется сказать «потому что» — это уже интерпретация.</strong> Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.
+      </div>
+
       <label class="block text-sm font-medium text-slate-400 mb-1">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
       <p class="text-xs text-slate-500 mb-4">Проверьте: это факт или ваша интерпретация?</p>
@@ -208,12 +233,16 @@
       </div>
 
       <label class="block text-sm font-medium text-slate-400 mb-1">Что вы чувствуете, когда произносите новую мысль?</label>
-      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg" placeholder="..."></textarea>
+      <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
+
+      <div class="defense-note">
+        <strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Защита (рационализация, проекция, отрицание, интеллектуализация) — это не глупость и не упрямство. Это способ психики справиться с болью. Если вы чувствуете, что «не верите» в новую мысль — это не провал. Это сигнал, что защита ещё работает. Вернитесь к шагу 4 или к шагу 1 (к телу). Иногда нужно несколько проходов.
+      </div>
 
       <!-- Техника «Якорь» -->
       <div class="border-t border-slate-700 pt-5 mt-5">
         <h3 class="text-lg font-bold text-emerald-400 mb-3">🔑 Якорь для новой мысли</h3>
-        <p class="text-slate-400 text-sm mb-4">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову.</p>
+        <p class="text-slate-400 text-sm mb-4">Чтобы мысль сработала в нужный момент, привяжите её к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело и действие, а не на логику.</p>
 
         <label class="block text-sm font-medium text-slate-400 mb-1">1. Какое слово или короткая фраза будет напоминать о новой мысли?</label>
         <input id="anchor-word" type="text" class="w-full p-3 rounded-lg mb-2" placeholder="Например: «Я выбираю» или «Стоп. Я могу»">
@@ -273,13 +302,13 @@ function getHints(text) {
     );
   }
 
-  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
-  if (selfCriticismKeys.some(k => lower.includes(k))) {
+  const rationalizationKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
+  if (rationalizationKeys.some(k => lower.includes(k))) {
     matchedHints.push(
-      'Я могу ошибаться и всё равно быть ценным человеком',
-      'Моя ценность не зависит от того, насколько я хорош(а)',
-      'Я могу быть мягче к себе в этой ситуации',
-      'Я имею право быть неидеальным и всё равно заслуживать уважения'
+      'Я могу не объяснять свои чувства логикой — они просто есть',
+      'Я могу признать, что мне больно, без «потому что»',
+      'Мои чувства не нуждаются в оправдании',
+      'Я могу позволить себе чувствовать, даже если это нелогично'
     );
   }
 
@@ -292,12 +321,13 @@ function getHints(text) {
     );
   }
 
-  const rationalKeys = ['потому что', 'так как', 'ведь', 'устойчивость', 'добродетель'];
-  if (rationalKeys.some(k => lower.includes(k))) {
+  const selfCriticismKeys = ['я плохой', 'я плохая', 'я урод', 'я тупой', 'я тупая', 'сам виноват', 'сама виновата', 'недостаточно', 'хуже других', 'никуда не гожусь', 'ничтожество', 'не такой', 'не такая'];
+  if (selfCriticismKeys.some(k => lower.includes(k))) {
     matchedHints.push(
-      'Я могу не объяснять свои чувства логикой — они просто есть',
-      'Я могу признать, что мне больно, без «потому что»',
-      'Мои чувства не нуждаются в оправдании'
+      'Я могу ошибаться и всё равно быть ценным человеком',
+      'Моя ценность не зависит от того, насколько я хорош(а)',
+      'Я могу быть мягче к себе в этой ситуации',
+      'Я имею право быть неидеальным и всё равно заслуживать уважения'
     );
   }
 
@@ -334,6 +364,15 @@ function getHints(text) {
       'Мне не нужно стыдиться того, что я чувствую',
       'Стыд — это эмоция, а не оценка меня как человека',
       'Я могу быть собой, даже если это кому-то не нравится'
+    );
+  }
+
+  const intellectualizationKeys = ['онтолог', 'фундамент', 'сущность', 'характеристик', 'предикат', 'концепт', 'парадигм'];
+  if (intellectualizationKeys.some(k => lower.includes(k))) {
+    matchedHints.push(
+      'Я могу говорить о своих чувствах простыми словами',
+      'Я могу признать, что мне больно, без философских объяснений',
+      'Я имею право на простые, живые эмоции без анализа'
     );
   }
 
@@ -453,9 +492,4 @@ document.querySelectorAll('textarea, input').forEach(el => {
 });
 
 document.getElementById('s5-old').addEventListener('input', updateHints);
-document.getElementById('s2-core').addEventListener('input', updateHints);
-
-loadAll();
-</script>
-</body>
-</html>
+document.getElementById('s2-core').addEventListener('input', update
