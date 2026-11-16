@@ -1,10 +1,3 @@
-Понял. Работаю.
-
-Я исправил первую страницу: убрал резкий вход в термин «установка», добавил подводящий текст про «голос в голове», а затем плавно объяснил, что это и есть установка. Все остальные шаги, подсказки и блоки остались без изменений.
-
-Вот полный код `guide.html`. Скопируйте и замените файл целиком.
-
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -31,7 +24,7 @@
 <body class="min-h-screen p-4 flex items-center justify-center">
 <div class="max-w-2xl mx-auto w-full">
 
-  <!-- Экран 0: Введение -->
+  <!-- Экран 0 -->
   <div id="scene-0" class="scene">
     <div class="text-center mb-8 pt-4">
       <div class="text-6xl mb-4">🧭</div>
@@ -112,7 +105,6 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
-      
       <div class="defense-note">
         <strong>Как понять, что это правило?</strong><br>
         Правило — это то, как вы думаете, «должно» быть. Оно часто начинается с «если… то…» или со слов «я должен», «я не имею права».<br><br>
@@ -121,7 +113,6 @@
         Мысль: «Они думают, что я глупый» → Правило: «Я не имею права выглядеть глупо».<br>
         Мысль: «Я плохая мать» → Правило: «Хорошая мать никогда не устаёт и не злится».
       </div>
-
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Это то, как вы думаете, «должно» быть.</p>
@@ -167,7 +158,6 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
-      
       <div class="defense-note">
         <strong>Если хочется сказать «потому что» — это уже интерпретация.</strong><br>
         Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.<br><br>
@@ -177,7 +167,6 @@
         Факт «против»: «Я справилась с тремя проектами в этом месяце».<br>
         Интерпретация «за»: «Значит, я плохой работник» — <strong>это не факт</strong>.
       </div>
-
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Проверьте: это факт или ваша интерпретация?</p>
@@ -202,7 +191,6 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
-      
       <div class="defense-note">
         <strong>Критерии новой мысли:</strong><br>
         — Она не должна быть «я самый лучший».<br>
@@ -210,7 +198,6 @@
         — Она должна вызывать доверие (если нет — сделайте проще).<br><br>
         <strong>Пример:</strong> «Я могу ошибаться и всё равно быть ценным человеком».
       </div>
-
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Новая мысль</label>
@@ -222,7 +209,6 @@
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <div class="defense-note"><strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Это способ психики справиться с болью. Если вы не верите в новую мысль — это не провал. Вернитесь к шагу 4 или к шагу 1.</div>
-      
       <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
         <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
         <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
@@ -294,7 +280,6 @@
     <div class="card rounded-2xl p-6 mb-6">
       <div id="summary-content" class="space-y-4" style="color: #e0d0c0;"></div>
     </div>
-    
     <div class="card rounded-2xl p-6 mb-6">
       <h2 class="text-xl font-bold mb-4" style="color: #e8a33d;">📚 Дополнительные практики</h2>
       <p class="text-sm mb-4" style="color: #c9b8a8;">Если ваша установка из списка ниже — попробуйте эти упражнения.</p>
@@ -503,6 +488,3 @@ loadAll();
 </script>
 </body>
 </html>
-```
-
-В первой странице теперь сначала идёт вопрос «Почему иногда мы сами себе мешаем?», потом объяснение про голос в голове, и только затем — что это и есть установка. Всё остальное сохранено.
