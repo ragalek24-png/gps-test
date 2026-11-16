@@ -24,29 +24,59 @@
 <body class="min-h-screen p-4 flex items-center justify-center">
 <div class="max-w-2xl mx-auto w-full">
 
+  <!-- Экран 0: Введение и описание установок -->
   <div id="scene-0" class="scene">
     <div class="text-center mb-8 pt-4">
       <div class="text-6xl mb-4">🧭</div>
       <h1 class="text-3xl font-bold text-gradient mb-3">Внутренний компас</h1>
       <p class="text-lg mb-8" style="color: #c9b8a8;">Как понять, что мешает вам жить — и что с этим делать</p>
     </div>
+
     <div class="card rounded-2xl p-6 mb-6">
-      <h2 class="text-xl font-bold mb-3" style="color: #e8a33d;">О чём это?</h2>
-      <p class="mb-3 leading-relaxed" style="color: #e0d0c0;">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего».</p>
-      <p class="mb-3 leading-relaxed" style="color: #e0d0c0;">Эти правила не осознаются. Они кажутся правдой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
-      <p class="leading-relaxed" style="color: #e0d0c0;">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
+      <h2 class="text-xl font-bold mb-3" style="color: #e8a33d;">Что такое установки и откуда они берутся?</h2>
+      <p class="mb-3 leading-relaxed" style="color: #e0d0c0;">У каждого из нас есть внутренние правила, которые когда-то помогали, а теперь мешают. Например: «я должен быть удобным», «если я ошибусь — это катастрофа», «я не имею права хотеть большего». Эти правила психологи называют установками.</p>
+      <p class="mb-3 leading-relaxed" style="color: #e0d0c0;">Они формируются в детстве: из слов взрослых, из школьного опыта, из ситуаций, где мы сделали вывод «так безопаснее». Мозг запоминает эти выводы как готовые инструкции, чтобы не думать каждый раз заново.</p>
+      <p class="leading-relaxed" style="color: #e0d0c0;">Проблема в том, что эти инструкции не осознаются. Они кажутся правдой, а не привычкой. Но именно они заставляют нас сомневаться в себе, бояться, откладывать, злиться на себя.</p>
     </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold mb-3" style="color: #e8a33d;">Как это проявляется?</h2>
+      <p class="mb-4 leading-relaxed" style="color: #e0d0c0;">Установка часто звучит как короткая фраза в голове:</p>
+      <ul class="space-y-2 mb-4" style="color: #e0d0c0;">
+        <li>• «Я не справлюсь»</li>
+        <li>• «Людям нельзя доверять»</li>
+        <li>• «Я должен всё контролировать»</li>
+        <li>• «Я недостаточно хорош»</li>
+      </ul>
+      <p class="leading-relaxed" style="color: #e0d0c0;">За каждой такой фразой стоит правило: «если я не идеален — меня не примут», «если я расслаблюсь — случится катастрофа», «если я скажу нет — меня отвергнут».</p>
+    </div>
+
+    <div class="card rounded-2xl p-6 mb-6">
+      <h2 class="text-xl font-bold mb-3" style="color: #e8a33d;">Зачем психике эти установки?</h2>
+      <p class="mb-4 leading-relaxed" style="color: #e0d0c0;">У таких внутренних правил есть четыре задачи.</p>
+      <ul class="space-y-3" style="color: #e0d0c0;">
+        <li><strong>1. Экономия сил.</strong> Мозг автоматизирует повторяющееся, чтобы не анализировать каждую ситуацию с нуля. Установка даёт готовый ответ.</li>
+        <li><strong>2. Защита от перегрузки.</strong> Установка работает фильтром: человек замечает то, что совпадает с ожиданиями, а противоречащее пропускает.</li>
+        <li><strong>3. Регуляция поведения.</strong> Установки направляют поведение: что замечать, а что игнорировать.</li>
+        <li><strong>4. Мотивация.</strong> Установки формируют ожидания и определяют, какие цели человек считает достижимыми.</li>
+      </ul>
+    </div>
+
     <div class="card rounded-2xl p-6 mb-6">
       <h2 class="text-xl font-bold mb-3" style="color: #e8a33d;">Что вас ждёт?</h2>
+      <p class="mb-4 leading-relaxed" style="color: #e0d0c0;">Этот разбор поможет вам увидеть одно такое правило, понять, откуда оно взялось, и сформулировать новое — более честное и гибкое.</p>
       <ul class="space-y-2" style="color: #e0d0c0;">
         <li>• 5 простых шагов — без сложных терминов.</li>
+        <li>• Подсказки и примеры на каждом шаге.</li>
         <li>• Записи сохраняются в браузере. Никто их не увидит.</li>
         <li>• Вы можете вернуться в любой момент.</li>
       </ul>
     </div>
-    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg">Начать →</button>
+
+    <button onclick="goTo(1)" class="btn w-full py-4 rounded-xl font-bold text-lg">Начать разбор →</button>
   </div>
 
+  <!-- Экран 1 -->
   <div id="scene-1" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🎬</div>
@@ -73,6 +103,7 @@
     </div>
   </div>
 
+  <!-- Экран 2 -->
   <div id="scene-2" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🔍</div>
@@ -81,7 +112,16 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Под любой такой фразой лежит правило, по которому вы живёте. Оно может быть про себя, про других или про мир. Давайте до него доберёмся.</p>
-      <div class="defense-note"><strong>Важно:</strong> не нужно ничего объяснять. Если начинаете писать «потому что», «ведь», «так сложилось» — остановитесь. Нам нужно не объяснение, а само правило. Одно короткое предложение.</div>
+      
+      <div class="defense-note">
+        <strong>Как понять, что это правило?</strong><br>
+        Правило — это то, как вы думаете, «должно» быть. Оно часто начинается с «если… то…» или со слов «я должен», «я не имею права».<br><br>
+        <strong>Примеры:</strong><br>
+        Мысль: «Я не справлюсь» → Правило: «Я должен справляться со всем идеально».<br>
+        Мысль: «Они думают, что я глупый» → Правило: «Я не имею права выглядеть глупо».<br>
+        Мысль: «Я плохая мать» → Правило: «Хорошая мать никогда не устаёт и не злится».
+      </div>
+
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Какое правило стоит за этой мыслью?</label>
       <textarea id="s2-rule" rows="2" class="w-full p-3 rounded-lg mb-2" placeholder="«Если я не идеальна, меня не примут»..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Это то, как вы думаете, «должно» быть.</p>
@@ -97,6 +137,7 @@
     </div>
   </div>
 
+  <!-- Экран 3 -->
   <div id="scene-3" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🕰️</div>
@@ -117,6 +158,7 @@
     </div>
   </div>
 
+  <!-- Экран 4 -->
   <div id="scene-4" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">⚖️</div>
@@ -125,7 +167,17 @@
     </div>
     <div class="card rounded-2xl p-6 mb-6">
       <p class="mb-4" style="color: #e0d0c0;">Правило кажется правдой, но это не значит, что оно истинно. Разделите факты и интерпретации. Факт — это то, что можно проверить. Интерпретация — это ваша оценка.</p>
-      <div class="defense-note"><strong>Если хочется сказать «потому что» — это уже интерпретация.</strong> Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.</div>
+      
+      <div class="defense-note">
+        <strong>Если хочется сказать «потому что» — это уже интерпретация.</strong><br>
+        Настоящий факт можно подтвердить или опровергнуть. Если это невозможно — скорее всего, перед вами интерпретация.<br><br>
+        <strong>Пример:</strong><br>
+        Старая мысль: «Я не справлюсь».<br>
+        Факт «за»: «Я опоздала на встречу».<br>
+        Факт «против»: «Я справилась с тремя проектами в этом месяце».<br>
+        Интерпретация «за»: «Значит, я плохой работник» — <strong>это не факт</strong>.
+      </div>
+
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что, по-вашему, это подтверждает?</label>
       <textarea id="s4-for" rows="3" class="w-full p-3 rounded-lg mb-2" placeholder="..."></textarea>
       <p class="text-xs mb-4" style="color: #6b5248;">Проверьте: это факт или ваша интерпретация?</p>
@@ -141,6 +193,7 @@
     </div>
   </div>
 
+  <!-- Экран 5 -->
   <div id="scene-5" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-4xl mb-2">🌱</div>
@@ -148,7 +201,16 @@
       <p style="color: #c9b8a8;">Не мечта, а вывод из фактов</p>
     </div>
     <div class="card rounded-2xl p-6 mb-6">
-      <p class="mb-5" style="color: #e0d0c0;">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому».</p>
+      <p class="mb-4" style="color: #e0d0c0;">Теперь, когда вы увидели, что правило держится на интерпретациях, можно сформулировать новую мысль. Она должна быть не «я самый лучший», а «я могу по-другому». И она должна вызывать у вас доверие, а не отторжение.</p>
+      
+      <div class="defense-note">
+        <strong>Критерии новой мысли:</strong><br>
+        — Она не должна быть «я самый лучший».<br>
+        — Она должна звучать как «я могу по-другому».<br>
+        — Она должна вызывать доверие (если нет — сделайте проще).<br><br>
+        <strong>Пример:</strong> «Я могу ошибаться и всё равно быть ценным человеком».
+      </div>
+
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Старая мысль</label>
       <textarea id="s5-old" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Новая мысль</label>
@@ -160,6 +222,7 @@
       <label class="block text-sm font-medium mb-1" style="color: #c9b8a8;">Что вы чувствуете, когда произносите новую мысль?</label>
       <textarea id="s5-feeling" rows="2" class="w-full p-3 rounded-lg mb-4" placeholder="..."></textarea>
       <div class="defense-note"><strong>Если вы замечаете, что защищаетесь, — это нормально.</strong> Это способ психики справиться с болью. Если вы не верите в новую мысль — это не провал. Вернитесь к шагу 4 или к шагу 1.</div>
+      
       <div class="pt-5 mt-5" style="border-top: 1px solid #3d2a24;">
         <h3 class="text-lg font-bold mb-3" style="color: #e8a33d;">🔑 Якорь для новой мысли</h3>
         <p class="text-sm mb-4" style="color: #c9b8a8;">Привяжите мысль к простому действию или слову. Якорь работает в обход защит, потому что опирается на тело.</p>
@@ -221,6 +284,7 @@
     </div>
   </div>
 
+  <!-- Экран 6 -->
   <div id="scene-6" class="scene hidden">
     <div class="text-center mb-6 pt-4">
       <div class="text-6xl mb-4">🌅</div>
@@ -230,10 +294,19 @@
     <div class="card rounded-2xl p-6 mb-6">
       <div id="summary-content" class="space-y-4" style="color: #e0d0c0;"></div>
     </div>
+    
     <div class="card rounded-2xl p-6 mb-6">
       <h2 class="text-xl font-bold mb-4" style="color: #e8a33d;">📚 Дополнительные практики</h2>
       <p class="text-sm mb-4" style="color: #c9b8a8;">Если ваша установка из списка ниже — попробуйте эти упражнения.</p>
       <div class="space-y-3">
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Дневник «Моё отличие»</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Для установки «Я не такой, как все». Каждый вечер записывайте одну черту или привычку, которая отличает вас от других, и то, чем она вам помогает или делает вас интереснее.</p>
+        </div>
+        <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
+          <h3 class="font-semibold mb-1" style="color: #e8a33d;">Фильтр «Чьи это слова?»</h3>
+          <p class="text-sm" style="color: #e0d0c0;">Когда кто-то вас обзывает или критикует, спросите: «Это говорит человек, чьё мнение для меня важно?» Если нет — мысленно возвращайте ему его слова. Вы не обязаны брать чужую агрессию.</p>
+        </div>
         <div class="p-4 rounded-lg" style="background: #2a1c18; border-left: 3px solid #b83a4b;">
           <h3 class="font-semibold mb-1" style="color: #e8a33d;">Круг контроля</h3>
           <p class="text-sm" style="color: #e0d0c0;">Для установки «Всё под контролем». Нарисуйте круг: внутри — что можете контролировать, снаружи — что не можете.</p>
